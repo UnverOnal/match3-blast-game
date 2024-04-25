@@ -14,5 +14,7 @@ namespace Board.BoardCreation
         }
 
         public BlockData[] blockData;
+
+        public Vector2 centerPoint = Vector2.zero;
     }
 }

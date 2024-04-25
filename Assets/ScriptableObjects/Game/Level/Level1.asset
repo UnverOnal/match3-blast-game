@@ -17,7 +17,11 @@ MonoBehaviour:
     columns: 6
   blockData:
   - type: 0
-    amount: 0
-  moveCount: 0
+    amount: 12
+  - type: 2
+    amount: 12
+  - type: 4
+    amount: 12
+  moveCount: 15
   duration: 60
-  obstacleHealths: 02000000
+  obstacleHealths: 0200000002000000
