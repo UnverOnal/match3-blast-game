@@ -223,6 +223,7 @@ MonoBehaviour:
   homeScreenResources: {fileID: 1738453830}
   gameScreenResources: {fileID: 833979726}
   levelEndScreenResources: {fileID: 581893295}
+  levelContainer: {fileID: 11400000, guid: 629cf418cd7ada14aa1f6f747f1940d6, type: 2}
 --- !u!4 &649288748
 Transform:
   m_ObjectHideFlags: 0
