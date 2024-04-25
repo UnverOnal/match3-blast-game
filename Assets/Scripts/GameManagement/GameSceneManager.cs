@@ -1,22 +1,22 @@
-using UI;
+using System.Collections.Generic;
 using VContainer;
-using VContainer.Unity;
 
 namespace GameManagement
 {
-    public class GameSceneManager : IInitializable
+    public class GameSceneManager : VContainer.Unity.IInitializable
     {
-        private readonly UiManager _uiManager;
+        private readonly IEnumerable<IInitializable> _initializables;
 
         [Inject]
-        public GameSceneManager(UiManager uiManager)
+        public GameSceneManager(IEnumerable<IInitializable> initializables)
         {
-            _uiManager = uiManager;
+            _initializables = initializables;
         }
 
         public void Initialize()
         {
-            _uiManager.Initialize();
+            foreach (var initializable in _initializables)
+                initializable.Initialize();
         }
     }
 }

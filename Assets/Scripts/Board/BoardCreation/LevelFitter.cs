@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using GameManagement;
 using UnityEngine;
 
@@ -20,7 +19,7 @@ namespace Board.BoardCreation
             _camera = Camera.main;
         }
 
-        public void AlignCamera(IReadOnlyList<Cell> cells)
+        public void AlignCamera(Cell[,] cells)
         {
             _bounds = CalculateBounds(cells);
 
@@ -29,15 +28,16 @@ namespace Board.BoardCreation
             SetCamera(cameraPosition, orthographicSize);
         }
 
-        private Bounds CalculateBounds(IReadOnlyList<Cell> cells)
+        private Bounds CalculateBounds(Cell[,] cells)
         {
-            var minPosition = cells[0].Position;
-            var maxPosition = cells[0].Position;
+            var minPosition = cells[0, 0].Position;
+            var maxPosition = cells[0, 0].Position;
 
-            for (int i = 0; i < cells.Count; i++)
+            for (var i = 0; i < cells.GetLength(0); i++)
+            for (var j = 0; j < cells.GetLength(1); j++)
             {
-                var cell = cells[i];
-                
+                var cell = cells[i, j];
+
                 minPosition.x = Mathf.Min(minPosition.x, cell.Position.x - cell.Scale.x / 2f);
                 minPosition.y = Mathf.Min(minPosition.y, cell.Position.y - cell.Scale.y / 2f);
                 maxPosition.x = Mathf.Max(maxPosition.x, cell.Position.x + cell.Scale.x / 2f);
@@ -51,7 +51,7 @@ namespace Board.BoardCreation
             };
             return bounds;
         }
-        
+
         private float CalculateOrthographicSize(Bounds bounds)
         {
             var screenAspect = (float)Screen.width / Screen.height;
@@ -65,11 +65,12 @@ namespace Board.BoardCreation
 
             return orthographicSize;
         }
-        
+
         private void SetCamera(Vector2 position, float orthographicSize)
         {
             var cameraTransform = _camera.transform;
-            cameraTransform.position = new Vector3(position.x, position.y, cameraTransform.position.z) + _cameraPositionOffset;
+            cameraTransform.position =
+                new Vector3(position.x, position.y, cameraTransform.position.z) + _cameraPositionOffset;
 
             _camera.orthographicSize = orthographicSize + _cameraSizeOffset;
         }

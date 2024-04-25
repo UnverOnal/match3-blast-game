@@ -8,7 +8,7 @@ namespace Level
     {
         //GOAL var
 
-        public GridSize gridSize;
+        public BoardSize boardSize;
 
         [Serializable]
         public struct BlockData
@@ -36,7 +36,7 @@ namespace Level
     }
 
     [Serializable]
-    public struct GridSize
+    public struct BoardSize
     {
         public int rows;
         public int columns;

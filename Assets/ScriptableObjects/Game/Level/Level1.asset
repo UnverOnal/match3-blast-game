@@ -12,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c11a7a42f95b0aa498c0b167a8cf0e60, type: 3}
   m_Name: Level1
   m_EditorClassIdentifier: 
-  gridSize:
+  boardSize:
     rows: 6
     columns: 6
   blockData:
   - type: 0
-    amount: 12
+    amount: 25
   - type: 2
-    amount: 12
+    amount: 40
   - type: 4
-    amount: 12
+    amount: 30
   moveCount: 15
   duration: 60
-  obstacleHealths: 0200000002000000
+  obstacleHealths: 0200000002000000020000000200000002000000

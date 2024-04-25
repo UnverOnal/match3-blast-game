@@ -15,12 +15,14 @@ namespace Scopes
     public class MainScope : LifetimeScope
     {
         [SerializeField] private SceneDataContainer sceneDataContainer;
+        [SerializeField] private GameSettings gameSettings;
         
         protected override void Configure(IContainerBuilder builder)
         {
             InstallServices(builder);
 
             builder.RegisterInstance(sceneDataContainer);
+            builder.RegisterInstance(gameSettings);
             
             builder.RegisterEntryPoint<GameManager>();
         }

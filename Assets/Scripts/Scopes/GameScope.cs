@@ -11,6 +11,7 @@ using Ui.Screens.LevelEnd;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
+using IInitializable = GameManagement.IInitializable;
 
 namespace Scopes
 {
@@ -26,7 +27,7 @@ namespace Scopes
         protected override void Configure(IContainerBuilder builder)
         {
             builder.RegisterEntryPoint<GameSceneManager>();
-            builder.Register<UiManager>(Lifetime.Singleton);
+            builder.Register<UiManager>(Lifetime.Singleton).AsSelf().As<IInitializable>();
             
             RegisterScreens(builder);
             RegisterBoard(builder);
@@ -49,7 +50,7 @@ namespace Scopes
 
         private void RegisterBoard(IContainerBuilder builder)
         {
-            builder.Register<BoardCreationPresenter>(Lifetime.Singleton);
+            builder.Register<BoardCreationPresenter>(Lifetime.Singleton).AsSelf().As<IInitializable>();
             builder.Register<BoardModel>(Lifetime.Singleton);
             builder.RegisterInstance(boardCreationData);
         }

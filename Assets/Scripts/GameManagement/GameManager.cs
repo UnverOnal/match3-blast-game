@@ -8,7 +8,7 @@ using VContainer.Unity;
 
 namespace GameManagement
 {
-    public class GameManager : IInitializable
+    public class GameManager : VContainer.Unity.IInitializable
     {
         private readonly ISceneService _sceneService;
         private readonly IAudioService _audioService;

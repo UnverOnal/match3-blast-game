@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using GameManagement;
 using UI.Screens;
 using VContainer;
 
 namespace UI
 {
-    public class UiManager
+    public class UiManager : IInitializable
     {
         private readonly IEnumerable<IScreenPresenter> _screenPresenters;
 
