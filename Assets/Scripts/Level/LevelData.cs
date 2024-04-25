@@ -7,10 +7,17 @@ namespace Level
     public class LevelData : ScriptableObject
     {
         //GOAL var
-        
+
         public GridSize gridSize;
+
+        [Serializable]
+        public struct BlockData
+        {
+            public BlockType type;
+            public int amount;
+        }
         public BlockData[] blockData;
-        
+
         public int moveCount;
         public float duration = 60f;
 
@@ -24,14 +31,8 @@ namespace Level
         Orange,
         Purple,
         Red,
-        Yellow
-    }
-    
-    [Serializable]
-    public struct BlockData
-    {
-        public BlockType type;
-        public int amount;
+        Yellow,
+        Obstacle
     }
 
     [Serializable]

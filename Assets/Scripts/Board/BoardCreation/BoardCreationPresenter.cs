@@ -1,4 +1,7 @@
+using System;
+using Cysharp.Threading.Tasks;
 using Level;
+using UnityEngine;
 using VContainer;
 
 namespace Board.BoardCreation
@@ -14,7 +17,7 @@ namespace Board.BoardCreation
             _boardCreationView = new BoardCreationView();
         }
 
-        public void Create()
+        public async void Create()
         {
             //Create logic
             //Set camera

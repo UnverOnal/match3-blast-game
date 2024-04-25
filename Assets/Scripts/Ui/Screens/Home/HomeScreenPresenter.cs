@@ -1,3 +1,4 @@
+using Board.BoardCreation;
 using GameState;
 using VContainer;
 
@@ -8,6 +9,8 @@ namespace UI.Screens.Home
         private readonly HomeScreenResources _resources;
         private readonly HomeScreenView _screenView;
 
+        [Inject] private BoardCreationPresenter _boardCreationPresenter;
+        
         [Inject]
         public HomeScreenPresenter(HomeScreenResources resources, GameStatePresenter statePresenter) : base(statePresenter)
         {
@@ -19,7 +22,7 @@ namespace UI.Screens.Home
         {
             base.Initialize();
             _screenView.Enable();
-            _resources.playButton.onClick.AddListener(_screenView.OnPlayButtonClicked);
+            PlayButton();
         }
 
         protected override void OnStateUpdate(GameManagement.GameState.GameState gameState)
@@ -28,6 +31,12 @@ namespace UI.Screens.Home
                 _screenView.Enable();
             else if(_screenView.IsActive)
                 _screenView.Disable();
+        }
+
+        public void PlayButton()
+        {
+            _resources.playButton.onClick.AddListener(_screenView.OnPlayButtonClicked);
+            _resources.playButton.onClick.AddListener(_boardCreationPresenter.Create);
         }
     }
 }

@@ -1,61 +1,42 @@
-using System;
-using System.Threading.Tasks;
+using Board.BoardCreation;
 using Cysharp.Threading.Tasks;
-using Services.InputService;
+using Level;
 using Services.PoolingService;
-using Services.SceneService;
 using UnityEngine;
 using VContainer;
 
 public class Test : MonoBehaviour
 {
-    [Inject] private ISceneService _sceneService;
-    [Inject] private IInputService _inputService;
     [Inject] private IPoolService _poolService;
-    private ObjectPool<GameObject> _pool;
-    private GameObject _poolParent;
+    [Inject] private BoardCreationData _creationData;
+    private BlockCreator _blockCreator;
+    
+    private const int GridSizeX = 6;
+    private const int GridSizeY = 6;
+    public GameObject cellPrefab; 
 
-    private void Start()
+    public Vector2 centerPosition;
+
+    private async void Start()
     {
-        _poolParent = new GameObject("Pool");
-        _pool = _poolService.GetPoolFactory().CreatePool(() => GameObject.CreatePrimitive(PrimitiveType.Cube), false, 5);
+        _blockCreator = new BlockCreator(_poolService, _creationData);
+        
+        GenerateGrid();
     }
 
-    private async void Update()
+    private void GenerateGrid()
     {
-        if (Input.GetKeyDown(KeyCode.C))
+        var startPosition = new Vector3(centerPosition.x - (GridSizeX - 1) / 2f,
+            centerPosition.y - (GridSizeY - 1) / 2f, 0);
+
+        for (var row = 0; row < GridSizeX; row++)
+        for (var col = 0; col < GridSizeY; col++)
         {
-            var createdGo = _pool.Get();
-            createdGo.SetActive(true);
+            var cellPosition = new Vector3(startPosition.x + row, startPosition.y + col, 0);
 
-            await UniTask.Delay(TimeSpan.FromSeconds(3));
-            createdGo.SetActive(false);
-            createdGo.transform.SetParent(_poolParent.transform);
-            _pool.Return(createdGo);
+            // Instantiate(cellPrefab, cellPosition, Quaternion.identity, transform);
+            var block = _blockCreator.GetBlock((BlockType)Random.Range(0, 4));
+            block.transform.position = cellPosition;
         }
-
-        // MoveSides(_inputService.GetDragInput(10f).x, Vector3.right, 5f, 10f, transform.parent);
-        // Debug.Log(_inputService.GetSwipe(50f));
-        //
-        // if(Input.GetKeyDown(KeyCode.I))
-        //     _inputService.IgnoreInput(true);
-        // if (Input.GetKeyDown(KeyCode.N))
-        //     _inputService.IgnoreInput(false);
     }
-
-    // public void MoveSides(float input ,Vector3 axis, float moveFactor, float border, Transform platform, float smoothness = 3f)
-    // {
-    //     Vector3 targetPosition = transform.position + axis * input * moveFactor;
-    //     targetPosition.x = Mathf.Clamp(targetPosition.x, platform.position.x - border, platform.position.x + border);
-    //
-    //     MoveTo(targetPosition, smoothness);
-    // }
-    //
-    // public void MoveTo(Vector3 targetPosition, float smoothness)
-    // {
-    //     Vector3 currentPosition = transform.position;
-    //
-    //     Vector3 smoothedPosition = Vector3.Lerp(currentPosition, targetPosition, Time.deltaTime * smoothness);
-    //     transform.position = smoothedPosition;
-    // }
 }

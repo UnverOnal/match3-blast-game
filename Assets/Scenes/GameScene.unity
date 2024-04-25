@@ -219,11 +219,13 @@ MonoBehaviour:
   parentReference:
     TypeName: Scopes.MainScope
   autoRun: 1
-  autoInjectGameObjects: []
+  autoInjectGameObjects:
+  - {fileID: 1325871574}
   homeScreenResources: {fileID: 1738453830}
   gameScreenResources: {fileID: 833979726}
   levelEndScreenResources: {fileID: 581893295}
   levelContainer: {fileID: 11400000, guid: 629cf418cd7ada14aa1f6f747f1940d6, type: 2}
+  boardCreationData: {fileID: 11400000, guid: af485b9c454432240be6d96a2652beac, type: 2}
 --- !u!4 &649288748
 Transform:
   m_ObjectHideFlags: 0
@@ -690,6 +692,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1322767329}
   m_CullTransparentMesh: 1
+--- !u!1 &1325871574
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1325871576}
+  - component: {fileID: 1325871575}
+  m_Layer: 0
+  m_Name: test
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1325871575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1325871574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41ecd7dd95e93c04caf61b5fb0a90b7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cellPrefab: {fileID: 9117001166594891719, guid: af27a80105261ef4c9a89a4ad001e744, type: 3}
+  centerPosition: {x: 10, y: 10}
+--- !u!4 &1325871576
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1325871574}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1476563850
 GameObject:
   m_ObjectHideFlags: 0
@@ -826,7 +874,7 @@ Canvas:
   m_GameObject: {fileID: 1492668601}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -898,7 +946,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -189.1, y: -153.3}
+  m_AnchoredPosition: {x: -189.1, y: -153.29999}
   m_SizeDelta: {x: 160, y: 160}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1638359162
@@ -1196,3 +1244,4 @@ SceneRoots:
   - {fileID: 649288748}
   - {fileID: 1492668605}
   - {fileID: 1476563853}
+  - {fileID: 1325871576}

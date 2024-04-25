@@ -9,15 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c11a7a42f95b0aa498c0b167a8cf0e60, type: 3}
-  m_Name: LevelData
+  m_Script: {fileID: 11500000, guid: ad60beeb066645e4b8170ded9040602a, type: 3}
+  m_Name: LevelContainer
   m_EditorClassIdentifier: 
-  gridSize:
-    rows: 6
-    columns: 6
-  blockData:
-  - type: 0
-    amount: 0
-  moveCount: 0
-  duration: 60
-  obstacleHealths: 02000000
+  levels:
+  - {fileID: 11400000, guid: ff213089c38540f4bb59e9ad43dc1c6d, type: 2}
+  - {fileID: 11400000, guid: 83ee657865f3152458b1ff05beed7db6, type: 2}

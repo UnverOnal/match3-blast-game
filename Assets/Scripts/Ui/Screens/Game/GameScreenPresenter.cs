@@ -10,7 +10,7 @@ namespace UI.Screens.Game
         
         private readonly GameScreenResources _resources;
         private readonly LevelEndScreenPresenter _levelEndScreenPresenter;
-
+        
         [Inject]
         public GameScreenPresenter(GameScreenResources resources, GameStatePresenter statePresenter) : base(statePresenter)
         {

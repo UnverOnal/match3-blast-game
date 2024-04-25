@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ac3316d06e55f94eaa56cddbe524758, type: 3}
+  m_Name: BoardCreationData
+  m_EditorClassIdentifier: 
+  blockData:
+  - type: 0
+    prefab: {fileID: 8902247363324809924, guid: 48391c43ca44fdc45b283d7edd7d5793, type: 3}
+  - type: 1
+    prefab: {fileID: 1000334170174992193, guid: 889f69a0b0d1a2a4b87c13f586bcfc62, type: 3}
+  - type: 2
+    prefab: {fileID: 3237512760256064240, guid: 68c5039e74549674d9930ece1e126532, type: 3}
+  - type: 3
+    prefab: {fileID: 772706149302599962, guid: adc5a1b8a7e6565459933ff09f63a73a, type: 3}
+  - type: 4
+    prefab: {fileID: 3498848084276797475, guid: d57a1b7fcc4b3f94395b57a3df859edf, type: 3}
+  - type: 5
+    prefab: {fileID: 4132430991837078363, guid: 56196001b3953294dbc4fc67f57f2589, type: 3}
+  - type: 6
+    prefab: {fileID: 2152559425444218267, guid: a30990b5006ed174284dd3512ebb49cc, type: 3}
