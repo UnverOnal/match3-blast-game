@@ -12,12 +12,13 @@ namespace Board.CellManagement
         public GameObject GameObject { get; private set; }
         public BlockType CellType { get; private set; }
 
-        private BoardLocation _location;
+        public BoardLocation Location { get; private set; }
+        
         private Sprite _sprite;
 
         public void SetCellData(CellData cellData)
         {
-            _location = cellData.location;
+            Location = cellData.location;
             CellType = cellData.blockType;
             
             GameObject = cellData.gameObject;
@@ -35,8 +36,8 @@ namespace Board.CellManagement
             //Traverse neighbours
             for (int i = 0; i < 4; i++)
             {
-                var x = _location.x + horizontalDimension[i];
-                var y = _location.y + verticalDimension[i];
+                var x = Location.x + horizontalDimension[i];
+                var y = Location.y + verticalDimension[i];
 
                 var locationExist = x >= 0 && x < boardWidth && y >= 0 && y < boardHeight;
                 if (locationExist)
@@ -55,6 +56,9 @@ namespace Board.CellManagement
         
         public void Reset()
         {
+            GameObject = null;
+            Location = new BoardLocation();
+            _sprite = null;
         }
     }
 }

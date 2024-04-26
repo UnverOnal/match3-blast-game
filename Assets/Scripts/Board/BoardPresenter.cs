@@ -15,6 +15,8 @@ namespace Board
 
         private readonly ObjectPool<CellGroup> _groupPool;
 
+        private bool _canGroup = true;
+
         [Inject]
         public BoardPresenter(BlockCreator blockCreator, IPoolService poolService)
         {
@@ -22,13 +24,25 @@ namespace Board
             _groupPool = poolService.GetPoolFactory().CreatePool(() => new CellGroup());
         }
 
-        public void OnBlockSelected(GameObject cellGameObject)
+        public void OnBlockSelected(GameObject selectedBlock)
         {
-            GetGroups();
-            if(_boardModel.cellGroups.Count < 1)
+            if (_canGroup)
+            {
+                GetGroups();
+                _canGroup = false;
+            }
+            
+            var group = _boardModel.GetGroup(selectedBlock);
+
+            if (group == null)
+            {
+                _boardView.Shake(selectedBlock.transform, 0.1f, 30f);
                 return;
-            // var group = _boardModel.GetGroup(cellGameObject);
-            // Merge(group);
+            }
+            
+            Merge(group, selectedBlock);
+            _canGroup = true;//It can group if there is a merge
+
             // _boardView.Collapse();
             // _boardView.Fill();
             // _boardModel.Update();
@@ -64,9 +78,12 @@ namespace Board
             }
         }
 
-        private void Merge(CellGroup group)
+        private void Merge(CellGroup group, GameObject selectedBlock)
         {
-            _boardView.Merge(group);
+            _boardView.Merge(group, selectedBlock);
+            var groupCells = group.cells;
+            foreach (var cellPair in groupCells)
+                _boardModel.RemoveCell(cellPair.Value);
             group.Reset();
             _groupPool.Return(group);
         }

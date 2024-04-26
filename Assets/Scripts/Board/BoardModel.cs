@@ -31,6 +31,13 @@ namespace Board
             board[location.x, location.y] = cell;
         }
 
+        public void RemoveCell(Cell cell)
+        {
+            board[cell.Location.x, cell.Location.y] = null;
+            cell.Reset();
+            _cellPool.Return(cell);
+        }
+
         public void AddCellGroup(CellGroup group)
         {
             cellGroups.Add(group);
@@ -38,8 +45,11 @@ namespace Board
 
         public CellGroup GetGroup(GameObject cellGameObject)
         {
+            if (cellGroups.Count < 1)
+                return null;
+            
             var cell = GetCell(cellGameObject);
-            Debug.Log(cell.CellType.ToString());
+            
             for (int i = 0; i < cellGroups.Count; i++)
             {
                 var group = cellGroups[i];
@@ -62,11 +72,6 @@ namespace Board
             }
 
             return null;
-        }
-
-        public void Update()
-        {
-            
         }
     }
 }
