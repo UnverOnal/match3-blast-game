@@ -10,7 +10,9 @@ namespace Board
     public class BoardModel
     {
         public readonly List<CellGroup> cellGroups;
+        
         public Cell[,] board;
+        private readonly Dictionary<GameObject, Cell> _boardMap; 
         
         private readonly ObjectPool<Cell> _cellPool;
 
@@ -19,6 +21,7 @@ namespace Board
         {
             _cellPool = poolService.GetPoolFactory().CreatePool(()=> new Cell());
             cellGroups = new List<CellGroup>();
+            _boardMap = new Dictionary<GameObject, Cell>();
         }
 
         public void SetBoardSize(BoardSize boardSize) => board = new Cell[boardSize.x, boardSize.y];
@@ -29,11 +32,13 @@ namespace Board
             cell.SetCellData(cellData);
             var location = cellData.location;
             board[location.x, location.y] = cell;
+            _boardMap.Add(cell.GameObject, cell);
         }
 
         public void RemoveCell(Cell cell)
         {
             board[cell.Location.x, cell.Location.y] = null;
+            _boardMap.Remove(cell.GameObject);
             cell.Reset();
             _cellPool.Return(cell);
         }
@@ -60,18 +65,10 @@ namespace Board
             return null;
         }
         
-        //TODO: is there a more efficient way 
         private Cell GetCell(GameObject cellGameObject)
         {
-            for (int i = 0; i < board.GetLength(0); i++)
-            for (int j = 0; j < board.GetLength(1); j++)
-            {
-                var cell = board[i, j];
-                if (cell.GameObject == cellGameObject)
-                    return cell;
-            }
-
-            return null;
+            _boardMap.TryGetValue(cellGameObject, out var cell);
+            return cell;
         }
     }
 }
