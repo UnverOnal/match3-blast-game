@@ -15,13 +15,13 @@ namespace Board.BoardCreation
         private readonly LevelFitter _levelFitter;
 
         [Inject]
-        public BoardCreationPresenter(IPoolService poolService, BoardCreationData creationData, GameSettings gameSettings)
+        public BoardCreationPresenter(IPoolService poolService, BoardCreationData creationData, GameSettings gameSettings, BoardResources boardResources)
         {
             _creationData = creationData;
 
             var blockCreator = new BlockCreator(poolService, creationData);
 
-            _boardCreationView = new BoardCreationView(creationData, blockCreator);
+            _boardCreationView = new BoardCreationView(creationData, blockCreator, boardResources);
 
             _levelFitter = new LevelFitter(gameSettings);
         }
@@ -37,6 +37,7 @@ namespace Board.BoardCreation
             _boardModel.SetBoardSize(levelData.boardSize);
             _boardCreationView.PlaceBlocks(levelData);
             _levelFitter.AlignCamera(_boardModel.board);
+            _boardCreationView.SetBoardBackground(_levelFitter.Bounds);
         }
     }
 }

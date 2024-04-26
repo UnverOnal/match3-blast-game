@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using Level;
 using UnityEngine;
+using UnityEngine.UI;
+using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 namespace Board.BoardCreation
@@ -12,32 +14,53 @@ namespace Board.BoardCreation
 
         private readonly BoardCreationData _creationData;
         private readonly BlockCreator _blockCreator;
+        private readonly BoardResources _boardResources;
 
-        public BoardCreationView(BoardCreationData creationData, BlockCreator blockCreator)
+        public BoardCreationView(BoardCreationData creationData, BlockCreator blockCreator, BoardResources boardResources)
         {
             _creationData = creationData;
             _blockCreator = blockCreator;
+            _boardResources = boardResources;
+        }
+
+        public void SetBoardBackground(Bounds bounds)
+        {
+            var background = _boardResources.boardBackground;
+            background.sprite = _creationData.background;
+            background.gameObject.SetActive(true);
+            
+            // Convert bounds to screen space
+            Camera mainCamera = Camera.main;
+            var minScreenPoint = mainCamera.WorldToScreenPoint(bounds.min);
+            var maxScreenPoint = mainCamera.WorldToScreenPoint(bounds.max);
+            // Calculate occupied area
+            var occupiedWidth = maxScreenPoint.x - minScreenPoint.x;
+            var occupiedHeight = maxScreenPoint.y - minScreenPoint.y;
+            
+            background.rectTransform.sizeDelta = new Vector2(occupiedWidth, occupiedHeight);
+            background.type = Image.Type.Sliced;
+            background.GetComponentInParent<Canvas>().worldCamera = mainCamera;
         }
 
         public void PlaceBlocks(LevelData levelData)
         {
             var blockCounts = GetBlockCounts(levelData);
             
-            var startPosition = new Vector3(_creationData.centerPoint.x - (levelData.boardSize.rows - 1) / 2f,
-                _creationData.centerPoint.y - (levelData.boardSize.columns - 1) / 2f, 0);
+            var startPosition = new Vector3(_creationData.centerPoint.x - (levelData.boardSize.x - 1) / 2f,
+                _creationData.centerPoint.y - (levelData.boardSize.y - 1) / 2f, 0);
 
-            for (var row = 0; row < levelData.boardSize.rows; row++)
-            for (var column = 0; column < levelData.boardSize.columns; column++)
+            for (var i = 0; i < levelData.boardSize.x; i++)
+            for (var j = 0; j < levelData.boardSize.y; j++)
             {
-                var cellPosition = new Vector3(startPosition.x + row, startPosition.y + column, 0);
+                var cellPosition = new Vector3(startPosition.x + i, startPosition.y + j, 0);
 
                 var block = GetBlock(blockCounts);
                 block.transform.position = cellPosition;
                 
-                OnBlockCreated?.Invoke(new BoardLocation(row, column), block);
+                OnBlockCreated?.Invoke(new BoardLocation(i, j), block);
             }
         }
-        
+
         private List<KeyValuePair<BlockType, int>> GetBlockCounts(LevelData levelData)
         {
             var blockCounts = new List<KeyValuePair<BlockType, int>>();

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Level;
 using Services.PoolingService;
 using UnityEngine;
@@ -17,7 +16,7 @@ namespace Board
             _cellPool = poolService.GetPoolFactory().CreatePool(()=> new Cell());
         }
 
-        public void SetBoardSize(BoardSize boardSize) => board = new Cell[boardSize.rows, boardSize.columns];
+        public void SetBoardSize(BoardSize boardSize) => board = new Cell[boardSize.x, boardSize.y];
 
         public void AddCell(BoardLocation location, GameObject gameObject)
         {
@@ -30,8 +29,8 @@ namespace Board
 
     public struct BoardLocation
     {
-        public int x;
-        public int y;
+        public readonly int x;
+        public readonly int y;
 
         public BoardLocation(int x, int y)
         {

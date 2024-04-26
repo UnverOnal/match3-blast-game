@@ -27,3 +27,5 @@ MonoBehaviour:
     prefab: {fileID: 4132430991837078363, guid: 56196001b3953294dbc4fc67f57f2589, type: 3}
   - type: 6
     prefab: {fileID: 2152559425444218267, guid: a30990b5006ed174284dd3512ebb49cc, type: 3}
+  background: {fileID: 21300000, guid: d47f4ed052a2bcc4cac4400e2b33a1f5, type: 3}
+  centerPoint: {x: 0, y: 0}

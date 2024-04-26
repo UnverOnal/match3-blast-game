@@ -5,26 +5,27 @@ namespace Board.BoardCreation
 {
     public class LevelFitter
     {
-        public Vector3 BoundsCenter => _bounds.center;
-
+        public Bounds Bounds { get; private set; }
+        
         private readonly float _cameraSizeOffset;
+        private readonly float _boundsOffsetFactor;
         private readonly Vector3 _cameraPositionOffset;
         private readonly Camera _camera;
-        private Bounds _bounds;
 
         public LevelFitter(GameSettings gameSettings)
         {
             _cameraSizeOffset = gameSettings.cameraSizeOffset;
+            _boundsOffsetFactor = gameSettings.boundsOffsetFactor;
             _cameraPositionOffset = gameSettings.cameraPositionOffset;
             _camera = Camera.main;
         }
 
         public void AlignCamera(Cell[,] cells)
         {
-            _bounds = CalculateBounds(cells);
+            Bounds = CalculateBounds(cells);
 
-            var cameraPosition = _bounds.center;
-            var orthographicSize = CalculateOrthographicSize(_bounds);
+            var cameraPosition = Bounds.center;
+            var orthographicSize = CalculateOrthographicSize(Bounds);
             SetCamera(cameraPosition, orthographicSize);
         }
 
@@ -32,18 +33,21 @@ namespace Board.BoardCreation
         {
             var minPosition = cells[0, 0].Position;
             var maxPosition = cells[0, 0].Position;
+            
+            var extents = cells[0,0].Extents * cells[0,0].Scale * _boundsOffsetFactor;
 
             for (var i = 0; i < cells.GetLength(0); i++)
             for (var j = 0; j < cells.GetLength(1); j++)
             {
                 var cell = cells[i, j];
 
-                minPosition.x = Mathf.Min(minPosition.x, cell.Position.x - cell.Scale.x / 2f);
-                minPosition.y = Mathf.Min(minPosition.y, cell.Position.y - cell.Scale.y / 2f);
-                maxPosition.x = Mathf.Max(maxPosition.x, cell.Position.x + cell.Scale.x / 2f);
-                maxPosition.y = Mathf.Max(maxPosition.y, cell.Position.y + cell.Scale.y / 2f);
+                minPosition.x = Mathf.Min(minPosition.x, cell.Position.x - extents.x);
+                minPosition.y = Mathf.Min(minPosition.y, cell.Position.y - extents.y);
+                maxPosition.x = Mathf.Max(maxPosition.x, cell.Position.x + extents.x);
+                maxPosition.y = Mathf.Max(maxPosition.y, cell.Position.y + extents.y);
             }
 
+            new GameObject().transform.position = minPosition;
             var bounds = new Bounds
             {
                 min = minPosition,
@@ -55,11 +59,8 @@ namespace Board.BoardCreation
         private float CalculateOrthographicSize(Bounds bounds)
         {
             var screenAspect = (float)Screen.width / Screen.height;
-
             var boundsWidth = bounds.size.x;
-            var boundsHeight = bounds.size.y;
-
-            var orthographicSize = Mathf.Max(boundsWidth / 2, boundsHeight / 2);
+            var orthographicSize = boundsWidth / 2;
 
             orthographicSize /= screenAspect;
 

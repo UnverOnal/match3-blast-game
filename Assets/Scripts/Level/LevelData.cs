@@ -38,7 +38,7 @@ namespace Level
     [Serializable]
     public struct BoardSize
     {
-        public int rows;
-        public int columns;
+        public int x;
+        public int y;
     }
 }

@@ -23,6 +23,7 @@ namespace Scopes
         
         [SerializeField] private LevelContainer levelContainer;
         [SerializeField] private BoardCreationData boardCreationData;
+        [SerializeField] private BoardResources boardResources;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -53,6 +54,7 @@ namespace Scopes
             builder.Register<BoardCreationPresenter>(Lifetime.Singleton).AsSelf().As<IInitializable>();
             builder.Register<BoardModel>(Lifetime.Singleton);
             builder.RegisterInstance(boardCreationData);
+            builder.RegisterInstance(boardResources);
         }
 
         private void RegisterLevel(IContainerBuilder builder)

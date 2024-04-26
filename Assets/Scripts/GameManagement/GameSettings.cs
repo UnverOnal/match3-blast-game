@@ -8,5 +8,6 @@ namespace GameManagement
         [Header("Camera")]
         public float cameraSizeOffset;
         public Vector3 cameraPositionOffset;
+        public float boundsOffsetFactor;
     }
 }
