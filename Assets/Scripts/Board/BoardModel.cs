@@ -23,11 +23,11 @@ namespace Board
 
         public void SetBoardSize(BoardSize boardSize) => board = new Cell[boardSize.x, boardSize.y];
 
-        public void AddCell(BoardLocation location, GameObject gameObject)
+        public void AddCell(CellData cellData)
         {
             var cell = _cellPool.Get();
-            cell.SetLocation(location);
-            cell.SetGameObject(gameObject);
+            cell.SetCellData(cellData);
+            var location = cellData.location;
             board[location.x, location.y] = cell;
         }
 
@@ -39,6 +39,7 @@ namespace Board
         public CellGroup GetGroup(GameObject cellGameObject)
         {
             var cell = GetCell(cellGameObject);
+            Debug.Log(cell.CellType.ToString());
             for (int i = 0; i < cellGroups.Count; i++)
             {
                 var group = cellGroups[i];
@@ -49,26 +50,23 @@ namespace Board
             return null;
         }
         
+        //TODO: is there a more efficient way 
         private Cell GetCell(GameObject cellGameObject)
         {
-            throw new System.NotImplementedException();
+            for (int i = 0; i < board.GetLength(0); i++)
+            for (int j = 0; j < board.GetLength(1); j++)
+            {
+                var cell = board[i, j];
+                if (cell.GameObject == cellGameObject)
+                    return cell;
+            }
+
+            return null;
         }
 
         public void Update()
         {
             
-        }
-    }
-
-    public struct BoardLocation
-    {
-        public readonly int x;
-        public readonly int y;
-
-        public BoardLocation(int x, int y)
-        {
-            this.x = x;
-            this.y = y;
         }
     }
 }

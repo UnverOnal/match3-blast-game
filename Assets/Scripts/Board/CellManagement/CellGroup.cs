@@ -5,6 +5,8 @@ namespace Board.CellManagement
 {
     public class CellGroup
     {
+        public bool IsEmpty => _cells.Count < 2;
+        
         private readonly Dictionary<GameObject, Cell> _cells;
 
         public CellGroup()

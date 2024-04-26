@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Level;
 using UnityEngine;
 
 namespace Board.CellManagement
@@ -5,22 +7,54 @@ namespace Board.CellManagement
     public class Cell
     {
         public Vector3 Position => GameObject.transform.position;
-        public Vector2 Scale => GameObject.transform.localScale;
-        public Vector2 Extents => _sprite.bounds.extents;
+        public Vector2 Extents => _sprite.bounds.extents * (Vector2)GameObject.transform.localScale;
         
         public GameObject GameObject { get; private set; }
-        
+        public BlockType CellType { get; private set; }
+
         private BoardLocation _location;
         private Sprite _sprite;
 
-        public void SetGameObject(GameObject gameObject)
+        public void SetCellData(CellData cellData)
         {
-            GameObject = gameObject;
-            _sprite = gameObject.GetComponent<SpriteRenderer>().sprite;
+            _location = cellData.location;
+            CellType = cellData.blockType;
+            
+            GameObject = cellData.gameObject;
+            _sprite = GameObject.GetComponent<SpriteRenderer>().sprite;
         }
 
-        public void SetLocation(BoardLocation location) => _location = location;
+        public void GetNeighbours(CellGroup cellGroup, Cell[,] board, HashSet<Cell> visitedCells)
+        {
+            int[] horizontalDimension = { 0, 1, 0, -1 };
+            int[] verticalDimension = { -1, 0, 1, 0 };
+            
+            var boardWidth = board.GetLength(0);
+            var boardHeight = board.GetLength(1);
+
+            //Traverse neighbours
+            for (int i = 0; i < 4; i++)
+            {
+                var x = _location.x + horizontalDimension[i];
+                var y = _location.y + verticalDimension[i];
+
+                var locationExist = x >= 0 && x < boardWidth && y >= 0 && y < boardHeight;
+                if (locationExist)
+                {
+                    var neighbour = board[x, y];
+                    if (CellType != neighbour.CellType || visitedCells.Contains(neighbour))
+                        continue;
+
+                    //Add cell group if it is same type
+                    cellGroup.Add(neighbour);
+                    visitedCells.Add(neighbour);
+                    neighbour.GetNeighbours(cellGroup, board, visitedCells);
+                }
+            }
+        }
         
-        public void Reset(){}
+        public void Reset()
+        {
+        }
     }
 }

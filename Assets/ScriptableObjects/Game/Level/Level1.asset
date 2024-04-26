@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Level1
   m_EditorClassIdentifier: 
   boardSize:
-    x: 8
-    y: 8
+    x: 4
+    y: 4
   blockData:
   - type: 0
     amount: 25

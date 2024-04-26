@@ -1,16 +1,16 @@
 using System;
 using System.Collections.Generic;
+using Board.CellManagement;
 using Level;
 using UnityEngine;
 using UnityEngine.UI;
-using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 namespace Board.BoardCreation
 {
     public class BoardCreationView
     {
-        public event Action<BoardLocation, GameObject> OnBlockCreated;
+        public event Action<CellData> OnBlockCreated;
 
         private readonly BoardCreationData _creationData;
         private readonly BlockCreator _blockCreator;
@@ -54,10 +54,10 @@ namespace Board.BoardCreation
             {
                 var cellPosition = new Vector3(startPosition.x + i, startPosition.y + j, 0);
 
-                var block = GetBlock(blockCounts);
+                var block = GetBlock(blockCounts, out var type);
                 block.transform.position = cellPosition;
                 
-                OnBlockCreated?.Invoke(new BoardLocation(i, j), block);
+                OnBlockCreated?.Invoke(new CellData(new BoardLocation(i,j), block, type));
             }
         }
 
@@ -77,7 +77,7 @@ namespace Board.BoardCreation
         }
         
         //Also updates block counts list
-        private GameObject GetBlock(IList<KeyValuePair<BlockType, int>> blockCounts)
+        private GameObject GetBlock(IList<KeyValuePair<BlockType, int>> blockCounts, out BlockType blockType)
         {
             var randomIndex = Random.Range(0, blockCounts.Count);
             var (type, count) = blockCounts[randomIndex];
@@ -87,6 +87,7 @@ namespace Board.BoardCreation
             if (count <= 0)
                 blockCounts.RemoveAt(randomIndex);
 
+            blockType = type;
             return _blockCreator.GetBlock(type);
         }
     }

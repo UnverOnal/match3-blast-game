@@ -35,7 +35,7 @@ namespace Board.BoardCreation
             var minPosition = cells[0, 0].Position;
             var maxPosition = cells[0, 0].Position;
             
-            var extents = cells[0,0].Extents * cells[0,0].Scale * _boundsOffsetFactor;
+            var extents = cells[0,0].Extents * _boundsOffsetFactor;
 
             for (var i = 0; i < cells.GetLength(0); i++)
             for (var j = 0; j < cells.GetLength(1); j++)
