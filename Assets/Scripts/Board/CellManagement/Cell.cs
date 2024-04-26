@@ -18,7 +18,7 @@ namespace Board.CellManagement
 
         public void SetCellData(CellData cellData)
         {
-            Location = cellData.location;
+            SetLocation(cellData.location);
             CellType = cellData.blockType;
             
             GameObject = cellData.gameObject;
@@ -59,6 +59,11 @@ namespace Board.CellManagement
             GameObject = null;
             Location = new BoardLocation();
             _sprite = null;
+        }
+
+        public void SetLocation(BoardLocation boardLocation)
+        {
+            Location = boardLocation;
         }
     }
 }

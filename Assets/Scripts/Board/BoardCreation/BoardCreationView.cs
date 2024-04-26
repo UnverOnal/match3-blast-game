@@ -45,14 +45,11 @@ namespace Board.BoardCreation
         public void PlaceBlocks(LevelData levelData)
         {
             var blockCounts = GetBlockCounts(levelData);
-            
-            var startPosition = new Vector3(_creationData.centerPoint.x - (levelData.boardSize.x - 1) / 2f,
-                _creationData.centerPoint.y - (levelData.boardSize.y - 1) / 2f, 0);
 
             for (var i = 0; i < levelData.boardSize.x; i++)
             for (var j = 0; j < levelData.boardSize.y; j++)
             {
-                var cellPosition = new Vector3(startPosition.x + i, startPosition.y + j, 0);
+                var cellPosition = new Vector3(i, j, 0);
 
                 var block = GetBlock(blockCounts, out var type);
                 block.transform.position = cellPosition;

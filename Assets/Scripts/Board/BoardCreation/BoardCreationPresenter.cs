@@ -33,7 +33,7 @@ namespace Board.BoardCreation
             var levelData = _levelPresenter.GetNextLevelData();
             _boardModel.SetBoardSize(levelData.boardSize);
             _boardCreationView.PlaceBlocks(levelData);
-            _levelFitter.AlignCamera(_boardModel.board);
+            _levelFitter.AlignCamera(_boardModel.Cells);
             _boardCreationView.SetBoardBackground(_levelFitter.Bounds);
         }
     }

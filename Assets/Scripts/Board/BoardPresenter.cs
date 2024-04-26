@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Board.BoardCreation;
 using Board.CellManagement;
+using Cysharp.Threading.Tasks;
 using Level;
 using Services.PoolingService;
 using UnityEngine;
@@ -24,7 +27,7 @@ namespace Board
             _groupPool = poolService.GetPoolFactory().CreatePool(() => new CellGroup());
         }
 
-        public void OnBlockSelected(GameObject selectedBlock)
+        public async void OnBlockSelected(GameObject selectedBlock)
         {
             if (_canGroup)
             {
@@ -33,24 +36,24 @@ namespace Board
             }
             
             var group = _boardModel.GetGroup(selectedBlock);
-
             if (group == null)
             {
                 _boardView.Shake(selectedBlock.transform, 0.1f, 30f);
                 return;
             }
-            
-            Merge(group, selectedBlock);
+
+            var blastedBlockLocations = new List<BoardLocation>(group.GetLocations());
+            await Blast(group, selectedBlock);
             _canGroup = true;//It can group if there is a merge
 
-            // _boardView.Collapse();
+            Collapse(blastedBlockLocations, _boardModel.Cells);
             // _boardView.Fill();
             // _boardModel.Update();
         }
 
         private void GetGroups()
         {
-            var board = _boardModel.board;
+            var board = _boardModel.Cells;
             _boardModel.cellGroups.Clear();
             var visitedCells = new HashSet<Cell>();
 
@@ -78,14 +81,46 @@ namespace Board
             }
         }
 
-        private void Merge(CellGroup group, GameObject selectedBlock)
+        private async UniTask Blast(CellGroup group, GameObject selectedBlock)
         {
-            _boardView.Merge(group, selectedBlock);
+            await _boardView.Blast(group, selectedBlock);
             var groupCells = group.cells;
             foreach (var cellPair in groupCells)
                 _boardModel.RemoveCell(cellPair.Value);
             group.Reset();
             _groupPool.Return(group);
+        }
+
+        private void Collapse(IEnumerable<BoardLocation> blastedLocations, Cell[,] cells)
+        {
+            var orderedBlastLocations = blastedLocations.OrderBy(location => location.y);
+            
+            var visitedColumns = new HashSet<int>();
+            
+            foreach (var location in orderedBlastLocations)
+            {
+                if(visitedColumns.Contains(location.x))
+                    continue;
+                
+                var iterationCount = 0;
+                var yLocation = location.y;
+                for (var j = location.y + 1; j < cells.GetLength(1); j++)
+                {
+                    var cell = cells[location.x, j];
+                    if(cell == null)
+                        continue;
+                    if (cell.CellType == BlockType.Obstacle)
+                    {
+                        yLocation = cell.Location.y;
+                        iterationCount = 0;
+                    }
+                    
+                    cell.SetLocation(new BoardLocation(location.x, yLocation + iterationCount++));
+                    _boardView.Collapse(cell, j);
+                }
+                
+                visitedColumns.Add(location.x);
+            }
         }
 
         private void Shuffle()

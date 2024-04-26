@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using Board.BoardCreation;
 using Board.CellManagement;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Board
 {
@@ -35,7 +37,7 @@ namespace Board
             transform.rotation = originalRotation;
         }
 
-        public async void Merge(CellGroup cellGroup, GameObject selectedBlock)
+        public async UniTask Blast(CellGroup cellGroup, GameObject selectedBlock)
         {
             var center = selectedBlock.transform.position;
             var cells = cellGroup.cells;
@@ -53,8 +55,17 @@ namespace Board
             selectedBlock.transform.DOScale(0f, 0.1f).SetEase(Ease.InBack, 2f);
         }
 
-        public void Collapse()
+        public async void Collapse(Cell cell, int delayAmount)
         {
+            await UniTask.Delay(TimeSpan.FromSeconds(0.05f * delayAmount));
+            
+            var transform = cell.GameObject.transform;
+            
+            var targetPosition = transform.position;
+            targetPosition.x = cell.Location.x;
+            targetPosition.y = cell.Location.y;
+            
+            transform.DOMove(targetPosition, 0.2f).SetEase(Ease.OutBack);
         }
 
         public void Fill()

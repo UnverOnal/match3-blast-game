@@ -10,35 +10,33 @@ namespace Board
     public class BoardModel
     {
         public readonly List<CellGroup> cellGroups;
-        
-        public Cell[,] board;
-        private readonly Dictionary<GameObject, Cell> _boardMap; 
-        
+        public Cell[,] Cells => _board.cells;
+
         private readonly ObjectPool<Cell> _cellPool;
+
+        private readonly Board _board;
 
         [Inject]
         public BoardModel(IPoolService poolService)
         {
             _cellPool = poolService.GetPoolFactory().CreatePool(()=> new Cell());
             cellGroups = new List<CellGroup>();
-            _boardMap = new Dictionary<GameObject, Cell>();
+
+            _board = new Board();
         }
 
-        public void SetBoardSize(BoardSize boardSize) => board = new Cell[boardSize.x, boardSize.y];
+        public void SetBoardSize(BoardSize boardSize) => _board.SetBoardSize(boardSize);
 
         public void AddCell(CellData cellData)
         {
             var cell = _cellPool.Get();
             cell.SetCellData(cellData);
-            var location = cellData.location;
-            board[location.x, location.y] = cell;
-            _boardMap.Add(cell.GameObject, cell);
+            _board.AddCell(cell, cellData);
         }
 
         public void RemoveCell(Cell cell)
         {
-            board[cell.Location.x, cell.Location.y] = null;
-            _boardMap.Remove(cell.GameObject);
+            _board.RemoveCell(cell);
             cell.Reset();
             _cellPool.Return(cell);
         }
@@ -64,11 +62,7 @@ namespace Board
 
             return null;
         }
-        
-        private Cell GetCell(GameObject cellGameObject)
-        {
-            _boardMap.TryGetValue(cellGameObject, out var cell);
-            return cell;
-        }
+
+        private Cell GetCell(GameObject cellGameObject) => _board.GetCell(cellGameObject);
     }
 }
