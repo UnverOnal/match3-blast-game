@@ -1,20 +1,21 @@
 using UnityEngine;
 
-namespace Board
+namespace Board.CellManagement
 {
     public class Cell
     {
-        public Vector3 Position => _gameObject.transform.position;
-        public Vector2 Scale => _gameObject.transform.localScale;
+        public Vector3 Position => GameObject.transform.position;
+        public Vector2 Scale => GameObject.transform.localScale;
         public Vector2 Extents => _sprite.bounds.extents;
         
-        private GameObject _gameObject;
+        public GameObject GameObject { get; private set; }
+        
         private BoardLocation _location;
         private Sprite _sprite;
 
         public void SetGameObject(GameObject gameObject)
         {
-            _gameObject = gameObject;
+            GameObject = gameObject;
             _sprite = gameObject.GetComponent<SpriteRenderer>().sprite;
         }
 

@@ -1,6 +1,5 @@
 using GameManagement;
 using Level;
-using Services.PoolingService;
 using VContainer;
 
 namespace Board.BoardCreation
@@ -15,12 +14,10 @@ namespace Board.BoardCreation
         private readonly LevelFitter _levelFitter;
 
         [Inject]
-        public BoardCreationPresenter(IPoolService poolService, BoardCreationData creationData, GameSettings gameSettings, BoardResources boardResources)
+        public BoardCreationPresenter(BoardCreationData creationData, GameSettings gameSettings, BoardResources boardResources, BlockCreator blockCreator)
         {
             _creationData = creationData;
-
-            var blockCreator = new BlockCreator(poolService, creationData);
-
+            
             _boardCreationView = new BoardCreationView(creationData, blockCreator, boardResources);
 
             _levelFitter = new LevelFitter(gameSettings);

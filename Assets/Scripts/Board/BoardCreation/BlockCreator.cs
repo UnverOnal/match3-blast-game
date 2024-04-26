@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Level;
 using Services.PoolingService;
 using UnityEngine;
+using VContainer;
 
 namespace Board.BoardCreation
 {
@@ -14,6 +15,7 @@ namespace Board.BoardCreation
 
         private readonly GameObject _blockParent;
 
+        [Inject]
         public BlockCreator(IPoolService poolService, BoardCreationData data)
         {
             _poolService = poolService;

@@ -55,8 +55,10 @@ namespace Scopes
         {
             builder.Register<BoardCreationPresenter>(Lifetime.Singleton).AsSelf().As<IInitializable>();
             builder.Register<BoardModel>(Lifetime.Singleton);
+            builder.Register<BoardPresenter>(Lifetime.Singleton);
             builder.RegisterInstance(boardCreationData);
             builder.RegisterInstance(boardResources);
+            builder.Register<BlockCreator>(Lifetime.Singleton);
         }
 
         private void RegisterLevel(IContainerBuilder builder)
