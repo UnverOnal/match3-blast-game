@@ -37,13 +37,26 @@ namespace Services.InputService
                 PointerPosition = Input.mousePosition;
         }
         
-        public GameObject GetSelectedGameObject()
+        public GameObject GetSelectedGameObject3D()
         {
             GameObject pickedGameObject = null; 
             var ray = _camera.ScreenPointToRay(PointerPosition);
-
+            
             if (Physics.Raycast(ray, out var hit, Mathf.Infinity))
                 pickedGameObject = hit.transform.gameObject;
+        
+            return pickedGameObject;
+        }
+        
+        public GameObject GetSelectedGameObject2D()
+        {
+            GameObject pickedGameObject = null; 
+            Vector2 worldPointerPosition = _camera.ScreenToWorldPoint(PointerPosition);
+
+            var hit = Physics2D.Raycast(worldPointerPosition, Vector2.zero);
+
+            if (hit.collider != null)
+                pickedGameObject = hit.collider.gameObject;
 
             return pickedGameObject;
         }

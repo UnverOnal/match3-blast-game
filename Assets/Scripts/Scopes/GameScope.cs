@@ -1,6 +1,7 @@
 using Board;
 using Board.BoardCreation;
 using GameManagement;
+using GamePlay;
 using GameState;
 using Level;
 using UI;
@@ -33,6 +34,7 @@ namespace Scopes
             RegisterScreens(builder);
             RegisterBoard(builder);
             RegisterLevel(builder);
+            builder.Register<GamePlayPresenter>(Lifetime.Singleton).AsSelf().As<IInitializable>();
 
             builder.Register<GameStatePresenter>(Lifetime.Singleton);
         }
