@@ -10,7 +10,7 @@ namespace Board.CellManagement
         public Vector2 Extents => _sprite.bounds.extents * (Vector2)GameObject.transform.localScale;
         
         public GameObject GameObject { get; private set; }
-        public BlockType CellType { get; private set; }
+        public CellType CellType { get; private set; }
 
         public BoardLocation Location { get; private set; }
         
@@ -19,7 +19,7 @@ namespace Board.CellManagement
         public void SetCellData(CellData cellData)
         {
             SetLocation(cellData.location);
-            CellType = cellData.blockType;
+            CellType = cellData.cellType;
             
             GameObject = cellData.gameObject;
             _sprite = GameObject.GetComponent<SpriteRenderer>().sprite;

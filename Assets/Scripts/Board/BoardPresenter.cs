@@ -18,9 +18,7 @@ namespace Board
         private readonly BoardShuffler _boardShuffler;
 
         private readonly ObjectPool<CellGroup> _groupPool;
-
-        private bool _canGroup = true;
-
+        
         [Inject]
         public BoardPresenter(BlockCreator blockCreator, IPoolService poolService, LevelPresenter levelPresenter)
         {
@@ -31,7 +29,7 @@ namespace Board
         
         public void Initialize()
         {
-            _boardView.OnBlockCreated += _boardModel.AddCell;
+            _boardView.OnFillBlock += _boardModel.AddCell;
         }
 
         public async void OnBlockSelected(GameObject selectedBlock)
@@ -43,7 +41,8 @@ namespace Board
                 return;
             }
 
-            var bottomBlastedLocations = new List<BoardLocation>(group.GetLocations());
+            //Gets bottom blasted ones for being able to start checking from them to upwards.
+            var bottomBlastedLocations = new List<BoardLocation>(group.GetBottomLocations());
             await Blast(group, selectedBlock);
 
             Collapse(bottomBlastedLocations, _boardModel.Cells);
@@ -64,7 +63,7 @@ namespace Board
             for (var j = 0; j < board.GetLength(1); j++)
             {
                 var cell = board[i, j];
-                if (cell == null || visitedCells.Contains(cell) || cell.CellType == BlockType.Obstacle)
+                if (cell == null || visitedCells.Contains(cell) || cell.CellType == CellType.Obstacle)
                     continue;
 
                 var group = _groupPool.Get();
@@ -105,7 +104,7 @@ namespace Board
                     var cell = cells[location.x, j];
                     if (cell == null)
                         continue;
-                    if (cell.CellType == BlockType.Obstacle)
+                    if (cell.CellType == CellType.Obstacle)
                     {
                         yLocation = cell.Location.y + 1;
                         continue;
@@ -132,7 +131,7 @@ namespace Board
                         var emptyLocation = new BoardLocation(location.x, i);
                         columnEmptyLocations.Add(emptyLocation);
                     }
-                    else if(cell.CellType == BlockType.Obstacle)
+                    else if(cell.CellType == CellType.Obstacle)
                         columnEmptyLocations.Clear();
                 }
                 allEmptyLocations.AddRange(columnEmptyLocations);
@@ -154,7 +153,7 @@ namespace Board
 
         public void Dispose()
         {
-            _boardView.OnBlockCreated -= _boardModel.AddCell;
+            _boardView.OnFillBlock -= _boardModel.AddCell;
         }
     }
 }

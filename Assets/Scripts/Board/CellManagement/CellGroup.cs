@@ -25,7 +25,7 @@ namespace Board.CellManagement
         public void Reset() => cells.Clear();
 
         //Returns one and bottom location for each column
-        public IEnumerable<BoardLocation> GetLocations()
+        public IEnumerable<BoardLocation> GetBottomLocations()
         {
             var locations = cells.Select(pair => pair.Value.Location).ToList();
             var distinctLocations = locations.GroupBy(location => location.x)

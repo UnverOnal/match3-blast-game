@@ -5,16 +5,16 @@ namespace Board.CellManagement
 {
     public struct CellData
     {
-        public CellData(BoardLocation location, GameObject gameObject, BlockType blockType)
+        public CellData(BoardLocation location, GameObject gameObject, CellType cellType)
         {
             this.location = location;
             this.gameObject = gameObject;
-            this.blockType = blockType;
+            this.cellType = cellType;
         }
         
         public BoardLocation location;
         public GameObject gameObject;
-        public BlockType blockType;
+        public CellType cellType;
     }
     
     public struct BoardLocation

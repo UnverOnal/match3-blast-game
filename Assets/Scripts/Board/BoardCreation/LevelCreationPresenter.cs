@@ -25,7 +25,7 @@ namespace Board.BoardCreation
         
         public void Initialize()
         {
-            _levelCreationView.OnBlockCreated += _boardModel.AddCell;
+            _levelCreationView.OnPlaceBlock += _boardModel.AddCell;
         }
 
         public void Create()

@@ -9,7 +9,7 @@ namespace Board.BoardCreation
     {
         [Serializable]public struct BlockData
         {
-            public BlockType type;
+            public CellType type;
             public GameObject prefab;
         }
 

@@ -40,7 +40,7 @@ namespace Board
         private bool IsSwapValid(Cell cell, Cell cellToReplace)
         {
             var isEmpty = cell == null || cellToReplace == null;
-            var isBlock = cell?.CellType != BlockType.Obstacle && cellToReplace?.CellType != BlockType.Obstacle;
+            var isBlock = cell?.CellType != CellType.Obstacle && cellToReplace?.CellType != CellType.Obstacle;
             return !isEmpty && isBlock;
         }
     }

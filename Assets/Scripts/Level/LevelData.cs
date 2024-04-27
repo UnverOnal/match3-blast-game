@@ -13,7 +13,7 @@ namespace Level
         [Serializable]
         public struct BlockData
         {
-            public BlockType type;
+            public CellType type;
             public int amount;
         }
         public BlockData[] blockData;
@@ -24,7 +24,7 @@ namespace Level
         public int[] obstacleHealths;
     }
 
-    public enum BlockType
+    public enum CellType
     {
         Blue,
         Green,

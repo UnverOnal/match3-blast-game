@@ -9,7 +9,7 @@ namespace Board.BoardCreation
     public class BlockCreator
     {
         private readonly IPoolService _poolService;
-        private readonly Dictionary<BlockType ,ObjectPool<GameObject>> _blockPools;
+        private readonly Dictionary<CellType ,ObjectPool<GameObject>> _blockPools;
 
         private readonly BoardCreationData _creationData;
 
@@ -23,10 +23,10 @@ namespace Board.BoardCreation
                 
             _blockParent = new GameObject("BlockParent");
 
-            _blockPools = new Dictionary<BlockType, ObjectPool<GameObject>>();
+            _blockPools = new Dictionary<CellType, ObjectPool<GameObject>>();
         }
 
-        public GameObject GetBlock(BlockType type)
+        public GameObject GetBlock(CellType type)
         {
             var exist = _blockPools.TryGetValue(type, out var blockPool);
             if (!exist)
@@ -39,7 +39,7 @@ namespace Board.BoardCreation
             return blockPool.Get();
         }
 
-        public void ReturnBlock(BlockType type, GameObject gameObject)
+        public void ReturnBlock(CellType type, GameObject gameObject)
         {
             _blockPools.TryGetValue(type, out var blockPool);
             blockPool?.Return(gameObject);
@@ -51,7 +51,7 @@ namespace Board.BoardCreation
             return pool;
         }
 
-        private GameObject GetPrefab(BlockType type)
+        private GameObject GetPrefab(CellType type)
         {
             var blocks = _creationData.blockData;
             for (var i = 0; i < blocks.Length; i++)

@@ -10,7 +10,7 @@ namespace Board.BoardCreation
 {
     public class LevelCreationView
     {
-        public event Action<CellData> OnBlockCreated;
+        public event Action<CellData> OnPlaceBlock;
 
         private readonly BoardCreationData _creationData;
         private readonly BlockCreator _blockCreator;
@@ -54,38 +54,40 @@ namespace Board.BoardCreation
                 var block = GetBlock(blockCounts, out var type);
                 block.transform.position = cellPosition;
                 
-                OnBlockCreated?.Invoke(new CellData(new BoardLocation(i,j), block, type));
+                OnPlaceBlock?.Invoke(new CellData(new BoardLocation(i,j), block, type));
             }
         }
 
-        private List<KeyValuePair<BlockType, int>> GetBlockCounts(LevelData levelData)
+        private List<KeyValuePair<CellType, int>> GetBlockCounts(LevelData levelData)
         {
-            var blockCounts = new List<KeyValuePair<BlockType, int>>();
+            var blockCounts = new List<KeyValuePair<CellType, int>>();
             for (int i = 0; i < levelData.blockData.Length; i++)
             {
                 var blockData = levelData.blockData[i];
-                var blockCount = new KeyValuePair<BlockType, int>(blockData.type, blockData.amount);
+                var blockCount = new KeyValuePair<CellType, int>(blockData.type, blockData.amount);
                 blockCounts.Add(blockCount);
             }
-            var obstacleCount = new KeyValuePair<BlockType, int>(BlockType.Obstacle, levelData.obstacleHealths.Length);
+            var obstacleCount = new KeyValuePair<CellType, int>(CellType.Obstacle, levelData.obstacleHealths.Length);
             blockCounts.Add( obstacleCount);
             
             return blockCounts;
         }
         
         //Also updates block counts list
-        private GameObject GetBlock(IList<KeyValuePair<BlockType, int>> blockCounts, out BlockType blockType)
+        private GameObject GetBlock(IList<KeyValuePair<CellType, int>> blockCounts, out CellType cellType)
         {
             var randomIndex = Random.Range(0, blockCounts.Count);
             var (type, count) = blockCounts[randomIndex];
             count--;
             
-            blockCounts[randomIndex] = new KeyValuePair<BlockType, int>(type, count);
+            blockCounts[randomIndex] = new KeyValuePair<CellType, int>(type, count);
             if (count <= 0)
                 blockCounts.RemoveAt(randomIndex);
 
-            blockType = type;
-            return _blockCreator.GetBlock(type);
+            cellType = type;
+            var block = _blockCreator.GetBlock(type);
+            block.SetActive(true);
+            return block;
         }
     }
 }

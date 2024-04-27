@@ -12,7 +12,7 @@ namespace Board
 {
     public class BoardView
     {
-        public event Action<CellData> OnBlockCreated;
+        public event Action<CellData> OnFillBlock;
         private readonly BlockCreator _blockCreator;
         private readonly LevelPresenter _levelPresenter;
 
@@ -50,13 +50,17 @@ namespace Board
             foreach (var cellPair in cells)
             {
                 var transform = cellPair.Key.transform;
-                var tween = transform.DOMove(center, 0.25f).SetEase(Ease.InBack)
-                    .OnComplete(() => transform.DOScale(0f, 0.1f).SetEase(Ease.InBack, 2f));
+                var originalScale = transform.localScale;
+                
+                var tween = DOTween.Sequence();
+                tween.Append(transform.DOMove(center, 0.25f).SetEase(Ease.InBack));
+                tween.Append(transform.DOScale(0f, 0.1f).SetEase(Ease.InBack, 2f));
+                tween.OnComplete(() => ReturnToPool(cellPair, originalScale));
+                
                 tasks.Add(tween.AsyncWaitForCompletion().AsUniTask());
             }
 
             await UniTask.WhenAll(tasks);
-            selectedBlock.transform.DOScale(0f, 0.1f).SetEase(Ease.InBack, 2f);
         }
 
         public void Collapse(Cell cell, int delayAmount)
@@ -83,17 +87,10 @@ namespace Board
                 
                 block.transform.DOMove(new Vector3(location.x, location.y), 0.25f).SetEase(Ease.OutBack);
                 
-                OnBlockCreated?.Invoke(new CellData(location, block, blockType));
+                OnFillBlock?.Invoke(new CellData(location, block, blockType));
             }
         }
 
-        private GameObject GetRandomBlock(out BlockType type)
-        {
-            var blocks = _levelPresenter.GetCurrentLevelData().blockData;
-            type = blocks[Random.Range(0, blocks.Length)].type;
-            return _blockCreator.GetBlock(type);
-        }
-        
         public void Shuffle(Cell[,] cells)
         {
             var rows = cells.GetLength(0);
@@ -112,6 +109,22 @@ namespace Board
                     transform.DOMove(new Vector3(location.x, location.y), 0.35f).SetEase(Ease.OutBack);
                 }
             }
+        }
+        
+        private void ReturnToPool(KeyValuePair<GameObject, Cell> cellPair, Vector3 originalScale)
+        {
+            cellPair.Key.SetActive(false);
+            cellPair.Key.transform.localScale = originalScale;
+            _blockCreator.ReturnBlock(cellPair.Value.CellType, cellPair.Key);
+        }
+        
+        private GameObject GetRandomBlock(out CellType type)
+        {
+            var blocks = _levelPresenter.GetCurrentLevelData().blockData;
+            type = blocks[Random.Range(0, blocks.Length)].type;
+            var block = _blockCreator.GetBlock(type);
+            block.SetActive(true);
+            return block;
         }
     }
 }
