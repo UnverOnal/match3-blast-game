@@ -94,8 +94,24 @@ namespace Board
             return _blockCreator.GetBlock(type);
         }
         
-        public void Shuffle()
+        public void Shuffle(Cell[,] cells)
         {
+            var rows = cells.GetLength(0);
+            var cols = cells.GetLength(1);
+            
+            for (var i = 0; i < rows; i++)
+            {
+                for (var j = 0; j < cols; j++)
+                {
+                    var cell = cells[i, j];
+                    if (cell == null)
+                        continue;
+                    
+                    var location = cell.Location;
+                    var transform = cell.GameObject.transform;
+                    transform.DOMove(new Vector3(location.x, location.y), 0.35f).SetEase(Ease.OutBack);
+                }
+            }
         }
     }
 }

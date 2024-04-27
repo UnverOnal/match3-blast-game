@@ -8,6 +8,7 @@ using Level;
 using Services.PoolingService;
 using UnityEngine;
 using VContainer;
+using Random = System.Random;
 
 namespace Board
 {
@@ -15,6 +16,7 @@ namespace Board
     {
         [Inject] private BoardModel _boardModel;
         private readonly BoardView _boardView;
+        private readonly BoardShuffler _boardShuffler;
 
         private readonly ObjectPool<CellGroup> _groupPool;
 
@@ -25,6 +27,7 @@ namespace Board
         {
             _boardView = new BoardView(blockCreator, levelPresenter);
             _groupPool = poolService.GetPoolFactory().CreatePool(() => new CellGroup());
+            _boardShuffler = new BoardShuffler();
         }
         
         public void Initialize()
@@ -53,7 +56,10 @@ namespace Board
 
             Collapse(bottomBlastedLocations, _boardModel.Cells);
             Fill(bottomBlastedLocations, _boardModel.Cells);
-            // _boardModel.Update();
+            
+            // if(_boardModel.cellGroups.Count < 1)
+            await UniTask.Delay(TimeSpan.FromSeconds(1f));
+            Shuffle();
         }
 
         private void GetGroups()
@@ -140,6 +146,14 @@ namespace Board
 
         private void Shuffle()
         {
+            // while (_boardModel.cellGroups.Count < 1)
+            // {
+            //     ShuffleBoard(_boardModel.Cells);
+            //     GetGroups();
+            // }
+            _boardShuffler.Shuffle(_boardModel.Cells);
+            GetGroups();
+            _boardView.Shuffle(_boardModel.Cells);
         }
 
         public void Dispose()
