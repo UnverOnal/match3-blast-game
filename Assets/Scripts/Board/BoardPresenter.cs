@@ -41,11 +41,11 @@ namespace Board
                 return;
             }
 
-            var blastedBlockLocations = new List<BoardLocation>(group.GetLocations());
+            var bottomBlastedLocations = new List<BoardLocation>(group.GetLocations());
             await Blast(group, selectedBlock);
             _canGroup = true; //It can group if there is a merge
 
-            Collapse(blastedBlockLocations, _boardModel.Cells);
+            Collapse(bottomBlastedLocations, _boardModel.Cells);
             Fill();
             // _boardModel.Update();
         }

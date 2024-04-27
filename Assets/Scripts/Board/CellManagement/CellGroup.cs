@@ -24,13 +24,13 @@ namespace Board.CellManagement
 
         public void Reset() => cells.Clear();
 
+        //Returns one and bottom location for each column
         public IEnumerable<BoardLocation> GetLocations()
         {
             var locations = cells.Select(pair => pair.Value.Location).ToList();
             var distinctLocations = locations.GroupBy(location => location.x)
                 .Select(group => group.OrderBy(loc => loc.y).FirstOrDefault());
-
-
+            
             return distinctLocations;
         }
     }

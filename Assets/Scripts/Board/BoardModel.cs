@@ -43,10 +43,10 @@ namespace Board
 
         public void UpdateCellLocation(Cell cell, BoardLocation targetLocation)
         {
+            var location = cell.Location;
+            _board.cells[location.x, location.y] = null;
+            _board.cells[targetLocation.x, targetLocation.y] = cell;
             cell.SetLocation(targetLocation);
-            // var location = cell.Location;
-            // _board.cells[location.x, targetY] = cell;
-            // _board.cells[location.x, location.y] = null;
         }
 
         public void AddCellGroup(CellGroup group)
