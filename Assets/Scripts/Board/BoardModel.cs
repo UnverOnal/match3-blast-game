@@ -41,6 +41,14 @@ namespace Board
             _cellPool.Return(cell);
         }
 
+        public void UpdateCellLocation(Cell cell, BoardLocation targetLocation)
+        {
+            cell.SetLocation(targetLocation);
+            // var location = cell.Location;
+            // _board.cells[location.x, targetY] = cell;
+            // _board.cells[location.x, location.y] = null;
+        }
+
         public void AddCellGroup(CellGroup group)
         {
             cellGroups.Add(group);

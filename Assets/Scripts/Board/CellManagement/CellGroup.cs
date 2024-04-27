@@ -24,15 +24,14 @@ namespace Board.CellManagement
 
         public void Reset() => cells.Clear();
 
-        public List<BoardLocation> GetLocations()
+        public IEnumerable<BoardLocation> GetLocations()
         {
-            var locations = new List<BoardLocation>();
+            var locations = cells.Select(pair => pair.Value.Location).ToList();
+            var distinctLocations = locations.GroupBy(location => location.x)
+                .Select(group => group.OrderBy(loc => loc.y).FirstOrDefault());
 
-            foreach (var pair in cells)
-                locations.Add(pair.Value.Location);
-            
 
-            return locations;
+            return distinctLocations;
         }
     }
 }
