@@ -1,8 +1,9 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using Board.BoardCreation;
 using Board.CellManagement;
 using Cysharp.Threading.Tasks;
+using GameManagement;
 using Level;
 using Services.PoolingService;
 using UnityEngine;
@@ -10,7 +11,7 @@ using VContainer;
 
 namespace Board
 {
-    public class BoardPresenter
+    public class BoardPresenter : IInitializable, IDisposable
     {
         [Inject] private BoardModel _boardModel;
         private readonly BoardView _boardView;
@@ -20,10 +21,15 @@ namespace Board
         private bool _canGroup = true;
 
         [Inject]
-        public BoardPresenter(BlockCreator blockCreator, IPoolService poolService)
+        public BoardPresenter(BlockCreator blockCreator, IPoolService poolService, LevelPresenter levelPresenter)
         {
-            _boardView = new BoardView(blockCreator);
+            _boardView = new BoardView(blockCreator, levelPresenter);
             _groupPool = poolService.GetPoolFactory().CreatePool(() => new CellGroup());
+        }
+        
+        public void Initialize()
+        {
+            _boardView.OnBlockCreated += _boardModel.AddCell;
         }
 
         public async void OnBlockSelected(GameObject selectedBlock)
@@ -46,7 +52,7 @@ namespace Board
             _canGroup = true; //It can group if there is a merge
 
             Collapse(bottomBlastedLocations, _boardModel.Cells);
-            Fill();
+            Fill(bottomBlastedLocations, _boardModel.Cells);
             // _boardModel.Update();
         }
 
@@ -60,7 +66,7 @@ namespace Board
             for (var j = 0; j < board.GetLength(1); j++)
             {
                 var cell = board[i, j];
-                if (visitedCells.Contains(cell) || cell.CellType == BlockType.Obstacle)
+                if (cell == null || visitedCells.Contains(cell) || cell.CellType == BlockType.Obstacle)
                     continue;
 
                 var group = _groupPool.Get();
@@ -88,9 +94,9 @@ namespace Board
             _groupPool.Return(group);
         }
 
-        private void Collapse(IEnumerable<BoardLocation> blastedLocations, Cell[,] cells)
+        private void Collapse(IEnumerable<BoardLocation> bottomBlastedLocations, Cell[,] cells)
         {
-            foreach (var location in blastedLocations)
+            foreach (var location in bottomBlastedLocations)
             {
                 var yLocation = location.y;
                 for (var j = location.y + 1; j < cells.GetLength(1); j++)
@@ -110,13 +116,35 @@ namespace Board
             }
         }
 
-        private void Fill()
+        private void Fill(IEnumerable<BoardLocation> bottomBlastedLocations, Cell[,] cells)
         {
-            _boardView.Fill();
+            var emptyLocations = new List<BoardLocation>();
+            var boardHeight = cells.GetLength(1);
+            foreach (var location in bottomBlastedLocations)
+            {
+                for (var i = location.y; i < boardHeight; i++)
+                {
+                    var cell = cells[location.x, i];
+                    if (cell == null)
+                    {
+                        var emptyLocation = new BoardLocation(location.x, i);
+                        emptyLocations.Add(emptyLocation);
+                    }
+                    else if(cell.CellType == BlockType.Obstacle)
+                        emptyLocations.Clear();
+                }
+            }
+
+            _boardView.Fill(emptyLocations, boardHeight);
         }
 
         private void Shuffle()
         {
+        }
+
+        public void Dispose()
+        {
+            _boardView.OnBlockCreated -= _boardModel.AddCell;
         }
     }
 }

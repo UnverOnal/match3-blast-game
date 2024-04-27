@@ -43,7 +43,7 @@ namespace Board.CellManagement
                 if (locationExist)
                 {
                     var neighbour = board[x, y];
-                    if (CellType != neighbour.CellType || visitedCells.Contains(neighbour))
+                    if (neighbour == null || CellType != neighbour.CellType || visitedCells.Contains(neighbour))
                         continue;
 
                     //Add cell group if it is same type
