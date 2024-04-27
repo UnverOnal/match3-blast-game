@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 
 namespace Board.BoardCreation
 {
-    public class BoardCreationView
+    public class LevelCreationView
     {
         public event Action<CellData> OnBlockCreated;
 
@@ -16,7 +16,7 @@ namespace Board.BoardCreation
         private readonly BlockCreator _blockCreator;
         private readonly BoardResources _boardResources;
 
-        public BoardCreationView(BoardCreationData creationData, BlockCreator blockCreator, BoardResources boardResources)
+        public LevelCreationView(BoardCreationData creationData, BlockCreator blockCreator, BoardResources boardResources)
         {
             _creationData = creationData;
             _blockCreator = blockCreator;
@@ -61,15 +61,15 @@ namespace Board.BoardCreation
         private List<KeyValuePair<BlockType, int>> GetBlockCounts(LevelData levelData)
         {
             var blockCounts = new List<KeyValuePair<BlockType, int>>();
-            var obstacleCount = new KeyValuePair<BlockType, int>(BlockType.Obstacle, levelData.obstacleHealths.Length);
-            blockCounts.Add(obstacleCount);
             for (int i = 0; i < levelData.blockData.Length; i++)
             {
                 var blockData = levelData.blockData[i];
                 var blockCount = new KeyValuePair<BlockType, int>(blockData.type, blockData.amount);
                 blockCounts.Add(blockCount);
             }
-
+            var obstacleCount = new KeyValuePair<BlockType, int>(BlockType.Obstacle, levelData.obstacleHealths.Length);
+            blockCounts.Add( obstacleCount);
+            
             return blockCounts;
         }
         

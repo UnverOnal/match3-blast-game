@@ -17,11 +17,11 @@ MonoBehaviour:
     y: 6
   blockData:
   - type: 0
-    amount: 10
+    amount: 11
   - type: 2
     amount: 14
   - type: 1
     amount: 10
   moveCount: 15
   duration: 60
-  obstacleHealths: 0200000002000000
+  obstacleHealths: 02000000

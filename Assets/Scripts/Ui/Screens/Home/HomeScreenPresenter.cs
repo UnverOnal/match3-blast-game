@@ -9,7 +9,7 @@ namespace UI.Screens.Home
         private readonly HomeScreenResources _resources;
         private readonly HomeScreenView _screenView;
 
-        [Inject] private BoardCreationPresenter _boardCreationPresenter;
+        [Inject] private LevelCreationPresenter _levelCreationPresenter;
         
         [Inject]
         public HomeScreenPresenter(HomeScreenResources resources, GameStatePresenter statePresenter) : base(statePresenter)
@@ -33,10 +33,10 @@ namespace UI.Screens.Home
                 _screenView.Disable();
         }
 
-        public void PlayButton()
+        private void PlayButton()
         {
             _resources.playButton.onClick.AddListener(_screenView.OnPlayButtonClicked);
-            _resources.playButton.onClick.AddListener(_boardCreationPresenter.Create);
+            _resources.playButton.onClick.AddListener(_levelCreationPresenter.Create);
         }
     }
 }

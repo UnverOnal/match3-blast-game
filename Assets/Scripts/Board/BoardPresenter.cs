@@ -8,7 +8,6 @@ using Level;
 using Services.PoolingService;
 using UnityEngine;
 using VContainer;
-using Random = System.Random;
 
 namespace Board
 {
@@ -37,12 +36,6 @@ namespace Board
 
         public async void OnBlockSelected(GameObject selectedBlock)
         {
-            if (_canGroup)
-            {
-                GetGroups();
-                _canGroup = false;
-            }
-
             var group = _boardModel.GetGroup(selectedBlock);
             if (group == null)
             {
@@ -52,17 +45,16 @@ namespace Board
 
             var bottomBlastedLocations = new List<BoardLocation>(group.GetLocations());
             await Blast(group, selectedBlock);
-            _canGroup = true; //It can group if there is a merge
 
             Collapse(bottomBlastedLocations, _boardModel.Cells);
             Fill(bottomBlastedLocations, _boardModel.Cells);
             
-            // if(_boardModel.cellGroups.Count < 1)
-            await UniTask.Delay(TimeSpan.FromSeconds(1f));
-            Shuffle();
+            GroupCells();
+            if(_boardModel.cellGroups.Count < 1)
+                Shuffle();
         }
 
-        private void GetGroups()
+        public void GroupCells()
         {
             var board = _boardModel.Cells;
             _boardModel.cellGroups.Clear();
@@ -93,9 +85,12 @@ namespace Board
         private async UniTask Blast(CellGroup group, GameObject selectedBlock)
         {
             await _boardView.Blast(group, selectedBlock);
+            
             var groupCells = group.cells;
             foreach (var cellPair in groupCells)
                 _boardModel.RemoveCell(cellPair.Value);
+            
+            _boardModel.RemoveCellGroup(group);
             group.Reset();
             _groupPool.Return(group);
         }
@@ -124,35 +119,36 @@ namespace Board
 
         private void Fill(IEnumerable<BoardLocation> bottomBlastedLocations, Cell[,] cells)
         {
-            var emptyLocations = new List<BoardLocation>();
+            var allEmptyLocations = new List<BoardLocation>();
             var boardHeight = cells.GetLength(1);
             foreach (var location in bottomBlastedLocations)
             {
+                var columnEmptyLocations = new List<BoardLocation>();
                 for (var i = location.y; i < boardHeight; i++)
                 {
                     var cell = cells[location.x, i];
                     if (cell == null)
                     {
                         var emptyLocation = new BoardLocation(location.x, i);
-                        emptyLocations.Add(emptyLocation);
+                        columnEmptyLocations.Add(emptyLocation);
                     }
                     else if(cell.CellType == BlockType.Obstacle)
-                        emptyLocations.Clear();
+                        columnEmptyLocations.Clear();
                 }
+                allEmptyLocations.AddRange(columnEmptyLocations);
             }
 
-            _boardView.Fill(emptyLocations, boardHeight);
+            _boardView.Fill(allEmptyLocations, boardHeight);
         }
 
         private void Shuffle()
         {
-            // while (_boardModel.cellGroups.Count < 1)
-            // {
-            //     ShuffleBoard(_boardModel.Cells);
-            //     GetGroups();
-            // }
-            _boardShuffler.Shuffle(_boardModel.Cells);
-            GetGroups();
+            while (_boardModel.cellGroups.Count < 1)
+            {
+                _boardShuffler.Shuffle(_boardModel.Cells);
+                GroupCells();
+            }
+            
             _boardView.Shuffle(_boardModel.Cells);
         }
 

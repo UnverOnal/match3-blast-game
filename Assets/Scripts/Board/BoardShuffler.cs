@@ -24,13 +24,6 @@ namespace Board
             }
         }
 
-        private bool IsSwapValid(Cell cell, Cell cellToReplace)
-        {
-            var isEmpty = cell == null || cellToReplace == null;
-            var isBlock = cell?.CellType != BlockType.Obstacle && cellToReplace?.CellType != BlockType.Obstacle;
-            return !isEmpty && isBlock;
-        }
-
         private void SwapCells(Cell[,] cells, int row1, int col1, int row2, int col2)
         {
             if (!IsSwapValid(cells[row1, col1], cells[row2, col2]))
@@ -42,6 +35,13 @@ namespace Board
 
             tempCell?.SetLocation(new BoardLocation(row2, col2));
             cells[row1, col1]?.SetLocation(new BoardLocation(row1, col1));
+        }
+        
+        private bool IsSwapValid(Cell cell, Cell cellToReplace)
+        {
+            var isEmpty = cell == null || cellToReplace == null;
+            var isBlock = cell?.CellType != BlockType.Obstacle && cellToReplace?.CellType != BlockType.Obstacle;
+            return !isEmpty && isBlock;
         }
     }
 }

@@ -49,10 +49,8 @@ namespace Board
             cell.SetLocation(targetLocation);
         }
 
-        public void AddCellGroup(CellGroup group)
-        {
-            cellGroups.Add(group);
-        }
+        public void AddCellGroup(CellGroup group) => cellGroups.Add(group);
+        public void RemoveCellGroup(CellGroup group) => cellGroups.Remove(group);
 
         public CellGroup GetGroup(GameObject cellGameObject)
         {

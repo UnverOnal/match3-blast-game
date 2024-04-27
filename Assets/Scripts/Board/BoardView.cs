@@ -59,7 +59,7 @@ namespace Board
             selectedBlock.transform.DOScale(0f, 0.1f).SetEase(Ease.InBack, 2f);
         }
 
-        public async void Collapse(Cell cell, int delayAmount)
+        public void Collapse(Cell cell, int delayAmount)
         {
             // await UniTask.Delay(TimeSpan.FromSeconds(0.05f * delayAmount));
             

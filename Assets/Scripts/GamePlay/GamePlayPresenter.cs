@@ -1,4 +1,5 @@
 using Board;
+using Board.BoardCreation;
 using GameManagement;
 using Services.InputService;
 using UnityEngine;
@@ -10,10 +11,12 @@ namespace GamePlay
     {
         [Inject] private IInputService _inputService;
         [Inject] private BoardPresenter _boardPresenter;
+        [Inject] private LevelCreationPresenter _levelCreationPresenter;
         
         public void Initialize()
         {
             _inputService.OnItemPicked += OnBlockSelected;
+            _levelCreationPresenter.OnLevelCreated += _boardPresenter.GroupCells;
         }
 
         private void OnBlockSelected(GameObject cellGameObject)
@@ -26,6 +29,7 @@ namespace GamePlay
         private void OnLevelEnd()
         {
             _inputService.OnItemPicked -= OnBlockSelected;
+            _levelCreationPresenter.OnLevelCreated -= _boardPresenter.GroupCells;
         }
     }
 }
