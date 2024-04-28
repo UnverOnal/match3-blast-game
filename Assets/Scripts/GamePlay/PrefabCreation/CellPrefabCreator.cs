@@ -25,12 +25,12 @@ namespace GamePlay.PrefabCreation
             _factories = new Dictionary<CellType, PrefabFactory>();
         }
 
-        public GameObject Get(CellData cellData)
+        public GameObject Get(LevelCellData levelCellData)
         {
-            var cellType = cellData.cellType;
+            var cellType = levelCellData.cellType;
             _factories.TryGetValue(cellType, out var factory);
-            factory = GetFactory(cellData.cellType);
-            return factory.Get(cellData);
+            factory = GetFactory(levelCellData.cellType);
+            return factory.Get(levelCellData);
         }
 
         public void Return(Cell cell, GameObject cellGameObject)

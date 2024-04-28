@@ -17,7 +17,7 @@ namespace GamePlay.CellManagement
         public virtual void SetData(CellCreationData cellCreationData)
         {
             SetLocation(cellCreationData.location);
-            CellType = cellCreationData.cellData.cellType;
+            CellType = cellCreationData.levelCellData.cellType;
             
             GameObject = cellCreationData.gameObject;
             _sprite = GameObject.GetComponent<SpriteRenderer>().sprite;
@@ -38,16 +38,16 @@ namespace GamePlay.CellManagement
     
     public struct CellCreationData
     {
-        public CellCreationData(BoardLocation location, GameObject gameObject, CellData cellData)
+        public CellCreationData(BoardLocation location, GameObject gameObject, LevelCellData levelCellData)
         {
             this.location = location;
             this.gameObject = gameObject;
-            this.cellData = cellData;
+            this.levelCellData = levelCellData;
         }
 
         public BoardLocation location;
         public GameObject gameObject;
-        public CellData cellData;
+        public LevelCellData levelCellData;
     }
 
     public struct BoardLocation

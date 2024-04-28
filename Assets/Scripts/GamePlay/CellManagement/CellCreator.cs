@@ -17,10 +17,11 @@ namespace GamePlay.CellManagement
             _blockPool = poolService.GetPoolFactory().CreatePool(() => new Block());
             _obstaclePool = poolService.GetPoolFactory().CreatePool(() => new Obstacle());
         }
-        
+
         public void AddCell(CellCreationData cellCreationData)
         {
-            var cell = GetCell(cellCreationData.cellData);
+            var cellType = cellCreationData.levelCellData.cellType;
+            var cell = GetCell(cellType);
             cell.SetData(cellCreationData);
             _boardModel.AddCell(cell);
         }
@@ -32,9 +33,9 @@ namespace GamePlay.CellManagement
             ReturnCell(cell);
         }
 
-        private Cell GetCell(CellData cellData)
+        private Cell GetCell(CellType cellType)
         {
-            if (cellData.GetType() == typeof(ObstacleData))
+            if (cellType == CellType.Obstacle)
                 return _obstaclePool.Get();
 
             return _blockPool.Get();

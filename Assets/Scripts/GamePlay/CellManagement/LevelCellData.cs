@@ -24,7 +24,7 @@ namespace GamePlay.CellManagement
     }
     
     [Serializable]
-    public class CellData
+    public class LevelCellData
     {
         public CellType cellType;
         public int amount;
@@ -33,13 +33,13 @@ namespace GamePlay.CellManagement
     }
     
     [Serializable]
-    public class BlockData : CellData
+    public class LevelBlockData : LevelCellData
     {
         public BlockType type;
     }
 
     [Serializable]
-    public class ObstacleData : CellData
+    public class LevelObstacleData : LevelCellData
     {
         public ObstacleType type;
         public int health;

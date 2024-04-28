@@ -61,9 +61,9 @@ namespace Level.LevelCreation
             }
         }
 
-        private List<CellData> GetCellDatas(LevelData levelData)
+        private List<LevelCellData> GetCellDatas(LevelData levelData)
         {
-            var cellDatas = new List<CellData>();
+            var cellDatas = new List<LevelCellData>();
             
             cellDatas.AddRange(levelData.blockData);
             cellDatas.AddRange(levelData.obstacleData);
@@ -72,17 +72,17 @@ namespace Level.LevelCreation
         }
 
         //Also updates block counts list
-        private GameObject GetBlock(IList<CellData> cellDatas, out CellData cellData)
+        private GameObject GetBlock(IList<LevelCellData> cellDatas, out LevelCellData levelCellData)
         {
             var randomIndex = Random.Range(0, cellDatas.Count);
-            cellData = (CellData)cellDatas[randomIndex].Clone() ;
-            cellData.amount--;
+            levelCellData = (LevelCellData)cellDatas[randomIndex].Clone() ;
+            levelCellData.amount--;
 
-            cellDatas[randomIndex] = cellData;
-            if (cellData.amount <= 0)
+            cellDatas[randomIndex] = levelCellData;
+            if (levelCellData.amount <= 0)
                 cellDatas.RemoveAt(randomIndex);
 
-            var blockGameObject = _cellPrefabCreator.Get(cellData);
+            var blockGameObject = _cellPrefabCreator.Get(levelCellData);
             blockGameObject.SetActive(true);
             return blockGameObject;
         }

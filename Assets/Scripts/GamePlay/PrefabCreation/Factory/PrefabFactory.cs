@@ -18,7 +18,7 @@ namespace GamePlay.PrefabCreation.Factory
             blockParent = new GameObject(GetType().ToString());
         }
 
-        public abstract GameObject Get(CellData cellData);
+        public abstract GameObject Get(LevelCellData levelCellData);
 
         public abstract void Return(Cell cell, GameObject gameObject);
     

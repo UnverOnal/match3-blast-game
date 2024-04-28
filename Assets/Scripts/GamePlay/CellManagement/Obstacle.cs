@@ -12,7 +12,7 @@ namespace GamePlay.CellManagement
         public override void SetData(CellCreationData cellCreationData)
         {
             base.SetData(cellCreationData);
-            var cellData = (ObstacleData)cellCreationData.cellData;
+            var cellData = (LevelObstacleData)cellCreationData.levelCellData;
             ObstacleType = cellData.type;
         }
     }

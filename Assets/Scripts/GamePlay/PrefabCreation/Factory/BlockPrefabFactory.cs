@@ -14,9 +14,9 @@ namespace GamePlay.PrefabCreation.Factory
             _blockPools = new Dictionary<BlockType, ObjectPool<GameObject>>();
         }
 
-        public override GameObject Get(CellData cellData)
+        public override GameObject Get(LevelCellData levelCellData)
         {
-            var blockData = (BlockData)cellData;
+            var blockData = (LevelBlockData)levelCellData;
             var exist = _blockPools.TryGetValue(blockData.type, out var blockPool);
             if (!exist)
             {

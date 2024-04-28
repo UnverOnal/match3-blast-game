@@ -119,11 +119,11 @@ namespace GamePlay.Board
             _cellPrefabCreator.Return(cell, gameObject);
         }
 
-        private GameObject GetRandomBlock(out CellData cellData)
+        private GameObject GetRandomBlock(out LevelCellData levelCellData)
         {
             var blocks = _levelPresenter.GetCurrentLevelData().blockData;
-            cellData = blocks[Random.Range(0, blocks.Length)];
-            var blockGameObject = _cellPrefabCreator.Get(cellData);
+            levelCellData = blocks[Random.Range(0, blocks.Length)];
+            var blockGameObject = _cellPrefabCreator.Get(levelCellData);
             blockGameObject.SetActive(true);
             return blockGameObject;
         }
