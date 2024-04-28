@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Level
+namespace Level.LevelCounter
 {
     [CreateAssetMenu(fileName = "LevelData", menuName = "ScriptableObjects/LevelData")]
     public class LevelData : ScriptableObject

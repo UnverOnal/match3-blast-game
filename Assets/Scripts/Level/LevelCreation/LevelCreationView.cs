@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Board.CellManagement;
-using Level;
+using GamePlay.Board;
+using GamePlay.CellManagement;
+using Level.LevelCounter;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
-namespace Board.BoardCreation
+namespace Level.LevelCreation
 {
     public class LevelCreationView
     {

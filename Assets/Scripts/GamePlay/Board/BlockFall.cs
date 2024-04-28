@@ -4,7 +4,7 @@ using DG.Tweening;
 using GameManagement;
 using UnityEngine;
 
-namespace Board
+namespace GamePlay.Board
 {
     public class BlockFall
     {

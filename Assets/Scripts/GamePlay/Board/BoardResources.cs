@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Board
+namespace GamePlay.Board
 {
     public class BoardResources : MonoBehaviour
     {

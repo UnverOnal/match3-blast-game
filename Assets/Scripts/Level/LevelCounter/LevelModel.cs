@@ -1,6 +1,4 @@
-using Board;
-
-namespace Level
+namespace Level.LevelCounter
 {
     public class LevelModel
     {

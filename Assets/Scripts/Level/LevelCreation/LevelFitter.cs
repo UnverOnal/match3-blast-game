@@ -1,8 +1,8 @@
-using Board.CellManagement;
 using GameManagement;
+using GamePlay.CellManagement;
 using UnityEngine;
 
-namespace Board.BoardCreation
+namespace Level.LevelCreation
 {
     public class LevelFitter
     {

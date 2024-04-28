@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Level;
+using Level.LevelCounter;
 using UnityEngine;
 
-namespace Board.CellManagement
+namespace GamePlay.CellManagement
 {
     public class Cell
     {

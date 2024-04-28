@@ -1,6 +1,6 @@
 using VContainer;
 
-namespace Level
+namespace Level.LevelCounter
 {
     public class LevelPresenter
     {

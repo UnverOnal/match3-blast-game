@@ -1,10 +1,11 @@
 using System.Collections.Generic;
-using Level;
+using Level.LevelCounter;
+using Level.LevelCreation;
 using Services.PoolingService;
 using UnityEngine;
 using VContainer;
 
-namespace Board.BoardCreation
+namespace GamePlay.Board
 {
     public class BlockCreator
     {

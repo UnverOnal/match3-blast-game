@@ -1,9 +1,9 @@
-using Board;
-using Board.BoardCreation;
 using GameManagement;
 using GamePlay;
+using GamePlay.Board;
 using GameState;
-using Level;
+using Level.LevelCounter;
+using Level.LevelCreation;
 using UI;
 using UI.Screens;
 using UI.Screens.Game;
@@ -21,7 +21,7 @@ namespace Scopes
         [SerializeField] private HomeScreenResources homeScreenResources;
         [SerializeField] private GameScreenResources gameScreenResources;
         [SerializeField] private LevelEndScreenResources levelEndScreenResources;
-        
+
         [SerializeField] private LevelContainer levelContainer;
         [SerializeField] private BoardCreationData boardCreationData;
         [SerializeField] private BoardResources boardResources;
@@ -30,7 +30,7 @@ namespace Scopes
         {
             builder.RegisterEntryPoint<GameSceneManager>();
             builder.Register<UiManager>(Lifetime.Singleton).AsSelf().As<IInitializable>();
-            
+
             RegisterScreens(builder);
             RegisterBoard(builder);
             RegisterLevel(builder);
@@ -38,11 +38,12 @@ namespace Scopes
 
             builder.Register<GameStatePresenter>(Lifetime.Singleton);
         }
-        
+
         private void RegisterScreens(IContainerBuilder builder)
         {
             builder.RegisterInstance(homeScreenResources);
-            builder.Register<HomeScreenPresenter>(Lifetime.Singleton).AsSelf().As<IScreenPresenter>();;
+            builder.Register<HomeScreenPresenter>(Lifetime.Singleton).AsSelf().As<IScreenPresenter>();
+            ;
 
             builder.RegisterInstance(gameScreenResources);
             builder.Register<GameScreenPresenter>(Lifetime.Singleton).AsSelf().As<IScreenPresenter>();

@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using Board;
 using UnityEngine;
 
-namespace Level
+namespace Level.LevelCounter
 {
     [CreateAssetMenu(fileName = "LevelContainer", menuName = "ScriptableObjects/LevelContainer")]
     public class LevelContainer : ScriptableObject

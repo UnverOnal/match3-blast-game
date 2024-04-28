@@ -1,11 +1,11 @@
 using System.Collections.Generic;
-using Board.CellManagement;
-using Level;
+using GamePlay.CellManagement;
+using Level.LevelCounter;
 using Services.PoolingService;
 using UnityEngine;
 using VContainer;
 
-namespace Board
+namespace GamePlay.Board
 {
     public class BoardModel
     {
@@ -14,7 +14,7 @@ namespace Board
 
         private readonly ObjectPool<Cell> _cellPool;
 
-        private readonly Board _board;
+        private readonly global::GamePlay.Board.Board _board;
 
         [Inject]
         public BoardModel(IPoolService poolService)
@@ -22,7 +22,7 @@ namespace Board
             _cellPool = poolService.GetPoolFactory().CreatePool(()=> new Cell());
             cellGroups = new List<CellGroup>();
 
-            _board = new Board();
+            _board = new global::GamePlay.Board.Board();
         }
 
         public void SetBoardSize(BoardSize boardSize) => _board.SetBoardSize(boardSize);

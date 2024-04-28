@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using Board.CellManagement;
-using Level;
+using GamePlay.CellManagement;
+using Level.LevelCounter;
 using UnityEngine;
 
-namespace Board
+namespace GamePlay.Board
 {
     public class Board
     {
@@ -14,8 +14,11 @@ namespace Board
         {
             _cellsMap = new Dictionary<GameObject, Cell>();
         }
-        
-        public void SetBoardSize(BoardSize boardSize) => cells = new Cell[boardSize.x, boardSize.y];
+
+        public void SetBoardSize(BoardSize boardSize)
+        {
+            cells = new Cell[boardSize.x, boardSize.y];
+        }
 
         public void AddCell(Cell cell, CellData cellData)
         {
@@ -29,7 +32,7 @@ namespace Board
             cells[cell.Location.x, cell.Location.y] = null;
             _cellsMap.Remove(cell.GameObject);
         }
-        
+
         public Cell GetCell(GameObject cellGameObject)
         {
             _cellsMap.TryGetValue(cellGameObject, out var cell);

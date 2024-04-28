@@ -1,7 +1,7 @@
-using Level;
+using Level.LevelCounter;
 using UnityEngine;
 
-namespace Board.CellManagement
+namespace GamePlay.CellManagement
 {
     public struct CellData
     {

@@ -1,15 +1,14 @@
 using System;
 using System.Collections.Generic;
-using Board.BoardCreation;
-using Board.CellManagement;
 using Cysharp.Threading.Tasks;
 using GameManagement;
-using Level;
+using GamePlay.CellManagement;
+using Level.LevelCounter;
 using Services.PoolingService;
 using UnityEngine;
 using VContainer;
 
-namespace Board
+namespace GamePlay.Board
 {
     public class BoardPresenter : IInitializable, IDisposable
     {

@@ -1,9 +1,10 @@
 using System;
 using GameManagement;
-using Level;
+using GamePlay.Board;
+using Level.LevelCounter;
 using VContainer;
 
-namespace Board.BoardCreation
+namespace Level.LevelCreation
 {
     public class LevelCreationPresenter : IInitializable
     {

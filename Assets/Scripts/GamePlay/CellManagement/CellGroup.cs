@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Board.CellManagement
+namespace GamePlay.CellManagement
 {
     public class CellGroup
     {

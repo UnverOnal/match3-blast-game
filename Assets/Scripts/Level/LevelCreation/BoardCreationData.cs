@@ -1,8 +1,8 @@
 using System;
-using Level;
+using Level.LevelCounter;
 using UnityEngine;
 
-namespace Board.BoardCreation
+namespace Level.LevelCreation
 {
     [CreateAssetMenu(fileName = "BoardCreationData", menuName = "ScriptableObjects/BoardCreationData")]
     public class BoardCreationData : ScriptableObject

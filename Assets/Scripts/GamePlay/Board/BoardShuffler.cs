@@ -1,8 +1,8 @@
 using System;
-using Board.CellManagement;
-using Level;
+using GamePlay.CellManagement;
+using Level.LevelCounter;
 
-namespace Board
+namespace GamePlay.Board
 {
     public class BoardShuffler
     {
