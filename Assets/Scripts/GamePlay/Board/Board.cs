@@ -20,16 +20,17 @@ namespace GamePlay.Board
             cells = new Cell[boardSize.x, boardSize.y];
         }
 
-        public void AddCell(Cell cell, CellData cellData)
+        public void AddCell(Cell cell)
         {
-            var location = cellData.location;
+            var location = cell.Location;
             cells[location.x, location.y] = cell;
             _cellsMap.Add(cell.GameObject, cell);
         }
 
         public void RemoveCell(Cell cell)
         {
-            cells[cell.Location.x, cell.Location.y] = null;
+            var location = cell.Location;
+            cells[location.x, location.y] = null;
             _cellsMap.Remove(cell.GameObject);
         }
 

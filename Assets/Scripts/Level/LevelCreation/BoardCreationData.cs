@@ -7,13 +7,13 @@ namespace Level.LevelCreation
     [CreateAssetMenu(fileName = "BoardCreationData", menuName = "ScriptableObjects/BoardCreationData")]
     public class BoardCreationData : ScriptableObject
     {
-        [Serializable]public struct BlockData
+        [Serializable]public struct BlockCreationData
         {
             public CellType type;
             public GameObject prefab;
         }
 
-        public BlockData[] blockData;
+        public BlockCreationData[] blockCreationData;
 
         public Sprite background;
     }

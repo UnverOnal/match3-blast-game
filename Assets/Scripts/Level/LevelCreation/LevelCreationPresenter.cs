@@ -1,7 +1,9 @@
 using System;
 using GameManagement;
 using GamePlay.Board;
+using GamePlay.CellManagement;
 using Level.LevelCounter;
+using Services.PoolingService;
 using VContainer;
 
 namespace Level.LevelCreation
@@ -12,6 +14,8 @@ namespace Level.LevelCreation
         
         [Inject] private LevelPresenter _levelPresenter;
         [Inject] private BoardModel _boardModel;
+        [Inject] private IPoolService _poolService;
+        [Inject] private CellCreator _cellCreator;
 
         private readonly LevelCreationView _levelCreationView;
         private readonly LevelFitter _levelFitter;
@@ -26,7 +30,7 @@ namespace Level.LevelCreation
         
         public void Initialize()
         {
-            _levelCreationView.OnPlaceBlock += _boardModel.AddCell;
+            _levelCreationView.OnPlaceBlock += _cellCreator.AddCell;
         }
 
         public void Create()

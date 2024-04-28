@@ -6,11 +6,11 @@ using UnityEngine;
 
 namespace GamePlay.Board
 {
-    public class BlockFall
+    public class BlockMovement
     {
         private readonly BlockMovementData _movementData;
 
-        public BlockFall(BlockMovementData movementData)
+        public BlockMovement(BlockMovementData movementData)
         {
             _movementData = movementData;
         }
@@ -35,6 +35,15 @@ namespace GamePlay.Board
 
             if (bounce)
                 fall.OnComplete(() => { transform.DOJump(transform.position, _movementData.bouncePower, 1, _movementData.bounceDuration); });
+        }
+
+        public Tween Blast(Transform transform, Vector3 targetPosition)
+        {
+            var tween = DOTween.Sequence();
+            tween.Append(transform.DOMove(targetPosition, _movementData.blastDuration).SetEase(Ease.InBack));
+            tween.Append(transform.DOScale(0f, 0.1f).SetEase(Ease.InBack, 2f));
+
+            return tween;
         }
     }
 }

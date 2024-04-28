@@ -15,16 +15,14 @@ namespace GamePlay.Board
         public event Action<CellData> OnFillBlock;
         private readonly BlockCreator _blockCreator;
         private readonly LevelPresenter _levelPresenter;
-        private readonly BlockFall _blockFall;
-        private readonly BlockMovementData _movementData;
+        private readonly BlockMovement _blockMovement;
 
-        public BoardView(BlockCreator blockCreator, LevelPresenter levelPresenter, GameSettings gameSettings)
+        public BoardView(BlockCreator blockCreator, LevelPresenter levelPresenter, BlockMovementData movementData)
         {
             _blockCreator = blockCreator;
             _levelPresenter = levelPresenter;
-            _movementData = gameSettings.blockMovementData;
 
-            _blockFall = new BlockFall(_movementData);
+            _blockMovement = new BlockMovement(movementData);
         }
 
         public async UniTask Shake(Transform transform, float duration, float strength)
@@ -46,9 +44,9 @@ namespace GamePlay.Board
             transform.rotation = originalRotation;
         }
 
-        public async UniTask Blast(CellGroup cellGroup, GameObject selectedBlock)
+        public async UniTask Blast(CellGroup cellGroup, GameObject selectedBlockGameObject)
         {
-            var center = selectedBlock.transform.position;
+            var center = selectedBlockGameObject.transform.position;
             var cells = cellGroup.cells;
 
             var tasks = new List<UniTask>();
@@ -57,11 +55,8 @@ namespace GamePlay.Board
                 var transform = cellPair.Key.transform;
                 var originalScale = transform.localScale;
                 
-                var tween = DOTween.Sequence();
-                tween.Append(transform.DOMove(center, _movementData.blastDuration).SetEase(Ease.InBack));
-                tween.Append(transform.DOScale(0f, 0.1f).SetEase(Ease.InBack, 2f));
+                var tween = _blockMovement.Blast(transform, center);
                 tween.OnComplete(() => ReturnToPool(cellPair, originalScale));
-                
                 tasks.Add(tween.AsyncWaitForCompletion().AsUniTask());
             }
 
@@ -76,7 +71,7 @@ namespace GamePlay.Board
             targetPosition.x = cell.Location.x;
             targetPosition.y = cell.Location.y;
             
-            _blockFall.Fall(transform, targetPosition, true);
+            _blockMovement.Fall(transform, targetPosition, true);
         }
 
         public void Fill(List<List<BoardLocation>> emptyLocations, int boardHeight)
@@ -86,13 +81,13 @@ namespace GamePlay.Board
                 for (int i = 0; i < locations.Count; i++)
                 {
                     var location = locations[i];
-                    var block = GetRandomBlock(out var blockType);
+                    var blockGameObject = GetRandomBlock(out var blockData);
                     var spawnPosition = new Vector3(location.x, boardHeight + i, 0f);
-                    block.transform.position = spawnPosition;
+                    blockGameObject.transform.position = spawnPosition;
 
-                    _blockFall.FallDelayed(block.transform, new Vector3(location.x, location.y), true, i);
+                    _blockMovement.FallDelayed(blockGameObject.transform, new Vector3(location.x, location.y), true, i);
 
-                    OnFillBlock?.Invoke(new CellData(location, block, blockType));
+                    OnFillBlock?.Invoke(new CellData(location, blockGameObject, blockData));
                 }
             }
         }
@@ -124,13 +119,13 @@ namespace GamePlay.Board
             _blockCreator.ReturnBlock(cellPair.Value.CellType, cellPair.Key);
         }
         
-        private GameObject GetRandomBlock(out CellType type)
+        private GameObject GetRandomBlock(out LevelData.BlockData blockData)
         {
             var blocks = _levelPresenter.GetCurrentLevelData().blockData;
-            type = blocks[Random.Range(0, blocks.Length)].type;
-            var block = _blockCreator.GetBlock(type);
-            block.SetActive(true);
-            return block;
+            blockData = blocks[Random.Range(0, blocks.Length)];
+            var blockGameObject = _blockCreator.GetBlock(blockData.type);
+            blockGameObject.SetActive(true);
+            return blockGameObject;
         }
     }
 }

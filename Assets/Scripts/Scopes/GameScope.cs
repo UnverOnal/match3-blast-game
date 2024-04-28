@@ -1,6 +1,7 @@
 using GameManagement;
 using GamePlay;
 using GamePlay.Board;
+using GamePlay.CellManagement;
 using GameState;
 using Level.LevelCounter;
 using Level.LevelCreation;
@@ -35,6 +36,9 @@ namespace Scopes
             RegisterBoard(builder);
             RegisterLevel(builder);
             builder.Register<GamePlayPresenter>(Lifetime.Singleton).AsSelf().As<IInitializable>();
+            
+            builder.Register<BlockCreator>(Lifetime.Singleton);
+            builder.Register<CellCreator>(Lifetime.Singleton);
 
             builder.Register<GameStatePresenter>(Lifetime.Singleton);
         }
@@ -54,16 +58,16 @@ namespace Scopes
 
         private void RegisterBoard(IContainerBuilder builder)
         {
-            builder.Register<LevelCreationPresenter>(Lifetime.Singleton).AsSelf().As<IInitializable>();
             builder.Register<BoardModel>(Lifetime.Singleton);
             builder.Register<BoardPresenter>(Lifetime.Singleton).AsSelf().As<IInitializable>();
+            
             builder.RegisterInstance(boardCreationData);
             builder.RegisterInstance(boardResources);
-            builder.Register<BlockCreator>(Lifetime.Singleton);
         }
 
         private void RegisterLevel(IContainerBuilder builder)
         {
+            builder.Register<LevelCreationPresenter>(Lifetime.Singleton).AsSelf().As<IInitializable>();
             builder.Register<LevelPresenter>(Lifetime.Singleton);
             builder.RegisterInstance(levelContainer);
         }

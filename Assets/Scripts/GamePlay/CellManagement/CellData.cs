@@ -5,16 +5,18 @@ namespace GamePlay.CellManagement
 {
     public struct CellData
     {
-        public CellData(BoardLocation location, GameObject gameObject, CellType cellType)
+        public CellData(BoardLocation location, GameObject gameObject, LevelData.BlockData blockData)
         {
             this.location = location;
             this.gameObject = gameObject;
-            this.cellType = cellType;
+            // this.cellType = cellType;
+            this.blockData = blockData;
         }
         
         public BoardLocation location;
         public GameObject gameObject;
-        public CellType cellType;
+        // public CellType cellType;
+        public LevelData.BlockData blockData;
     }
     
     public struct BoardLocation

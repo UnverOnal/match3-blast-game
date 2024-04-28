@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ac3316d06e55f94eaa56cddbe524758, type: 3}
   m_Name: BoardCreationData
   m_EditorClassIdentifier: 
-  blockData:
+  blockCreationData:
   - type: 0
     prefab: {fileID: 8902247363324809924, guid: 48391c43ca44fdc45b283d7edd7d5793, type: 3}
   - type: 1
@@ -28,4 +28,3 @@ MonoBehaviour:
   - type: 6
     prefab: {fileID: 2152559425444218267, guid: a30990b5006ed174284dd3512ebb49cc, type: 3}
   background: {fileID: 21300000, guid: d47f4ed052a2bcc4cac4400e2b33a1f5, type: 3}
-  centerPoint: {x: 0, y: 0}

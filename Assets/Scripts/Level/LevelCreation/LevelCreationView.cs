@@ -45,50 +45,47 @@ namespace Level.LevelCreation
 
         public void PlaceBlocks(LevelData levelData)
         {
-            var blockCounts = GetBlockCounts(levelData);
+            var blockDatas = GetBlockCounts(levelData);
 
             for (var i = 0; i < levelData.boardSize.x; i++)
             for (var j = 0; j < levelData.boardSize.y; j++)
             {
                 var cellPosition = new Vector3(i, j, 0);
 
-                var block = GetBlock(blockCounts, out var type);
-                block.transform.position = cellPosition;
+                var blockGameObject = GetBlock(blockDatas, out var blockData);
+                blockGameObject.transform.position = cellPosition;
                 
-                OnPlaceBlock?.Invoke(new CellData(new BoardLocation(i,j), block, type));
+                OnPlaceBlock?.Invoke(new CellData(new BoardLocation(i,j), blockGameObject, blockData));
             }
         }
 
-        private List<KeyValuePair<CellType, int>> GetBlockCounts(LevelData levelData)
+        private List<LevelData.BlockData> GetBlockCounts(LevelData levelData)
         {
-            var blockCounts = new List<KeyValuePair<CellType, int>>();
+            var blockDatas = new List<LevelData.BlockData>();
             for (int i = 0; i < levelData.blockData.Length; i++)
-            {
-                var blockData = levelData.blockData[i];
-                var blockCount = new KeyValuePair<CellType, int>(blockData.type, blockData.amount);
-                blockCounts.Add(blockCount);
-            }
-            var obstacleCount = new KeyValuePair<CellType, int>(CellType.Obstacle, levelData.obstacleHealths.Length);
-            blockCounts.Add( obstacleCount);
+                blockDatas.Add(levelData.blockData[i]);
             
-            return blockCounts;
+            var obstacleData = new LevelData.BlockData()
+                { amount = levelData.obstacleHealths.Length, type = CellType.Obstacle };
+            blockDatas.Add( obstacleData);
+            
+            return blockDatas;
         }
         
         //Also updates block counts list
-        private GameObject GetBlock(IList<KeyValuePair<CellType, int>> blockCounts, out CellType cellType)
+        private GameObject GetBlock(IList<LevelData.BlockData> blockDatas, out LevelData.BlockData blockData)
         {
-            var randomIndex = Random.Range(0, blockCounts.Count);
-            var (type, count) = blockCounts[randomIndex];
-            count--;
-            
-            blockCounts[randomIndex] = new KeyValuePair<CellType, int>(type, count);
-            if (count <= 0)
-                blockCounts.RemoveAt(randomIndex);
+            var randomIndex = Random.Range(0, blockDatas.Count);
+            blockData = blockDatas[randomIndex];
+            blockData.amount--;
 
-            cellType = type;
-            var block = _blockCreator.GetBlock(type);
-            block.SetActive(true);
-            return block;
+            blockDatas[randomIndex] = blockData;
+            if (blockData.amount <= 0)
+                blockDatas.RemoveAt(randomIndex);
+
+            var blockGameObject = _blockCreator.GetBlock(blockData.type);
+            blockGameObject.SetActive(true);
+            return blockGameObject;
         }
     }
 }

@@ -54,7 +54,7 @@ namespace GamePlay.Board
 
         private GameObject GetPrefab(CellType type)
         {
-            var blocks = _creationData.blockData;
+            var blocks = _creationData.blockCreationData;
             for (var i = 0; i < blocks.Length; i++)
                 if(blocks[i].type == type) return blocks[i].prefab;
 

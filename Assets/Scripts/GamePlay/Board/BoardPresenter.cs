@@ -13,6 +13,7 @@ namespace GamePlay.Board
     public class BoardPresenter : IInitializable, IDisposable
     {
         [Inject] private BoardModel _boardModel;
+        [Inject] private CellCreator _cellCreator;
         private readonly BoardView _boardView;
         private readonly BoardShuffler _boardShuffler;
 
@@ -21,14 +22,14 @@ namespace GamePlay.Board
         [Inject]
         public BoardPresenter(BlockCreator blockCreator, IPoolService poolService, LevelPresenter levelPresenter, GameSettings gameSettings)
         {
-            _boardView = new BoardView(blockCreator, levelPresenter, gameSettings);
+            _boardView = new BoardView(blockCreator, levelPresenter, gameSettings.blockMovementData);
             _groupPool = poolService.GetPoolFactory().CreatePool(() => new CellGroup());
             _boardShuffler = new BoardShuffler();
         }
         
         public void Initialize()
         {
-            _boardView.OnFillBlock += _boardModel.AddCell;
+            _boardView.OnFillBlock += _cellCreator.AddCell;
         }
 
         public async void OnBlockSelected(GameObject selectedBlock)
@@ -40,7 +41,7 @@ namespace GamePlay.Board
                 return;
             }
 
-            //Gets bottom blasted ones for being able to start checking from them to upwards.
+            //Gets bottom blasted ones for being able to start checking from them to top.
             var bottomBlastedLocations = new List<BoardLocation>(group.GetBottomLocations());
             await Blast(group, selectedBlock);
 
@@ -86,7 +87,7 @@ namespace GamePlay.Board
             
             var groupCells = group.cells;
             foreach (var cellPair in groupCells)
-                _boardModel.RemoveCell(cellPair.Value);
+                _cellCreator.RemoveCell(cellPair.Value);
             
             _boardModel.RemoveCellGroup(group);
             group.Reset();
@@ -153,7 +154,7 @@ namespace GamePlay.Board
 
         public void Dispose()
         {
-            _boardView.OnFillBlock -= _boardModel.AddCell;
+            _boardView.OnFillBlock -= _cellCreator.AddCell;
         }
     }
 }

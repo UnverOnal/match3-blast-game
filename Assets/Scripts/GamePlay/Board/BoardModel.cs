@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using GamePlay.CellManagement;
 using Level.LevelCounter;
-using Services.PoolingService;
 using UnityEngine;
 using VContainer;
 
@@ -11,35 +10,21 @@ namespace GamePlay.Board
     {
         public readonly List<CellGroup> cellGroups;
         public Cell[,] Cells => _board.cells;
+        
+        private readonly Board _board;
 
-        private readonly ObjectPool<Cell> _cellPool;
-
-        private readonly global::GamePlay.Board.Board _board;
-
-        [Inject]
-        public BoardModel(IPoolService poolService)
+        public BoardModel()
         {
-            _cellPool = poolService.GetPoolFactory().CreatePool(()=> new Cell());
             cellGroups = new List<CellGroup>();
 
-            _board = new global::GamePlay.Board.Board();
+            _board = new Board();
         }
 
         public void SetBoardSize(BoardSize boardSize) => _board.SetBoardSize(boardSize);
 
-        public void AddCell(CellData cellData)
-        {
-            var cell = _cellPool.Get();
-            cell.SetCellData(cellData);
-            _board.AddCell(cell, cellData);
-        }
+        public void AddCell(Cell cell) => _board.AddCell(cell);
 
-        public void RemoveCell(Cell cell)
-        {
-            _board.RemoveCell(cell);
-            cell.Reset();
-            _cellPool.Return(cell);
-        }
+        public void RemoveCell(Cell cell) => _board.RemoveCell(cell);
 
         public void UpdateCellLocation(Cell cell, BoardLocation targetLocation)
         {
