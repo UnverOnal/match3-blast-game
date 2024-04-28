@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using GameManagement;
 using GamePlay.CellManagement;
+using GamePlay.PrefabCreation;
 using Level.LevelCounter;
 using Services.PoolingService;
 using UnityEngine;
@@ -15,15 +16,18 @@ namespace GamePlay.Board
         [Inject] private BoardModel _boardModel;
         [Inject] private CellCreator _cellCreator;
         private readonly BoardView _boardView;
+        
         private readonly BoardShuffler _boardShuffler;
+        private readonly BoardGrouper _boardGrouper;
 
         private readonly ObjectPool<CellGroup> _groupPool;
         
         [Inject]
-        public BoardPresenter(BlockCreator blockCreator, IPoolService poolService, LevelPresenter levelPresenter, GameSettings gameSettings)
+        public BoardPresenter(CellPrefabCreator cellPrefabCreator, IPoolService poolService, LevelPresenter levelPresenter, GameSettings gameSettings)
         {
-            _boardView = new BoardView(blockCreator, levelPresenter, gameSettings.blockMovementData);
+            _boardView = new BoardView(cellPrefabCreator, levelPresenter, gameSettings.blockMovementData);
             _groupPool = poolService.GetPoolFactory().CreatePool(() => new CellGroup());
+            _boardGrouper = new BoardGrouper(_groupPool);
             _boardShuffler = new BoardShuffler();
         }
         
@@ -53,33 +57,7 @@ namespace GamePlay.Board
                 Shuffle();
         }
 
-        public void GroupCells()
-        {
-            var board = _boardModel.Cells;
-            _boardModel.cellGroups.Clear();
-            var visitedCells = new HashSet<Cell>();
-
-            for (var i = 0; i < board.GetLength(0); i++)
-            for (var j = 0; j < board.GetLength(1); j++)
-            {
-                var cell = board[i, j];
-                if (cell == null || visitedCells.Contains(cell) || cell.CellType == CellType.Obstacle)
-                    continue;
-
-                var group = _groupPool.Get();
-                group.Add(cell);
-                visitedCells.Add(cell);
-                cell.GetNeighbours(group, board, visitedCells);
-
-                if (group.IsEmpty)
-                {
-                    group.Reset();
-                    _groupPool.Return(group);
-                }
-                else
-                    _boardModel.AddCellGroup(group);
-            }
-        }
+        public void GroupCells() => _boardGrouper.GroupCells(_boardModel);
 
         private async UniTask Blast(CellGroup group, GameObject selectedBlock)
         {
@@ -104,7 +82,7 @@ namespace GamePlay.Board
                     var cell = cells[location.x, j];
                     if (cell == null)
                         continue;
-                    if (cell.CellType == CellType.Obstacle)
+                    if (cell.GetType() == typeof(Obstacle))
                     {
                         yLocation = cell.Location.y + 1;
                         continue;
@@ -131,7 +109,7 @@ namespace GamePlay.Board
                         var emptyLocation = new BoardLocation(location.x, i);
                         columnEmptyLocations.Add(emptyLocation);
                     }
-                    else if(cell.CellType == CellType.Obstacle)
+                    else if(cell.GetType() == typeof(Obstacle))
                         columnEmptyLocations.Clear();
                 }
                 allEmptyLocations.Add(columnEmptyLocations);

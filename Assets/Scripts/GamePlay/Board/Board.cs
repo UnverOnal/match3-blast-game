@@ -15,9 +15,9 @@ namespace GamePlay.Board
             _cellsMap = new Dictionary<GameObject, Cell>();
         }
 
-        public void SetBoardSize(BoardSize boardSize)
+        public void SetBoardSize(int width, int height)
         {
-            cells = new Cell[boardSize.x, boardSize.y];
+            cells = new Cell[width, height];
         }
 
         public void AddCell(Cell cell)

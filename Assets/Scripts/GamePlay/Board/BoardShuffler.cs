@@ -40,7 +40,7 @@ namespace GamePlay.Board
         private bool IsSwapValid(Cell cell, Cell cellToReplace)
         {
             var isEmpty = cell == null || cellToReplace == null;
-            var isBlock = cell?.CellType != CellType.Obstacle && cellToReplace?.CellType != CellType.Obstacle;
+            var isBlock = cell?.GetType() != typeof(Obstacle) && cellToReplace?.GetType() != typeof(Obstacle);
             return !isEmpty && isBlock;
         }
     }

@@ -1,10 +1,8 @@
-using System.Collections.Generic;
-using Level.LevelCounter;
 using UnityEngine;
 
 namespace GamePlay.CellManagement
 {
-    public class Cell
+    public abstract class Cell
     {
         public Vector3 Position => GameObject.transform.position;
         public Vector2 Extents => _sprite.bounds.extents * (Vector2)GameObject.transform.localScale;
@@ -16,44 +14,15 @@ namespace GamePlay.CellManagement
         
         private Sprite _sprite;
 
-        public void SetCellData(CellData cellData)
+        public virtual void SetData(CellCreationData cellCreationData)
         {
-            SetLocation(cellData.location);
-            CellType = cellData.blockData.type;
+            SetLocation(cellCreationData.location);
+            CellType = cellCreationData.cellData.cellType;
             
-            GameObject = cellData.gameObject;
+            GameObject = cellCreationData.gameObject;
             _sprite = GameObject.GetComponent<SpriteRenderer>().sprite;
         }
 
-        public void GetNeighbours(CellGroup cellGroup, Cell[,] board, HashSet<Cell> visitedCells)
-        {
-            int[] horizontalDimension = { 0, 1, 0, -1 };
-            int[] verticalDimension = { -1, 0, 1, 0 };
-            
-            var boardWidth = board.GetLength(0);
-            var boardHeight = board.GetLength(1);
-
-            //Traverse neighbours
-            for (int i = 0; i < 4; i++)
-            {
-                var x = Location.x + horizontalDimension[i];
-                var y = Location.y + verticalDimension[i];
-
-                var locationExist = x >= 0 && x < boardWidth && y >= 0 && y < boardHeight;
-                if (locationExist)
-                {
-                    var neighbour = board[x, y];
-                    if (neighbour == null || CellType != neighbour.CellType || visitedCells.Contains(neighbour))
-                        continue;
-
-                    //Add cell group if it is same type
-                    cellGroup.Add(neighbour);
-                    visitedCells.Add(neighbour);
-                    neighbour.GetNeighbours(cellGroup, board, visitedCells);
-                }
-            }
-        }
-        
         public void Reset()
         {
             GameObject = null;
@@ -64,6 +33,32 @@ namespace GamePlay.CellManagement
         public void SetLocation(BoardLocation boardLocation)
         {
             Location = boardLocation;
+        }
+    }
+    
+    public struct CellCreationData
+    {
+        public CellCreationData(BoardLocation location, GameObject gameObject, CellData cellData)
+        {
+            this.location = location;
+            this.gameObject = gameObject;
+            this.cellData = cellData;
+        }
+
+        public BoardLocation location;
+        public GameObject gameObject;
+        public CellData cellData;
+    }
+
+    public struct BoardLocation
+    {
+        public readonly int x;
+        public readonly int y;
+
+        public BoardLocation(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
         }
     }
 }

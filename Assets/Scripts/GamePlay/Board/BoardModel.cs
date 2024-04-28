@@ -20,7 +20,7 @@ namespace GamePlay.Board
             _board = new Board();
         }
 
-        public void SetBoardSize(BoardSize boardSize) => _board.SetBoardSize(boardSize);
+        public void SetBoardSize(int width, int height) => _board.SetBoardSize(width, height);
 
         public void AddCell(Cell cell) => _board.AddCell(cell);
 

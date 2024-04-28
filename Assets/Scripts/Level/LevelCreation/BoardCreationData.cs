@@ -1,5 +1,5 @@
 using System;
-using Level.LevelCounter;
+using GamePlay.CellManagement;
 using UnityEngine;
 
 namespace Level.LevelCreation
@@ -7,14 +7,21 @@ namespace Level.LevelCreation
     [CreateAssetMenu(fileName = "BoardCreationData", menuName = "ScriptableObjects/BoardCreationData")]
     public class BoardCreationData : ScriptableObject
     {
-        [Serializable]public struct BlockCreationData
-        {
-            public CellType type;
-            public GameObject prefab;
-        }
-
         public BlockCreationData[] blockCreationData;
+        public ObstacleCreationData[] obstacleCreationData;
 
         public Sprite background;
+    }
+    
+    [Serializable]public struct BlockCreationData
+    {
+        public BlockType type;
+        public GameObject prefab;
+    }
+    
+    [Serializable]public struct ObstacleCreationData
+    {
+        public ObstacleType type;
+        public GameObject prefab;
     }
 }

@@ -1,4 +1,4 @@
-using System;
+using GamePlay.CellManagement;
 using UnityEngine;
 
 namespace Level.LevelCounter
@@ -8,37 +8,18 @@ namespace Level.LevelCounter
     {
         //GOAL var
 
-        public BoardSize boardSize;
-
-        [Serializable]
-        public struct BlockData
-        {
-            public CellType type;
-            public int amount;
-        }
+        [Header("BoardSize")]
+        public int width;
+        public int height;
+        
+        [Header("BlockData")]
         public BlockData[] blockData;
 
+        [Header("ObstacleData")] 
+        public ObstacleData[] obstacleData;
+        
+        [Header("MoveData")]
         public int moveCount;
         public float duration = 60f;
-
-        public int[] obstacleHealths;
-    }
-
-    public enum CellType
-    {
-        Blue,
-        Green,
-        Orange,
-        Purple,
-        Red,
-        Yellow,
-        Obstacle
-    }
-
-    [Serializable]
-    public struct BoardSize
-    {
-        public int x;
-        public int y;
     }
 }

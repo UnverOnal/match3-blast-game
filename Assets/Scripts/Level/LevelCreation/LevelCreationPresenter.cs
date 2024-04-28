@@ -2,6 +2,7 @@ using System;
 using GameManagement;
 using GamePlay.Board;
 using GamePlay.CellManagement;
+using GamePlay.PrefabCreation;
 using Level.LevelCounter;
 using Services.PoolingService;
 using VContainer;
@@ -21,9 +22,9 @@ namespace Level.LevelCreation
         private readonly LevelFitter _levelFitter;
 
         [Inject]
-        public LevelCreationPresenter(BoardCreationData creationData, GameSettings gameSettings, BoardResources boardResources, BlockCreator blockCreator)
+        public LevelCreationPresenter(BoardCreationData creationData, GameSettings gameSettings, BoardResources boardResources, CellPrefabCreator cellPrefabCreator)
         {
-            _levelCreationView = new LevelCreationView(creationData, blockCreator, boardResources);
+            _levelCreationView = new LevelCreationView(creationData, cellPrefabCreator, boardResources);
 
             _levelFitter = new LevelFitter(gameSettings);
         }
@@ -36,7 +37,7 @@ namespace Level.LevelCreation
         public void Create()
         {
             var levelData = _levelPresenter.GetNextLevelData();
-            _boardModel.SetBoardSize(levelData.boardSize);
+            _boardModel.SetBoardSize(levelData.width, levelData.height);
             _levelCreationView.PlaceBlocks(levelData);
             _levelFitter.AlignCamera(_boardModel.Cells);
             _levelCreationView.SetBoardBackground(_levelFitter.Bounds);

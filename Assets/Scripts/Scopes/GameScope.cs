@@ -2,6 +2,7 @@ using GameManagement;
 using GamePlay;
 using GamePlay.Board;
 using GamePlay.CellManagement;
+using GamePlay.PrefabCreation;
 using GameState;
 using Level.LevelCounter;
 using Level.LevelCreation;
@@ -37,7 +38,7 @@ namespace Scopes
             RegisterLevel(builder);
             builder.Register<GamePlayPresenter>(Lifetime.Singleton).AsSelf().As<IInitializable>();
             
-            builder.Register<BlockCreator>(Lifetime.Singleton);
+            builder.Register<CellPrefabCreator>(Lifetime.Singleton);
             builder.Register<CellCreator>(Lifetime.Singleton);
 
             builder.Register<GameStatePresenter>(Lifetime.Singleton);

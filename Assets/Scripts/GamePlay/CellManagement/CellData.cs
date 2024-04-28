@@ -1,33 +1,47 @@
-using Level.LevelCounter;
-using UnityEngine;
+using System;
 
 namespace GamePlay.CellManagement
 {
-    public struct CellData
+    public enum CellType
     {
-        public CellData(BoardLocation location, GameObject gameObject, LevelData.BlockData blockData)
-        {
-            this.location = location;
-            this.gameObject = gameObject;
-            // this.cellType = cellType;
-            this.blockData = blockData;
-        }
-        
-        public BoardLocation location;
-        public GameObject gameObject;
-        // public CellType cellType;
-        public LevelData.BlockData blockData;
+        Block,
+        Obstacle
     }
     
-    public struct BoardLocation
+    public enum BlockType
     {
-        public readonly int x;
-        public readonly int y;
+        Blue,
+        Green,
+        Orange,
+        Purple,
+        Red,
+        Yellow,
+    }
+    
+    public enum ObstacleType
+    {
+        Stone
+    }
+    
+    [Serializable]
+    public class CellData
+    {
+        public CellType cellType;
+        public int amount;
 
-        public BoardLocation(int x, int y)
-        {
-            this.x = x;
-            this.y = y;
-        }
+        public object Clone() => MemberwiseClone();
+    }
+    
+    [Serializable]
+    public class BlockData : CellData
+    {
+        public BlockType type;
+    }
+
+    [Serializable]
+    public class ObstacleData : CellData
+    {
+        public ObstacleType type;
+        public int health;
     }
 }

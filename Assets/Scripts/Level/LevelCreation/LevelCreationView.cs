@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using GamePlay.Board;
 using GamePlay.CellManagement;
+using GamePlay.PrefabCreation;
 using Level.LevelCounter;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,16 +12,17 @@ namespace Level.LevelCreation
 {
     public class LevelCreationView
     {
-        public event Action<CellData> OnPlaceBlock;
+        public event Action<CellCreationData> OnPlaceBlock;
 
         private readonly BoardCreationData _creationData;
-        private readonly BlockCreator _blockCreator;
+        private readonly CellPrefabCreator _cellPrefabCreator;
         private readonly BoardResources _boardResources;
 
-        public LevelCreationView(BoardCreationData creationData, BlockCreator blockCreator, BoardResources boardResources)
+        public LevelCreationView(BoardCreationData creationData, CellPrefabCreator cellPrefabCreator,
+            BoardResources boardResources)
         {
             _creationData = creationData;
-            _blockCreator = blockCreator;
+            _cellPrefabCreator = cellPrefabCreator;
             _boardResources = boardResources;
         }
 
@@ -29,15 +31,15 @@ namespace Level.LevelCreation
             var background = _boardResources.boardBackground;
             background.sprite = _creationData.background;
             background.gameObject.SetActive(true);
-            
+
             // Convert bounds to screen space
-            Camera mainCamera = Camera.main;
+            var mainCamera = Camera.main;
             var minScreenPoint = mainCamera.WorldToScreenPoint(bounds.min);
             var maxScreenPoint = mainCamera.WorldToScreenPoint(bounds.max);
             // Calculate occupied area
             var occupiedWidth = maxScreenPoint.x - minScreenPoint.x;
             var occupiedHeight = maxScreenPoint.y - minScreenPoint.y;
-            
+
             background.rectTransform.sizeDelta = new Vector2(occupiedWidth, occupiedHeight);
             background.type = Image.Type.Sliced;
             background.GetComponentInParent<Canvas>().worldCamera = mainCamera;
@@ -45,45 +47,42 @@ namespace Level.LevelCreation
 
         public void PlaceBlocks(LevelData levelData)
         {
-            var blockDatas = GetBlockCounts(levelData);
+            var cellDatas = GetCellDatas(levelData);
 
-            for (var i = 0; i < levelData.boardSize.x; i++)
-            for (var j = 0; j < levelData.boardSize.y; j++)
+            for (var i = 0; i < levelData.width; i++)
+            for (var j = 0; j < levelData.height; j++)
             {
                 var cellPosition = new Vector3(i, j, 0);
 
-                var blockGameObject = GetBlock(blockDatas, out var blockData);
+                var blockGameObject = GetBlock(cellDatas, out var cellData);
                 blockGameObject.transform.position = cellPosition;
-                
-                OnPlaceBlock?.Invoke(new CellData(new BoardLocation(i,j), blockGameObject, blockData));
+
+                OnPlaceBlock?.Invoke(new CellCreationData(new BoardLocation(i, j), blockGameObject, cellData));
             }
         }
 
-        private List<LevelData.BlockData> GetBlockCounts(LevelData levelData)
+        private List<CellData> GetCellDatas(LevelData levelData)
         {
-            var blockDatas = new List<LevelData.BlockData>();
-            for (int i = 0; i < levelData.blockData.Length; i++)
-                blockDatas.Add(levelData.blockData[i]);
+            var cellDatas = new List<CellData>();
             
-            var obstacleData = new LevelData.BlockData()
-                { amount = levelData.obstacleHealths.Length, type = CellType.Obstacle };
-            blockDatas.Add( obstacleData);
-            
-            return blockDatas;
+            cellDatas.AddRange(levelData.blockData);
+            cellDatas.AddRange(levelData.obstacleData);
+
+            return cellDatas;
         }
-        
+
         //Also updates block counts list
-        private GameObject GetBlock(IList<LevelData.BlockData> blockDatas, out LevelData.BlockData blockData)
+        private GameObject GetBlock(IList<CellData> cellDatas, out CellData cellData)
         {
-            var randomIndex = Random.Range(0, blockDatas.Count);
-            blockData = blockDatas[randomIndex];
-            blockData.amount--;
+            var randomIndex = Random.Range(0, cellDatas.Count);
+            cellData = (CellData)cellDatas[randomIndex].Clone() ;
+            cellData.amount--;
 
-            blockDatas[randomIndex] = blockData;
-            if (blockData.amount <= 0)
-                blockDatas.RemoveAt(randomIndex);
+            cellDatas[randomIndex] = cellData;
+            if (cellData.amount <= 0)
+                cellDatas.RemoveAt(randomIndex);
 
-            var blockGameObject = _blockCreator.GetBlock(blockData.type);
+            var blockGameObject = _cellPrefabCreator.Get(cellData);
             blockGameObject.SetActive(true);
             return blockGameObject;
         }

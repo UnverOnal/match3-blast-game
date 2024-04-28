@@ -7,19 +7,21 @@ namespace GamePlay.CellManagement
     public class CellCreator
     {
         private readonly BoardModel _boardModel;
-        private readonly ObjectPool<Cell> _cellPool;
+        private readonly ObjectPool<Block> _blockPool;
+        private readonly ObjectPool<Obstacle> _obstaclePool;
 
         [Inject]
         public CellCreator(IPoolService poolService, BoardModel boardModel)
         {
             _boardModel = boardModel;
-            _cellPool = poolService.GetPoolFactory().CreatePool(() => new Cell());
+            _blockPool = poolService.GetPoolFactory().CreatePool(() => new Block());
+            _obstaclePool = poolService.GetPoolFactory().CreatePool(() => new Obstacle());
         }
         
-        public void AddCell(CellData cellData)
+        public void AddCell(CellCreationData cellCreationData)
         {
-            var cell = _cellPool.Get();
-            cell.SetCellData(cellData);
+            var cell = GetCell(cellCreationData.cellData);
+            cell.SetData(cellCreationData);
             _boardModel.AddCell(cell);
         }
 
@@ -27,7 +29,23 @@ namespace GamePlay.CellManagement
         {
             _boardModel.RemoveCell(cell);
             cell.Reset();
-            _cellPool.Return(cell);
+            ReturnCell(cell);
+        }
+
+        private Cell GetCell(CellData cellData)
+        {
+            if (cellData.GetType() == typeof(ObstacleData))
+                return _obstaclePool.Get();
+
+            return _blockPool.Get();
+        }
+
+        private void ReturnCell(Cell cell)
+        {
+            if (cell.GetType() == typeof(Obstacle))
+                _obstaclePool.Return((Obstacle)cell);
+            else
+                _blockPool.Return((Block)cell);
         }
     }
 }
