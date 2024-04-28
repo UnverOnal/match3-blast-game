@@ -20,9 +20,9 @@ namespace Board
         private readonly ObjectPool<CellGroup> _groupPool;
         
         [Inject]
-        public BoardPresenter(BlockCreator blockCreator, IPoolService poolService, LevelPresenter levelPresenter)
+        public BoardPresenter(BlockCreator blockCreator, IPoolService poolService, LevelPresenter levelPresenter, GameSettings gameSettings)
         {
-            _boardView = new BoardView(blockCreator, levelPresenter);
+            _boardView = new BoardView(blockCreator, levelPresenter, gameSettings);
             _groupPool = poolService.GetPoolFactory().CreatePool(() => new CellGroup());
             _boardShuffler = new BoardShuffler();
         }
@@ -111,14 +111,14 @@ namespace Board
                     }
 
                     _boardModel.UpdateCellLocation(cell, new BoardLocation(location.x, yLocation++));
-                    _boardView.Collapse(cell, j);
+                    _boardView.Collapse(cell);
                 }
             }
         }
 
         private void Fill(IEnumerable<BoardLocation> bottomBlastedLocations, Cell[,] cells)
         {
-            var allEmptyLocations = new List<BoardLocation>();
+            var allEmptyLocations = new List<List<BoardLocation>>();
             var boardHeight = cells.GetLength(1);
             foreach (var location in bottomBlastedLocations)
             {
@@ -134,7 +134,7 @@ namespace Board
                     else if(cell.CellType == CellType.Obstacle)
                         columnEmptyLocations.Clear();
                 }
-                allEmptyLocations.AddRange(columnEmptyLocations);
+                allEmptyLocations.Add(columnEmptyLocations);
             }
 
             _boardView.Fill(allEmptyLocations, boardHeight);

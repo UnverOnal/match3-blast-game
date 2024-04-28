@@ -4,6 +4,7 @@ using Board.BoardCreation;
 using Board.CellManagement;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using GameManagement;
 using Level;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -15,11 +16,14 @@ namespace Board
         public event Action<CellData> OnFillBlock;
         private readonly BlockCreator _blockCreator;
         private readonly LevelPresenter _levelPresenter;
+        private readonly BlockFall _blockFall;
 
-        public BoardView(BlockCreator blockCreator, LevelPresenter levelPresenter)
+        public BoardView(BlockCreator blockCreator, LevelPresenter levelPresenter, GameSettings gameSettings)
         {
             _blockCreator = blockCreator;
             _levelPresenter = levelPresenter;
+
+            _blockFall = new BlockFall(gameSettings);
         }
 
         public async UniTask Shake(Transform transform, float duration, float strength)
@@ -63,31 +67,32 @@ namespace Board
             await UniTask.WhenAll(tasks);
         }
 
-        public void Collapse(Cell cell, int delayAmount)
+        public void Collapse(Cell cell)
         {
-            // await UniTask.Delay(TimeSpan.FromSeconds(0.05f * delayAmount));
-            
             var transform = cell.GameObject.transform;
             
             var targetPosition = transform.position;
             targetPosition.x = cell.Location.x;
             targetPosition.y = cell.Location.y;
-
-            transform.DOMove(targetPosition, 0.25f).SetEase(Ease.OutBack);
+            
+            _blockFall.Fall(transform, targetPosition, true);
         }
 
-        public void Fill(List<BoardLocation> emptyLocations, int boardHeight)
+        public void Fill(List<List<BoardLocation>> emptyLocations, int boardHeight)
         {
-            for (int i = 0; i < emptyLocations.Count; i++)
+            foreach (var locations in emptyLocations)
             {
-                var location = emptyLocations[i];
-                var block = GetRandomBlock(out var blockType);
-                var spawnPosition = new Vector3(location.x, boardHeight + i, 0f);
-                block.transform.position = spawnPosition;
-                
-                block.transform.DOMove(new Vector3(location.x, location.y), 0.25f).SetEase(Ease.OutBack);
-                
-                OnFillBlock?.Invoke(new CellData(location, block, blockType));
+                for (int i = 0; i < locations.Count; i++)
+                {
+                    var location = locations[i];
+                    var block = GetRandomBlock(out var blockType);
+                    var spawnPosition = new Vector3(location.x, boardHeight + i, 0f);
+                    block.transform.position = spawnPosition;
+
+                    _blockFall.FallDelayed(block.transform, new Vector3(location.x, location.y), true, i);
+
+                    OnFillBlock?.Invoke(new CellData(location, block, blockType));
+                }
             }
         }
 
