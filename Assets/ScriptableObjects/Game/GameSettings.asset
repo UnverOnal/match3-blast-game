@@ -15,8 +15,10 @@ MonoBehaviour:
   cameraSizeOffset: 0.05
   cameraPositionOffset: {x: 0, y: 0, z: 0}
   boundsOffsetFactor: 1.15
-  fallSpeed: 7.5
-  delayFactor: 0.1
-  fallEase: 5
-  bouncePower: 0.05
-  bounceDuration: 0.1
+  blockMovementData:
+    fallEase: 5
+    fallSpeed: 7.5
+    delayFactor: 0.1
+    bouncePower: 0.05
+    bounceDuration: 0.1
+    blastDuration: 0.25

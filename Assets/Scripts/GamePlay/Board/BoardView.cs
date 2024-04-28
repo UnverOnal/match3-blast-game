@@ -16,13 +16,15 @@ namespace GamePlay.Board
         private readonly BlockCreator _blockCreator;
         private readonly LevelPresenter _levelPresenter;
         private readonly BlockFall _blockFall;
+        private readonly BlockMovementData _movementData;
 
         public BoardView(BlockCreator blockCreator, LevelPresenter levelPresenter, GameSettings gameSettings)
         {
             _blockCreator = blockCreator;
             _levelPresenter = levelPresenter;
+            _movementData = gameSettings.blockMovementData;
 
-            _blockFall = new BlockFall(gameSettings);
+            _blockFall = new BlockFall(_movementData);
         }
 
         public async UniTask Shake(Transform transform, float duration, float strength)
@@ -56,7 +58,7 @@ namespace GamePlay.Board
                 var originalScale = transform.localScale;
                 
                 var tween = DOTween.Sequence();
-                tween.Append(transform.DOMove(center, 0.25f).SetEase(Ease.InBack));
+                tween.Append(transform.DOMove(center, _movementData.blastDuration).SetEase(Ease.InBack));
                 tween.Append(transform.DOScale(0f, 0.1f).SetEase(Ease.InBack, 2f));
                 tween.OnComplete(() => ReturnToPool(cellPair, originalScale));
                 
