@@ -137,6 +137,7 @@ namespace Board
                 allEmptyLocations.Add(columnEmptyLocations);
             }
 
+            //Fill all at once because of taking necessity of leaving empty under the obstacle account.
             _boardView.Fill(allEmptyLocations, boardHeight);
         }
 
