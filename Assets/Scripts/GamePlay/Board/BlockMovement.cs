@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using GameManagement;
@@ -35,6 +36,8 @@ namespace GamePlay.Board
 
             if (bounce)
                 fall.OnComplete(() => { transform.DOJump(transform.position, _movementData.bouncePower, 1, _movementData.bounceDuration); });
+
+            await fall.AsyncWaitForCompletion().AsUniTask();
         }
 
         public Tween Blast(Transform transform, Vector3 targetPosition)

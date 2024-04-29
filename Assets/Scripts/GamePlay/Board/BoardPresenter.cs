@@ -6,6 +6,7 @@ using GameManagement;
 using GamePlay.CellManagement;
 using GamePlay.PrefabCreation;
 using Level.LevelCounter;
+using Services.InputService;
 using Services.PoolingService;
 using UnityEngine;
 using VContainer;
@@ -16,6 +17,7 @@ namespace GamePlay.Board
     {
         [Inject] private BoardModel _boardModel;
         [Inject] private CellCreator _cellCreator;
+        [Inject] private IInputService _inputService;
         private readonly BoardView _boardView;
         
         private readonly BoardShuffler _boardShuffler;
@@ -128,15 +130,17 @@ namespace GamePlay.Board
             await _boardView.Fill(allEmptyLocations, boardHeight);
         }
 
-        private void Shuffle()
+        private async void Shuffle()
         {
+            _inputService.IgnoreInput(true);
             while (_boardModel.cellGroups.Count < 1)
             {
                 _boardShuffler.Shuffle(_boardModel.Cells);
                 GroupCells();
             }
             
-            _boardView.Shuffle(_boardModel.Cells);
+            await _boardView.Shuffle(_boardModel.Cells);
+            _inputService.IgnoreInput(false);
         }
 
         public void Dispose()

@@ -6,7 +6,6 @@ using GameManagement;
 using GamePlay.CellManagement;
 using GamePlay.PrefabCreation;
 using Level.LevelCounter;
-using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -103,8 +102,10 @@ namespace GamePlay.Board
             await UniTask.WhenAll(tasks);
         }
 
-        public void Shuffle(Cell[,] cells)
+        public async UniTask Shuffle(Cell[,] cells)
         {
+            var tasks = new List<UniTask>();
+            
             var width = cells.GetLength(0);
             var height = cells.GetLength(1);
 
@@ -117,8 +118,11 @@ namespace GamePlay.Board
 
                 var location = cell.Location;
                 var transform = cell.GameObject.transform;
-                transform.DOMove(new Vector3(location.x, location.y), 0.35f).SetEase(Ease.OutBack);
+                var tween = transform.DOMove(new Vector3(location.x, location.y), 0.35f).SetEase(Ease.OutBack);
+                tasks.Add(tween.AsyncWaitForCompletion().AsUniTask());
             }
+
+            await UniTask.WhenAll(tasks);
         }
 
         private void ReturnToPool(Cell cell, Vector3 originalScale)
