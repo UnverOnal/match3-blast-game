@@ -51,7 +51,7 @@ namespace GamePlay.Board
             await Blast(selectedGroup, selectedBlock);
 
             //Gets bottom blasted ones for being able to start checking from them to top.
-            var bottomBlastedLocations = new List<BoardLocation>(selectedGroup.bottomLocations.Select((pair => pair.Value)).ToList());
+            var bottomBlastedLocations = selectedGroup.bottomLocations.Select(pair => pair.Value).ToList();
             ResetGroup(selectedGroup);
             Collapse(bottomBlastedLocations, _boardModel.Cells);
             await Fill(bottomBlastedLocations, _boardModel.Cells);
