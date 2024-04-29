@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using GamePlay.CellManagement;
 using Services.PoolingService;
 
-namespace GamePlay.Board
+namespace GamePlay.Board.Steps
 {
     public class BoardGrouper
     {
@@ -44,10 +44,10 @@ namespace GamePlay.Board
         private bool CanGroup(Cell cell, HashSet<Cell> visitedCells)
         {
             var isEmpty = cell == null;
-            var isObstacle = cell?.GetType() == typeof(Obstacle);
+            var isNotBlock = cell?.GetType() != typeof(Block);
             var isVisited = visitedCells.Contains(cell);
 
-            return !isEmpty && !isObstacle && !isVisited;
+            return !isEmpty && !isNotBlock && !isVisited;
         }
     }
 }

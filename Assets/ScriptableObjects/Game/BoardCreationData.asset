@@ -29,3 +29,8 @@ MonoBehaviour:
   - type: 0
     prefab: {fileID: 2152559425444218267, guid: a30990b5006ed174284dd3512ebb49cc, type: 3}
   background: {fileID: 21300000, guid: d47f4ed052a2bcc4cac4400e2b33a1f5, type: 3}
+  powerUps:
+  - type: 0
+    prefab: {fileID: 2152559425444218267, guid: 6827460adb29e194f92304a13593e462, type: 3}
+  - type: 1
+    prefab: {fileID: 2152559425444218267, guid: 8f4f641d53ee6b84c96ab41585c7b5c9, type: 3}

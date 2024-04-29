@@ -1,4 +1,5 @@
 using System;
+using PowerUpManagement;
 
 namespace GamePlay.CellManagement
 {
@@ -8,7 +9,7 @@ namespace GamePlay.CellManagement
         Obstacle,
         PowerUp
     }
-    
+
     public enum BlockType
     {
         Blue,
@@ -16,33 +17,45 @@ namespace GamePlay.CellManagement
         Orange,
         Purple,
         Red,
-        Yellow,
+        Yellow
     }
-    
+
     public enum ObstacleType
     {
         Stone
     }
-    
+
     [Serializable]
     public class LevelCellData
     {
         public CellType cellType;
         public int amount;
 
-        public object Clone() => MemberwiseClone();
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
-    
+
     [Serializable]
-    public class BlockData : LevelCellData
+    public class LevelBlockData : LevelCellData
     {
         public BlockType type;
     }
 
     [Serializable]
-    public class ObstacleData : LevelCellData
+    public class LevelObstacleData : LevelCellData
     {
         public ObstacleType type;
         public int health;
+    }
+
+    [Serializable]
+    public class LevelPowerUpData : LevelCellData
+    {
+        [NonSerialized] public int amount;
+        public PowerUpType type;
+        public ImpactArea impactArea;
+        public int creationThreshold;
     }
 }

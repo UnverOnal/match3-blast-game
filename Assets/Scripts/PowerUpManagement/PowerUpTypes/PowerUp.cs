@@ -11,10 +11,7 @@ namespace PowerUpManagement.PowerUpTypes
         public override void SetData(CellCreationData cellCreationData)
         {
             base.SetData(cellCreationData);
-        }
-
-        public void SetData(PowerUpCreationData creationData)
-        {
+            var creationData = (LevelPowerUpData)cellCreationData.levelCellData;
             threshold = creationData.creationThreshold;
             type = creationData.type;
             impactArea = creationData.impactArea;
@@ -22,7 +19,7 @@ namespace PowerUpManagement.PowerUpTypes
 
         public override void Reset()
         {
-            base.Reset();
+            Location = new BoardLocation();
             threshold = int.MaxValue;
             impactArea = default;
         }

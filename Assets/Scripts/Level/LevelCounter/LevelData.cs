@@ -13,11 +13,13 @@ namespace Level.LevelCounter
         public int height;
         
         [Header("BlockData")]
-        public BlockData[] blockData;
+        public LevelBlockData[] blockData;
 
         [Header("ObstacleData")] 
-        public ObstacleData[] obstacleData;
-        
+        public LevelObstacleData[] obstacleData;
+
+        [Header("PowerUpData")] public LevelPowerUpData[] powerUpData;
+
         [Header("MoveData")]
         public int moveCount;
         public float duration = 60f;

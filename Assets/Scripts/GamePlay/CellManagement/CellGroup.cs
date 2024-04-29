@@ -66,7 +66,9 @@ namespace GamePlay.CellManagement
             explodeableObstacles.Clear();
             bottomLocations.Clear();
         }
-        
+
+        public BoardLocation GetBottomLocation(int column) => bottomLocations[column];
+
         private void SetBottomLocation(BoardLocation location)
         {
             if (bottomLocations.TryGetValue(location.x, out var currentLocation))

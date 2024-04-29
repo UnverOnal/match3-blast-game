@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using GamePlay.Board;
 using Services.PoolingService;
 using VContainer;
@@ -24,6 +25,12 @@ namespace GamePlay.CellManagement
             var cell = GetCell(cellType);
             cell.SetData(cellCreationData);
             _boardModel.AddCell(cell);
+        }
+        
+        public void RemoveCell(IEnumerable<Cell> cells)
+        {
+            foreach (var cell in cells)
+                RemoveCell(cell);
         }
 
         public void RemoveCell(Cell cell)

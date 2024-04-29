@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using PowerUpManagement.PowerUpTypes;
 using Services.PoolingService;
@@ -37,32 +38,17 @@ namespace PowerUpManagement
 
         private void CreatePool(PowerUpType type, out ObjectPool<PowerUp> pool)
         {
-            PowerUp powerUp = type switch
+            Func<PowerUp> powerUp = type switch
             {
-                PowerUpType.Bomb => new Bomb(),
-                PowerUpType.Rocket => new Rocket(),
+                PowerUpType.Bomb => () => new Bomb(),
+                PowerUpType.Rocket => () => new Rocket(),
                 _ => null
             };
-
-            SetData(type, powerUp);
             
             pool = _poolService.GetPoolFactory()
-                .CreatePool(() => powerUp);
+                .CreatePool(() => powerUp?.Invoke());
 
             _pools.Add(type, pool);
-        }
-
-        private void SetData(PowerUpType type, PowerUp powerUp)
-        {
-            var data = new PowerUpCreationData();
-            for (var i = 0; i < _powerUpCreationDatas.Length; i++)
-            {
-                if (_powerUpCreationDatas[i].type != type) continue;
-                data = _powerUpCreationDatas[i];
-                break;
-            }
-            
-            powerUp.SetData(data);
         }
     }
 }

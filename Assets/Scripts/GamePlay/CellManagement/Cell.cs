@@ -10,7 +10,7 @@ namespace GamePlay.CellManagement
         public GameObject GameObject { get; private set; }
         public CellType CellType { get; private set; }
 
-        public BoardLocation Location { get; private set; }
+        public BoardLocation Location { get; protected set; }
         
         private Sprite _sprite;
 

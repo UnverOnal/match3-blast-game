@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using GameManagement;
+using GamePlay.Board.Steps;
 using GamePlay.CellManagement;
 using GamePlay.Mediator;
 using GamePlay.PrefabCreation;
@@ -42,6 +43,8 @@ namespace GamePlay.Board
 
         public async void OnBlockSelected(GameObject selectedBlock)
         {
+            var selectedBlockLocation = _boardModel.GetCell(selectedBlock).Location;
+            
             var selectedGroup = _boardModel.GetGroup(selectedBlock);
             if (selectedGroup == null)
             {
@@ -49,30 +52,34 @@ namespace GamePlay.Board
                 return;
             }
             
-            
             await Blast(selectedGroup, selectedBlock);
+
+            moveMediator.Notify(selectedGroup, selectedBlockLocation);
 
             //Gets bottom ones for being able to start checking from them to top.
             var bottomBlastedLocations = selectedGroup.bottomLocations.Select(pair => pair.Value).ToList();
-            ResetGroup(selectedGroup);
             Collapse(bottomBlastedLocations, _boardModel.Cells);
             await Fill(bottomBlastedLocations, _boardModel.Cells);
             
             GroupCells();
             if(_boardModel.cellGroups.Count < 1)
                 Shuffle();
+            
+            ResetGroup(selectedGroup);
         }
 
         public void GroupCells() => _boardGrouper.GroupCells(_boardModel);
 
-        private void ResetGroup(CellGroup group)
+        private void RemoveGroupCells(CellGroup group)
         {
-            foreach (var cell in group.blocks)
-                _cellCreator.RemoveCell(cell);
-            
+            _cellCreator.RemoveCell(group.blocks);
+
             foreach (var explodeable in group.explodeableObstacles)
                 _cellCreator.RemoveCell(explodeable as Cell);
-            
+        }
+
+        private void ResetGroup(CellGroup group)
+        {
             _boardModel.RemoveCellGroup(group);
             group.Reset();
             _groupPool.Return(group);
@@ -83,6 +90,7 @@ namespace GamePlay.Board
             selectedGroup.DamageNeighbours(_boardModel.Cells);
             _boardView.ExplodeDamageables(selectedGroup);
             await _boardView.Blast(selectedGroup, selectedBlock);
+            RemoveGroupCells(selectedGroup);
         }
 
         private void Collapse(IEnumerable<BoardLocation> bottomBlastedLocations, Cell[,] cells)
@@ -90,7 +98,7 @@ namespace GamePlay.Board
             foreach (var location in bottomBlastedLocations)
             {
                 var yLocation = location.y;
-                for (var j = location.y + 1; j < cells.GetLength(1); j++)
+                for (var j = location.y; j < cells.GetLength(1); j++)
                 {
                     var cell = cells[location.x, j];
                     if (cell == null)

@@ -7,16 +7,15 @@ namespace PowerUpManagement
     public enum PowerUpType
     {
         Bomb,
-        Rocket
+        Rocket,
+        None
     }
 
     [Serializable]
     public struct PowerUpCreationData
     {
         public PowerUpType type;
-        public int creationThreshold;
         public GameObject prefab;
-        public ImpactArea impactArea;
     }
 
     [Serializable]

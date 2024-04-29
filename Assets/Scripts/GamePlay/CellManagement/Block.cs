@@ -9,7 +9,7 @@ namespace GamePlay.CellManagement
         public override void SetData(CellCreationData cellCreationData)
         {
             base.SetData(cellCreationData);
-            var cellData = (BlockData)cellCreationData.levelCellData;
+            var cellData = (LevelBlockData)cellCreationData.levelCellData;
             BlockType = cellData.type;
         }
 

@@ -54,6 +54,6 @@ namespace GamePlay.Board
             return null;
         }
 
-        private Cell GetCell(GameObject cellGameObject) => _board.GetCell(cellGameObject);
+        public Cell GetCell(GameObject cellGameObject) => _board.GetCell(cellGameObject);
     }
 }

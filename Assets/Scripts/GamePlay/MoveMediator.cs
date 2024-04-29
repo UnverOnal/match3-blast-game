@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using GamePlay.Board;
+using GamePlay.CellManagement;
 using GamePlay.Mediator;
 using PowerUpManagement;
 using UnityEngine;
@@ -21,11 +23,11 @@ namespace GamePlay
             SetMediator(powerUpPresenter);
         }
 
-        public void Notify()
-        {
-            Debug.Log("Notified");
-        }
-        
         private void SetMediator(Colleague colleague) => colleague.SetMediator(this);
+
+        public void Notify(CellGroup selectedGroup, BoardLocation selectedBlockLocation)
+        {
+            _powerUpPresenter.CreatePowerUp(selectedGroup, selectedBlockLocation);
+        }
     }
 }

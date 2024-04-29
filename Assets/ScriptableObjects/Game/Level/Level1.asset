@@ -29,5 +29,20 @@ MonoBehaviour:
     amount: 1
     type: 0
     health: 2
+  powerUpData:
+  - cellType: 2
+    amount: 0
+    type: 0
+    impactArea:
+      x: 0
+      y: 0
+    creationThreshold: 4
+  - cellType: 2
+    amount: 0
+    type: 1
+    impactArea:
+      x: 0
+      y: 0
+    creationThreshold: 3
   moveCount: 15
   duration: 60
