@@ -4,6 +4,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using GameManagement;
 using GamePlay.CellManagement;
+using GamePlay.Mediator;
 using GamePlay.PrefabCreation;
 using Level.LevelCounter;
 using Services.InputService;
@@ -13,7 +14,7 @@ using VContainer;
 
 namespace GamePlay.Board
 {
-    public class BoardPresenter : IInitializable, IDisposable
+    public class BoardPresenter : Colleague, IInitializable, IDisposable
     {
         [Inject] private BoardModel _boardModel;
         [Inject] private CellCreator _cellCreator;
@@ -50,7 +51,7 @@ namespace GamePlay.Board
             
             await Blast(selectedGroup, selectedBlock);
 
-            //Gets bottom blasted ones for being able to start checking from them to top.
+            //Gets bottom ones for being able to start checking from them to top.
             var bottomBlastedLocations = selectedGroup.bottomLocations.Select(pair => pair.Value).ToList();
             ResetGroup(selectedGroup);
             Collapse(bottomBlastedLocations, _boardModel.Cells);
@@ -68,7 +69,7 @@ namespace GamePlay.Board
             foreach (var cell in group.blocks)
                 _cellCreator.RemoveCell(cell);
             
-            foreach (var explodeable in group.explodeables)
+            foreach (var explodeable in group.explodeableObstacles)
                 _cellCreator.RemoveCell(explodeable as Cell);
             
             _boardModel.RemoveCellGroup(group);

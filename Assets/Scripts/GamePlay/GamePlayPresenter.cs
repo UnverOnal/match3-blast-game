@@ -12,6 +12,7 @@ namespace GamePlay
         [Inject] private IInputService _inputService;
         [Inject] private BoardPresenter _boardPresenter;
         [Inject] private LevelCreationPresenter _levelCreationPresenter;
+        [Inject] private MoveMediator _moveMediator;
         
         public void Initialize()
         {

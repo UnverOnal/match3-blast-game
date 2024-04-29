@@ -2,6 +2,7 @@ using GameManagement;
 using GamePlay;
 using GamePlay.Board;
 using GamePlay.CellManagement;
+using GamePlay.Mediator;
 using GamePlay.PrefabCreation;
 using GameState;
 using Level.LevelCounter;
@@ -32,6 +33,7 @@ namespace Scopes
         {
             builder.RegisterEntryPoint<GameSceneManager>();
             builder.Register<UiManager>(Lifetime.Singleton).AsSelf().As<IInitializable>();
+            builder.Register<GameStatePresenter>(Lifetime.Singleton);
 
             RegisterScreens(builder);
             RegisterBoard(builder);
@@ -41,7 +43,7 @@ namespace Scopes
             builder.Register<CellPrefabCreator>(Lifetime.Singleton);
             builder.Register<CellCreator>(Lifetime.Singleton);
 
-            builder.Register<GameStatePresenter>(Lifetime.Singleton);
+            builder.Register<GamePlay.MoveMediator>(Lifetime.Singleton);
         }
 
         private void RegisterScreens(IContainerBuilder builder)
@@ -60,7 +62,7 @@ namespace Scopes
         private void RegisterBoard(IContainerBuilder builder)
         {
             builder.Register<BoardModel>(Lifetime.Singleton);
-            builder.Register<BoardPresenter>(Lifetime.Singleton).AsSelf().As<IInitializable>();
+            builder.Register<BoardPresenter>(Lifetime.Singleton).AsSelf().As<IInitializable>().As<Colleague>();
             
             builder.RegisterInstance(boardCreationData);
             builder.RegisterInstance(boardResources);

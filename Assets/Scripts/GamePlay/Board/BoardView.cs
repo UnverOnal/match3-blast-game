@@ -66,7 +66,7 @@ namespace GamePlay.Board
 
         public void ExplodeDamageables(CellGroup cellGroup)
         {
-            var explodeables = cellGroup.explodeables;
+            var explodeables = cellGroup.explodeableObstacles;
             foreach (var explodeable in explodeables)
                 explodeable.Explode();
         }

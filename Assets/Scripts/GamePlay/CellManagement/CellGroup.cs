@@ -10,16 +10,16 @@ namespace GamePlay.CellManagement
         
         public readonly HashSet<Cell> blocks;
 
-        public List<IDamageable> explodeables;
+        public List<IDamageable> explodeableObstacles;
         //Damageable neighbours of the group
-        private readonly HashSet<IDamageable> _damageables;
+        private readonly HashSet<IDamageable> _obstacles;
 
         public CellGroup()
         {
-            _damageables = new HashSet<IDamageable>();
+            _obstacles = new HashSet<IDamageable>();
             bottomLocations = new Dictionary<int, BoardLocation>();
             blocks = new HashSet<Cell>();
-            explodeables = new List<IDamageable>();
+            explodeableObstacles = new List<IDamageable>();
         }
 
         public void AddCell(Cell cell)
@@ -33,17 +33,17 @@ namespace GamePlay.CellManagement
 
         public void AddDamageable(IDamageable damageable)
         {
-            if (_damageables.Contains(damageable)) return;
-            _damageables.Add(damageable);
+            if (_obstacles.Contains(damageable)) return;
+            _obstacles.Add(damageable);
         }
 
         public void DamageNeighbours(Cell[,] boardModelCells)
         {
-            foreach (var damageable in _damageables)
+            foreach (var damageable in _obstacles)
             {
                 damageable.Damage();
                 if (!damageable.CanExplode()) continue;
-                explodeables.Add(damageable);
+                explodeableObstacles.Add(damageable);
                 
                 //If there are empty cells under the damageable...
                 var location = damageable.GetLocation();
@@ -62,8 +62,8 @@ namespace GamePlay.CellManagement
         public void Reset()
         {
             blocks.Clear();
-            _damageables.Clear();
-            explodeables.Clear();
+            _obstacles.Clear();
+            explodeableObstacles.Clear();
             bottomLocations.Clear();
         }
         
