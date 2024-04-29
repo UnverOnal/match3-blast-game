@@ -29,7 +29,7 @@ namespace GamePlay.CellManagement
         public override void SetData(CellCreationData cellCreationData)
         {
             base.SetData(cellCreationData);
-            var cellData = (LevelObstacleData)cellCreationData.levelCellData;
+            var cellData = (ObstacleData)cellCreationData.levelCellData;
             ObstacleType = cellData.type;
             _health = cellData.health;
         }

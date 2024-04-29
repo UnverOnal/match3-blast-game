@@ -17,22 +17,32 @@ namespace GamePlay.CellManagement
         public virtual void SetData(CellCreationData cellCreationData)
         {
             SetLocation(cellCreationData.location);
-            CellType = cellCreationData.levelCellData.cellType;
+            SetType(cellCreationData.levelCellData.cellType);
             
-            GameObject = cellCreationData.gameObject;
+            SetGameObject(cellCreationData.gameObject);
+        }
+
+        private void SetGameObject(GameObject gameObject)
+        {
+            GameObject = gameObject;
             _sprite = GameObject.GetComponent<SpriteRenderer>().sprite;
         }
 
-        public void Reset()
+        private void SetType(CellType type)
         {
-            GameObject = null;
-            Location = new BoardLocation();
-            _sprite = null;
+            CellType = type;
         }
 
         public void SetLocation(BoardLocation boardLocation)
         {
             Location = boardLocation;
+        }
+        
+        public virtual void Reset()
+        {
+            GameObject = null;
+            Location = new BoardLocation();
+            _sprite = null;
         }
     }
     

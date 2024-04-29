@@ -42,13 +42,13 @@ namespace GamePlay.Board
 
         public async void OnBlockSelected(GameObject selectedBlock)
         {
-            moveMediator.Notify();
             var selectedGroup = _boardModel.GetGroup(selectedBlock);
             if (selectedGroup == null)
             {
                 _boardView.Shake(selectedBlock.transform, 0.1f, 30f);
                 return;
             }
+            
             
             await Blast(selectedGroup, selectedBlock);
 

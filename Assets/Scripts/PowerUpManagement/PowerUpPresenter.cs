@@ -19,5 +19,10 @@ namespace PowerUpManagement
         public void Initialize()
         {
         }
+
+        public void CreatePowerUp()
+        {
+            
+        }
     }
 }

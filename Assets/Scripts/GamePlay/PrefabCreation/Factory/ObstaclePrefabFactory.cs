@@ -17,7 +17,7 @@ namespace GamePlay.PrefabCreation.Factory
 
         public override GameObject Get(LevelCellData levelCellData)
         {
-            var obstacleData = (LevelObstacleData)levelCellData;
+            var obstacleData = (ObstacleData)levelCellData;
             var exist = _obstaclePools.TryGetValue(obstacleData.type, out var obstaclePool);
             if (!exist)
             {

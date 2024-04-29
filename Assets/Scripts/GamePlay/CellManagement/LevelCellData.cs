@@ -5,7 +5,8 @@ namespace GamePlay.CellManagement
     public enum CellType
     {
         Block,
-        Obstacle
+        Obstacle,
+        PowerUp
     }
     
     public enum BlockType
@@ -33,13 +34,13 @@ namespace GamePlay.CellManagement
     }
     
     [Serializable]
-    public class LevelBlockData : LevelCellData
+    public class BlockData : LevelCellData
     {
         public BlockType type;
     }
 
     [Serializable]
-    public class LevelObstacleData : LevelCellData
+    public class ObstacleData : LevelCellData
     {
         public ObstacleType type;
         public int health;

@@ -1,24 +1,30 @@
-using UnityEngine;
+using GamePlay.CellManagement;
 
 namespace PowerUpManagement.PowerUpTypes
 {
-    public class PowerUp
+    public class PowerUp : Cell
     {
         protected PowerUpType type;
-        protected GameObject gameObject;
         protected int threshold;
-        
-        public void SetData(PowerUpCreationData data)
+        protected ImpactArea impactArea;
+
+        public override void SetData(CellCreationData cellCreationData)
         {
-            gameObject = data.prefab;
-            threshold = data.creationThreshold;
-            type = data.type;
+            base.SetData(cellCreationData);
         }
 
-        public void Reset()
+        public void SetData(PowerUpCreationData creationData)
         {
-            gameObject = null;
+            threshold = creationData.creationThreshold;
+            type = creationData.type;
+            impactArea = creationData.impactArea;
+        }
+
+        public override void Reset()
+        {
+            base.Reset();
             threshold = int.MaxValue;
+            impactArea = default;
         }
     }
 }

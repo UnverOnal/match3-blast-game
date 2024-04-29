@@ -1,4 +1,5 @@
 using System;
+using GamePlay.CellManagement;
 using UnityEngine;
 
 namespace PowerUpManagement
@@ -15,5 +16,13 @@ namespace PowerUpManagement
         public PowerUpType type;
         public int creationThreshold;
         public GameObject prefab;
+        public ImpactArea impactArea;
+    }
+
+    [Serializable]
+    public struct ImpactArea
+    {
+        public int x;
+        public int y;
     }
 }
