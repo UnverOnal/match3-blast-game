@@ -15,30 +15,29 @@ namespace GamePlay.CellManagement
 
         public void GetNeighbours(CellGroup cellGroup, Cell[,] board, HashSet<Cell> visitedCells)
         {
-            int[] horizontalDimension = { 0, 1, 0, -1 };
-            int[] verticalDimension = { -1, 0, 1, 0 };
-            
-            var boardWidth = board.GetLength(0);
-            var boardHeight = board.GetLength(1);
+            var (boardWidth, boardHeight) = (board.GetLength(0), board.GetLength(1));
+            var (horizontalDimension, verticalDimension) = (new[] { 0, 1, 0, -1 }, new[] { -1, 0, 1, 0 });
 
-            //Traverse neighbours
             for (int i = 0; i < 4; i++)
             {
-                var x = Location.x + horizontalDimension[i];
-                var y = Location.y + verticalDimension[i];
-
-                var locationExist = x >= 0 && x < boardWidth && y >= 0 && y < boardHeight;
-                // if (!locationExist) continue;
-                if (!locationExist || !IsNeighbourValid(board[x, y], visitedCells))
-                    continue;
-
-                var neighbour = (Block)board[x, y];
-                    
-                //Add cell group if it is same type
-                cellGroup.Add(neighbour);
-                visitedCells.Add(neighbour);
-                neighbour.GetNeighbours(cellGroup, board, visitedCells);
+                var (x, y) = (Location.x + horizontalDimension[i], Location.y + verticalDimension[i]);
+                if (!IsValidLocation(x, y, boardWidth, boardHeight)) continue;
+                
+                var neighbour = board[x, y];
+                if (IsNeighbourValid(neighbour, visitedCells))
+                {
+                    var blockNeighbour = (Block)neighbour;
+                    cellGroup.AddCell(blockNeighbour);
+                    visitedCells.Add(blockNeighbour);
+                    blockNeighbour.GetNeighbours(cellGroup, board, visitedCells);
+                }
+                GetDamageableNeighbour(neighbour, cellGroup);
             }
+        }
+        
+        private bool IsValidLocation(int x, int y, int boardWidth, int boardHeight)
+        {
+            return x >= 0 && x < boardWidth && y >= 0 && y < boardHeight;
         }
 
         private bool IsNeighbourValid(Cell neighbour, ICollection<Cell> visitedCells)
@@ -48,6 +47,12 @@ namespace GamePlay.CellManagement
             var isVisited = visitedCells.Contains(neighbour);
 
             return !isEmpty && isSameType && !isVisited;
+        }
+
+        private void GetDamageableNeighbour(Cell neighbour, CellGroup cellGroup)
+        {
+            if (neighbour is IDamageable damageable)
+                cellGroup.AddDamageable(damageable);
         }
     }
 }

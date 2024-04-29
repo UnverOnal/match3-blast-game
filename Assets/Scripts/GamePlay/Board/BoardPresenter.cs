@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using GameManagement;
 using GamePlay.CellManagement;
@@ -38,19 +39,20 @@ namespace GamePlay.Board
 
         public async void OnBlockSelected(GameObject selectedBlock)
         {
-            var group = _boardModel.GetGroup(selectedBlock);
-            if (group == null)
+            var selectedGroup = _boardModel.GetGroup(selectedBlock);
+            if (selectedGroup == null)
             {
                 _boardView.Shake(selectedBlock.transform, 0.1f, 30f);
                 return;
             }
+            
+            await Blast(selectedGroup, selectedBlock);
 
             //Gets bottom blasted ones for being able to start checking from them to top.
-            var bottomBlastedLocations = new List<BoardLocation>(group.GetBottomLocations());
-            await Blast(group, selectedBlock);
-
+            var bottomBlastedLocations = new List<BoardLocation>(selectedGroup.bottomLocations.Select((pair => pair.Value)).ToList());
+            ResetGroup(selectedGroup);
             Collapse(bottomBlastedLocations, _boardModel.Cells);
-            Fill(bottomBlastedLocations, _boardModel.Cells);
+            await Fill(bottomBlastedLocations, _boardModel.Cells);
             
             GroupCells();
             if(_boardModel.cellGroups.Count < 1)
@@ -59,17 +61,24 @@ namespace GamePlay.Board
 
         public void GroupCells() => _boardGrouper.GroupCells(_boardModel);
 
-        private async UniTask Blast(CellGroup group, GameObject selectedBlock)
+        private void ResetGroup(CellGroup group)
         {
-            await _boardView.Blast(group, selectedBlock);
+            foreach (var cell in group.blocks)
+                _cellCreator.RemoveCell(cell);
             
-            var groupCells = group.cells;
-            foreach (var cellPair in groupCells)
-                _cellCreator.RemoveCell(cellPair.Value);
+            foreach (var explodeable in group.explodeables)
+                _cellCreator.RemoveCell(explodeable as Cell);
             
             _boardModel.RemoveCellGroup(group);
             group.Reset();
             _groupPool.Return(group);
+        }
+
+        private async UniTask Blast(CellGroup selectedGroup, GameObject selectedBlock)
+        {
+            selectedGroup.DamageNeighbours(_boardModel.Cells);
+            _boardView.ExplodeDamageables(selectedGroup);
+            await _boardView.Blast(selectedGroup, selectedBlock);
         }
 
         private void Collapse(IEnumerable<BoardLocation> bottomBlastedLocations, Cell[,] cells)
@@ -94,7 +103,7 @@ namespace GamePlay.Board
             }
         }
 
-        private void Fill(IEnumerable<BoardLocation> bottomBlastedLocations, Cell[,] cells)
+        private async UniTask Fill(IEnumerable<BoardLocation> bottomBlastedLocations, Cell[,] cells)
         {
             var allEmptyLocations = new List<List<BoardLocation>>();
             var boardHeight = cells.GetLength(1);
@@ -116,7 +125,7 @@ namespace GamePlay.Board
             }
 
             //Fill all at once because of taking necessity of leaving empty under the obstacle account.
-            _boardView.Fill(allEmptyLocations, boardHeight);
+            await _boardView.Fill(allEmptyLocations, boardHeight);
         }
 
         private void Shuffle()

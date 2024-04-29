@@ -6,6 +6,7 @@ using GameManagement;
 using GamePlay.CellManagement;
 using GamePlay.PrefabCreation;
 using Level.LevelCounter;
+using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -44,24 +45,31 @@ namespace GamePlay.Board
 
             transform.rotation = originalRotation;
         }
-
+        
         public async UniTask Blast(CellGroup cellGroup, GameObject selectedBlockGameObject)
         {
             var center = selectedBlockGameObject.transform.position;
-            var cells = cellGroup.cells;
+            var cells = cellGroup.blocks;
 
             var tasks = new List<UniTask>();
-            foreach (var cellPair in cells)
+            foreach (var cell in cells)
             {
-                var transform = cellPair.Key.transform;
+                var transform = cell.GameObject.transform;
                 var originalScale = transform.localScale;
 
                 var tween = _blockMovement.Blast(transform, center);
-                tween.OnComplete(() => ReturnToPool(cellPair, originalScale));
+                tween.OnComplete(() => ReturnToPool(cell, originalScale));
                 tasks.Add(tween.AsyncWaitForCompletion().AsUniTask());
             }
 
             await UniTask.WhenAll(tasks);
+        }
+
+        public void ExplodeDamageables(CellGroup cellGroup)
+        {
+            var explodeables = cellGroup.explodeables;
+            foreach (var explodeable in explodeables)
+                explodeable.Explode();
         }
 
         public void Collapse(Cell cell)
@@ -75,8 +83,9 @@ namespace GamePlay.Board
             _blockMovement.Fall(transform, targetPosition, true);
         }
 
-        public void Fill(List<List<BoardLocation>> emptyLocations, int boardHeight)
+        public async UniTask Fill(List<List<BoardLocation>> emptyLocations, int boardHeight)
         {
+            var tasks = new List<UniTask>();
             foreach (var locations in emptyLocations)
                 for (var i = 0; i < locations.Count; i++)
                 {
@@ -85,10 +94,13 @@ namespace GamePlay.Board
                     var spawnPosition = new Vector3(location.x, boardHeight + i, 0f);
                     blockGameObject.transform.position = spawnPosition;
 
-                    _blockMovement.FallDelayed(blockGameObject.transform, new Vector3(location.x, location.y), true, i);
+                    var task = _blockMovement.FallDelayed(blockGameObject.transform, new Vector3(location.x, location.y), true, i);
+                    tasks.Add(task);
 
                     OnFillBlock?.Invoke(new CellCreationData(location, blockGameObject, blockData));
                 }
+
+            await UniTask.WhenAll(tasks);
         }
 
         public void Shuffle(Cell[,] cells)
@@ -109,10 +121,9 @@ namespace GamePlay.Board
             }
         }
 
-        private void ReturnToPool(KeyValuePair<GameObject, Cell> cellPair, Vector3 originalScale)
+        private void ReturnToPool(Cell cell, Vector3 originalScale)
         {
-            var cell = cellPair.Value;
-            var gameObject = cellPair.Key;
+            var gameObject = cell.GameObject;
             
             gameObject.SetActive(false);
             gameObject.transform.localScale = originalScale;

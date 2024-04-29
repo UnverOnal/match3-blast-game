@@ -27,7 +27,7 @@ namespace GamePlay.Board
 
                 var cell = (Block)board[i, j];
                 var group = _groupPool.Get();
-                group.Add(cell);
+                group.AddCell(cell);
                 visitedCells.Add(cell);
                 cell.GetNeighbours(group, board, visitedCells);
 

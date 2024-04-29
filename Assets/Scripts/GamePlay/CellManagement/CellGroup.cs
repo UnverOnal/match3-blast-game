@@ -1,37 +1,81 @@
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 
 namespace GamePlay.CellManagement
 {
     public class CellGroup
     {
-        public bool IsEmpty => cells.Count < 2;
+        public bool IsEmpty => blocks.Count < 2;
 
-        public readonly Dictionary<GameObject, Cell> cells;
+        public Dictionary<int, BoardLocation> bottomLocations;
+        
+        public readonly HashSet<Cell> blocks;
+
+        public List<IDamageable> explodeables;
+        //Damageable neighbours of the group
+        private readonly HashSet<IDamageable> _damageables;
 
         public CellGroup()
         {
-            cells = new Dictionary<GameObject, Cell>();
+            _damageables = new HashSet<IDamageable>();
+            bottomLocations = new Dictionary<int, BoardLocation>();
+            blocks = new HashSet<Cell>();
+            explodeables = new List<IDamageable>();
         }
 
-        public void Add(Cell cell)
+        public void AddCell(Cell cell)
         {
-            cells.Add(cell.GameObject, cell);
+            blocks.Add(cell);
+            var location = cell.Location;
+            SetBottomLocation(location);
         }
 
-        public bool HasCell(Cell cell) => cells.ContainsKey(cell.GameObject);
+        public bool HasCell(Cell cell) => blocks.Contains(cell);
 
-        public void Reset() => cells.Clear();
-
-        //Returns one and bottom location for each column
-        public IEnumerable<BoardLocation> GetBottomLocations()
+        public void AddDamageable(IDamageable damageable)
         {
-            var locations = cells.Select(pair => pair.Value.Location).ToList();
-            var distinctLocations = locations.GroupBy(location => location.x)
-                .Select(group => group.OrderBy(loc => loc.y).FirstOrDefault());
-            
-            return distinctLocations;
+            if (_damageables.Contains(damageable)) return;
+            _damageables.Add(damageable);
+        }
+
+        public void DamageNeighbours(Cell[,] boardModelCells)
+        {
+            foreach (var damageable in _damageables)
+            {
+                damageable.Damage();
+                if (!damageable.CanExplode()) continue;
+                explodeables.Add(damageable);
+                
+                //If there are empty cells under the damageable...
+                var location = damageable.GetLocation();
+                for (int i = location.y-1 ; i >= 0; i--)
+                {
+                    var cell = boardModelCells[location.x, i];
+                    if (cell == null)
+                        location.y = i;
+                    else
+                        break;
+                }
+                SetBottomLocation(location);
+            }
+        }
+        
+        public void Reset()
+        {
+            blocks.Clear();
+            _damageables.Clear();
+            explodeables.Clear();
+            bottomLocations.Clear();
+        }
+        
+        private void SetBottomLocation(BoardLocation location)
+        {
+            if (bottomLocations.TryGetValue(location.x, out var currentLocation))
+            {
+                if (currentLocation.y > location.y)
+                    bottomLocations[location.x] = location;
+            }
+            else
+                bottomLocations.Add(location.x, location);
         }
     }
 }
