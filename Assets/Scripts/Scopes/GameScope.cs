@@ -1,6 +1,7 @@
 using GameManagement;
 using GamePlay;
 using GamePlay.Board;
+using GamePlay.Board.Steps.Fill;
 using GamePlay.CellManagement;
 using GamePlay.PrefabCreation;
 using GameState;
@@ -65,6 +66,7 @@ namespace Scopes
         {
             builder.Register<BoardModel>(Lifetime.Singleton);
             builder.Register<IInitializable, BoardPresenter>(Lifetime.Singleton).AsSelf();
+            builder.Register<IInitializable, BoardFillPresenter>(Lifetime.Singleton).AsSelf();
             
             builder.RegisterInstance(boardCreationData);
             builder.RegisterInstance(boardResources);

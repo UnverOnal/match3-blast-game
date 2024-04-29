@@ -4,10 +4,10 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using GameManagement;
 using GamePlay.Board.Steps;
+using GamePlay.Board.Steps.Fill;
 using GamePlay.CellManagement;
 using GamePlay.Mediator;
 using GamePlay.PrefabCreation;
-using Level.LevelCounter;
 using Services.InputService;
 using Services.PoolingService;
 using UnityEngine;
@@ -15,11 +15,13 @@ using VContainer;
 
 namespace GamePlay.Board
 {
-    public class BoardPresenter : Colleague, IInitializable, IDisposable
+    public class BoardPresenter : Colleague, IInitializable
     {
         [Inject] private BoardModel _boardModel;
         [Inject] private CellCreator _cellCreator;
         [Inject] private IInputService _inputService;
+        [Inject] private BoardFillPresenter _fillPresenter;
+        
         private readonly BoardView _boardView;
         
         private readonly BoardShuffler _boardShuffler;
@@ -28,9 +30,9 @@ namespace GamePlay.Board
         private readonly ObjectPool<CellGroup> _groupPool;
         
         [Inject]
-        public BoardPresenter(CellPrefabCreator cellPrefabCreator, IPoolService poolService, LevelPresenter levelPresenter, GameSettings gameSettings)
+        public BoardPresenter(CellPrefabCreator cellPrefabCreator, IPoolService poolService, GameSettings gameSettings)
         {
-            _boardView = new BoardView(cellPrefabCreator, levelPresenter, gameSettings.blockMovementData);
+            _boardView = new BoardView(cellPrefabCreator, gameSettings.blockMovementData);
             _groupPool = poolService.GetPoolFactory().CreatePool(() => new CellGroup());
             _boardGrouper = new BoardGrouper(_groupPool);
             _boardShuffler = new BoardShuffler();
@@ -38,7 +40,6 @@ namespace GamePlay.Board
         
         public void Initialize()
         {
-            _boardView.OnFillBlock += _cellCreator.AddCell;
         }
 
         public async void OnBlockSelected(GameObject selectedBlock)
@@ -58,7 +59,6 @@ namespace GamePlay.Board
 
             //Gets bottom ones for being able to start checking from them to top.
             var bottomBlastedLocations = selectedGroup.bottomLocations.Select(pair => pair.Value).ToList();
-            Collapse(bottomBlastedLocations, _boardModel.Cells);
             await Fill(bottomBlastedLocations, _boardModel.Cells);
             
             GroupCells();
@@ -70,6 +70,14 @@ namespace GamePlay.Board
 
         public void GroupCells() => _boardGrouper.GroupCells(_boardModel);
 
+        private async UniTask Blast(CellGroup selectedGroup, GameObject selectedBlock)
+        {
+            selectedGroup.DamageNeighbours(_boardModel.Cells);
+            _boardView.ExplodeDamageables(selectedGroup);
+            await _boardView.Blast(selectedGroup, selectedBlock);
+            RemoveGroupCells(selectedGroup);
+        }
+        
         private void RemoveGroupCells(CellGroup group)
         {
             _cellCreator.RemoveCell(group.blocks);
@@ -85,59 +93,17 @@ namespace GamePlay.Board
             _groupPool.Return(group);
         }
 
-        private async UniTask Blast(CellGroup selectedGroup, GameObject selectedBlock)
-        {
-            selectedGroup.DamageNeighbours(_boardModel.Cells);
-            _boardView.ExplodeDamageables(selectedGroup);
-            await _boardView.Blast(selectedGroup, selectedBlock);
-            RemoveGroupCells(selectedGroup);
-        }
-
-        private void Collapse(IEnumerable<BoardLocation> bottomBlastedLocations, Cell[,] cells)
-        {
-            foreach (var location in bottomBlastedLocations)
-            {
-                var yLocation = location.y;
-                for (var j = location.y; j < cells.GetLength(1); j++)
-                {
-                    var cell = cells[location.x, j];
-                    if (cell == null)
-                        continue;
-                    if (cell.GetType() == typeof(Obstacle))
-                    {
-                        yLocation = cell.Location.y + 1;
-                        continue;
-                    }
-
-                    _boardModel.UpdateCellLocation(cell, new BoardLocation(location.x, yLocation++));
-                    _boardView.Collapse(cell);
-                }
-            }
-        }
-
         private async UniTask Fill(IEnumerable<BoardLocation> bottomBlastedLocations, Cell[,] cells)
         {
-            var allEmptyLocations = new List<List<BoardLocation>>();
-            var boardHeight = cells.GetLength(1);
+            var tasks = new List<UniTask>();
             foreach (var location in bottomBlastedLocations)
             {
-                var columnEmptyLocations = new List<BoardLocation>();
-                for (var i = location.y; i < boardHeight; i++)
-                {
-                    var cell = cells[location.x, i];
-                    if (cell == null)
-                    {
-                        var emptyLocation = new BoardLocation(location.x, i);
-                        columnEmptyLocations.Add(emptyLocation);
-                    }
-                    else if(cell.GetType() == typeof(Obstacle))
-                        columnEmptyLocations.Clear();
-                }
-                allEmptyLocations.Add(columnEmptyLocations);
+                _fillPresenter.CollapseColumn(location, cells);
+                var task = _fillPresenter.FillColumn(location, cells);
+                tasks.Add(task);
             }
 
-            //Fill all at once because of taking necessity of leaving empty under the obstacle account.
-            await _boardView.Fill(allEmptyLocations, boardHeight);
+            await UniTask.WhenAll(tasks);
         }
 
         private async void Shuffle()
@@ -151,11 +117,6 @@ namespace GamePlay.Board
             
             await _boardView.Shuffle(_boardModel.Cells);
             _inputService.IgnoreInput(false);
-        }
-
-        public void Dispose()
-        {
-            _boardView.OnFillBlock -= _cellCreator.AddCell;
         }
     }
 }
