@@ -42,6 +42,7 @@ namespace GamePlay.Board
 
         public async void OnBlockSelected(GameObject selectedBlock)
         {
+            moveMediator.Notify();
             var selectedGroup = _boardModel.GetGroup(selectedBlock);
             if (selectedGroup == null)
             {

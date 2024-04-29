@@ -1,5 +1,6 @@
 using System;
 using GamePlay.CellManagement;
+using PowerUpManagement;
 using UnityEngine;
 
 namespace Level.LevelCreation
@@ -11,6 +12,8 @@ namespace Level.LevelCreation
         public ObstacleCreationData[] obstacleCreationData;
 
         public Sprite background;
+
+        public PowerUpCreationData[] powerUps;
     }
     
     [Serializable]public struct BlockCreationData
