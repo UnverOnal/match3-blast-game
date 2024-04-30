@@ -1,6 +1,7 @@
 using GameManagement.LifeCycle;
 using GamePlay.Board;
 using GamePlay.Mediator;
+using GoalManagement;
 using Level.LevelCreation;
 using Services.InputService;
 using UnityEngine;
@@ -13,11 +14,13 @@ namespace GamePlay
         [Inject] private IInputService _inputService;
         [Inject] private BoardPresenter _boardPresenter;
         [Inject] private LevelCreationPresenter _levelCreationPresenter;
+        [Inject] private GoalPresenter _goalPresenter;
         
         public void Initialize()
         {
             _inputService.OnItemPicked += OnBlockSelected;
             _levelCreationPresenter.OnLevelCreated += _boardPresenter.GroupCells;
+            _levelCreationPresenter.OnLevelCreated += _goalPresenter.CreateGoals;
         }
 
         private void OnBlockSelected(GameObject cellGameObject)
@@ -32,6 +35,7 @@ namespace GamePlay
             Debug.Log("level end");
             _inputService.OnItemPicked -= OnBlockSelected;
             _levelCreationPresenter.OnLevelCreated -= _boardPresenter.GroupCells;
+            _levelCreationPresenter.OnLevelCreated -= _goalPresenter.CreateGoals;
         }
     }
 }

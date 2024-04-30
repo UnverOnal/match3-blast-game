@@ -7,7 +7,8 @@ namespace GamePlay.CellManagement
     {
         Block,
         Obstacle,
-        PowerUp
+        PowerUp,
+        None
     }
 
     public enum BlockType

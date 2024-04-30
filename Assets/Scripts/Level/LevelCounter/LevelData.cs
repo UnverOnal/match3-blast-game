@@ -1,4 +1,5 @@
 using GamePlay.CellManagement;
+using GoalManagement;
 using MoveManagement;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ namespace Level.LevelCounter
     [CreateAssetMenu(fileName = "LevelData", menuName = "ScriptableObjects/LevelData")]
     public class LevelData : ScriptableObject
     {
-        //GOAL var
+        [Header("BoardSize")] public CounterData[] counterGoalDatas;
 
         [Header("BoardSize")] public int width;
         public int height;

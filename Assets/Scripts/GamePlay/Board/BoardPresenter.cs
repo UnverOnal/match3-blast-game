@@ -1,12 +1,15 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using GameManagement;
+using GameManagement.LifeCycle;
 using GamePlay.Board.Steps;
 using GamePlay.Board.Steps.Fill;
 using GamePlay.CellManagement;
 using GamePlay.Mediator;
 using GamePlay.PrefabCreation;
+using GoalManagement;
 using Services.InputService;
 using Services.PoolingService;
 using UnityEngine;
@@ -14,20 +17,21 @@ using VContainer;
 
 namespace GamePlay.Board
 {
-    public class BoardPresenter : Colleague
+    public class BoardPresenter : Colleague, IInitialize, IDisposable
     {
         [Inject] private BoardModel _boardModel;
         [Inject] private CellCreator _cellCreator;
         [Inject] private IInputService _inputService;
         [Inject] private BoardFillPresenter _fillPresenter;
-        
+        [Inject] private GoalPresenter _goalPresenter;
+
         private readonly BoardView _boardView;
-        
+
         private readonly BoardShuffler _boardShuffler;
         private readonly BoardGrouper _boardGrouper;
 
         private readonly ObjectPool<CellGroup> _groupPool;
-        
+
         [Inject]
         public BoardPresenter(CellPrefabCreator cellPrefabCreator, IPoolService poolService, GameSettings gameSettings)
         {
@@ -37,17 +41,22 @@ namespace GamePlay.Board
             _boardShuffler = new BoardShuffler();
         }
 
+        public void Initialize()
+        {
+            _boardModel.OnCellRemove += _goalPresenter.Notify;
+        }
+
         public async void OnBlockSelected(GameObject selectedBlock)
         {
             var selectedBlockLocation = _boardModel.GetCell(selectedBlock).Location;
-            
+
             var selectedGroup = _boardModel.GetGroup(selectedBlock);
             if (selectedGroup == null)
             {
                 _boardView.Shake(selectedBlock.transform, 0.1f, 30f);
                 return;
             }
-            
+
             await Blast(selectedGroup, selectedBlock);
 
             moveMediator.NotifyBlast(selectedGroup, selectedBlockLocation);
@@ -55,15 +64,18 @@ namespace GamePlay.Board
             //Gets bottom ones for being able to start checking from them to top.
             var bottomBlastedLocations = selectedGroup.bottomLocations.Select(pair => pair.Value).ToList();
             await Fill(bottomBlastedLocations, _boardModel.Cells);
-            
+
             GroupCells();
-            if(_boardModel.cellGroups.Count < 1)
+            if (_boardModel.cellGroups.Count < 1)
                 Shuffle();
-            
+
             ResetGroup(selectedGroup);
         }
 
-        public void GroupCells() => _boardGrouper.GroupCells(_boardModel);
+        public void GroupCells()
+        {
+            _boardGrouper.GroupCells(_boardModel);
+        }
 
         private async UniTask Blast(CellGroup selectedGroup, GameObject selectedBlock)
         {
@@ -72,7 +84,7 @@ namespace GamePlay.Board
             await _boardView.Blast(selectedGroup, selectedBlock);
             RemoveGroupCells(selectedGroup);
         }
-        
+
         private void RemoveGroupCells(CellGroup group)
         {
             _cellCreator.RemoveCell(group.blocks);
@@ -109,9 +121,14 @@ namespace GamePlay.Board
                 _boardShuffler.Shuffle(_boardModel.Cells);
                 GroupCells();
             }
-            
+
             await _boardView.Shuffle(_boardModel.Cells);
             _inputService.IgnoreInput(false);
+        }
+
+        public void Dispose()
+        {
+            _boardModel.OnCellRemove -= _goalPresenter.Notify;
         }
     }
 }

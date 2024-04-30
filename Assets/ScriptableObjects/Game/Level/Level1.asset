@@ -12,6 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c11a7a42f95b0aa498c0b167a8cf0e60, type: 3}
   m_Name: Level1
   m_EditorClassIdentifier: 
+  counterGoalDatas:
+  - description: adsad
+    cellType: 1
+    target: 1
+  - description: adsad
+    cellType: 2
+    target: 1
+  - description: adsad
+    cellType: 0
+    target: 3
   width: 6
   height: 6
   blockData:

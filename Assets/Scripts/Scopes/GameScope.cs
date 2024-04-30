@@ -6,6 +6,7 @@ using GamePlay.Board.Steps.Fill;
 using GamePlay.CellManagement;
 using GamePlay.PrefabCreation;
 using GameState;
+using GoalManagement;
 using Level.LevelCounter;
 using Level.LevelCreation;
 using MoveManagement;
@@ -46,6 +47,7 @@ namespace Scopes
             RegisterMove(builder);
             builder.Register<IInitialize, GamePlayPresenter>(Lifetime.Singleton).AsSelf();
             builder.Register<IInitialize, PowerUpPresenter>(Lifetime.Singleton).AsSelf();
+            builder.Register<GoalPresenter>(Lifetime.Singleton);
 
             builder.Register<IInitialize, GamePlay.MoveMediator>(Lifetime.Singleton).AsSelf();
             
@@ -69,7 +71,7 @@ namespace Scopes
         private void RegisterBoard(IContainerBuilder builder)
         {
             builder.Register<BoardModel>(Lifetime.Singleton);
-            builder.Register<BoardPresenter>(Lifetime.Singleton).AsSelf();
+            builder.Register<IInitialize ,BoardPresenter>(Lifetime.Singleton).AsSelf();
             builder.Register<IInitialize, BoardFillPresenter>(Lifetime.Singleton).AsSelf();
             
             builder.RegisterInstance(boardCreationData);
