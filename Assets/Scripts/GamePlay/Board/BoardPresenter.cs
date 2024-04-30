@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
@@ -15,7 +14,7 @@ using VContainer;
 
 namespace GamePlay.Board
 {
-    public class BoardPresenter : Colleague, IInitializable
+    public class BoardPresenter : Colleague
     {
         [Inject] private BoardModel _boardModel;
         [Inject] private CellCreator _cellCreator;
@@ -37,10 +36,6 @@ namespace GamePlay.Board
             _boardGrouper = new BoardGrouper(_groupPool);
             _boardShuffler = new BoardShuffler();
         }
-        
-        public void Initialize()
-        {
-        }
 
         public async void OnBlockSelected(GameObject selectedBlock)
         {
@@ -55,7 +50,7 @@ namespace GamePlay.Board
             
             await Blast(selectedGroup, selectedBlock);
 
-            moveMediator.Notify(selectedGroup, selectedBlockLocation);
+            moveMediator.NotifyBlast(selectedGroup, selectedBlockLocation);
 
             //Gets bottom ones for being able to start checking from them to top.
             var bottomBlastedLocations = selectedGroup.bottomLocations.Select(pair => pair.Value).ToList();

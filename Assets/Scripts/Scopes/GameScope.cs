@@ -43,7 +43,7 @@ namespace Scopes
             builder.Register<IInitializable, GamePlayPresenter>(Lifetime.Singleton).AsSelf();
             builder.Register<IInitializable, PowerUpPresenter>(Lifetime.Singleton).AsSelf();
 
-            builder.Register<GamePlay.MoveMediator>(Lifetime.Singleton);
+            builder.Register<IInitializable, GamePlay.MoveMediator>(Lifetime.Singleton).AsSelf();
             
             builder.Register<CellPrefabCreator>(Lifetime.Singleton);
             builder.Register<CellCreator>(Lifetime.Singleton);
@@ -65,7 +65,7 @@ namespace Scopes
         private void RegisterBoard(IContainerBuilder builder)
         {
             builder.Register<BoardModel>(Lifetime.Singleton);
-            builder.Register<IInitializable, BoardPresenter>(Lifetime.Singleton).AsSelf();
+            builder.Register<BoardPresenter>(Lifetime.Singleton).AsSelf();
             builder.Register<IInitializable, BoardFillPresenter>(Lifetime.Singleton).AsSelf();
             
             builder.RegisterInstance(boardCreationData);

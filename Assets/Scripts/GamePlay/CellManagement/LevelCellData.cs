@@ -53,9 +53,7 @@ namespace GamePlay.CellManagement
     [Serializable]
     public class LevelPowerUpData : LevelCellData
     {
-        [NonSerialized] public int amount;
         public PowerUpType type;
-        public ImpactArea impactArea;
         public int creationThreshold;
     }
 }

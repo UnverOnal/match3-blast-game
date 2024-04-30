@@ -1,5 +1,6 @@
 using GameManagement;
 using GamePlay.Board;
+using GamePlay.Mediator;
 using Level.LevelCreation;
 using Services.InputService;
 using UnityEngine;
@@ -7,12 +8,11 @@ using VContainer;
 
 namespace GamePlay
 {
-    public class GamePlayPresenter : IInitializable
+    public class GamePlayPresenter : Colleague, IInitializable
     {
         [Inject] private IInputService _inputService;
         [Inject] private BoardPresenter _boardPresenter;
         [Inject] private LevelCreationPresenter _levelCreationPresenter;
-        [Inject] private MoveMediator _moveMediator;
         
         public void Initialize()
         {
@@ -22,9 +22,9 @@ namespace GamePlay
 
         private void OnBlockSelected(GameObject cellGameObject)
         {
-            if(cellGameObject.layer != LayerMask.NameToLayer("Cell")) return;
+            if(cellGameObject.layer == LayerMask.NameToLayer("Default")) return;
             
-            _boardPresenter.OnBlockSelected(cellGameObject);
+            moveMediator.NotifyOnInput(cellGameObject);
         }
 
         private void OnLevelEnd()

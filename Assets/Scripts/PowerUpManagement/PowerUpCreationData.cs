@@ -17,11 +17,4 @@ namespace PowerUpManagement
         public PowerUpType type;
         public GameObject prefab;
     }
-
-    [Serializable]
-    public struct ImpactArea
-    {
-        public int x;
-        public int y;
-    }
 }

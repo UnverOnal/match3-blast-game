@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 
 namespace GamePlay.CellManagement
@@ -11,7 +12,8 @@ namespace GamePlay.CellManagement
         public CellType CellType { get; private set; }
 
         public BoardLocation Location { get; protected set; }
-        
+
+        protected SpriteRenderer spriteRenderer;
         private Sprite _sprite;
 
         public virtual void SetData(CellCreationData cellCreationData)
@@ -25,7 +27,8 @@ namespace GamePlay.CellManagement
         private void SetGameObject(GameObject gameObject)
         {
             GameObject = gameObject;
-            _sprite = GameObject.GetComponent<SpriteRenderer>().sprite;
+            spriteRenderer = GameObject.GetComponent<SpriteRenderer>();
+            _sprite = spriteRenderer.sprite;
         }
 
         private void SetType(CellType type)
@@ -43,6 +46,12 @@ namespace GamePlay.CellManagement
             GameObject = null;
             Location = new BoardLocation();
             _sprite = null;
+        }
+
+        public void Explode()
+        {
+            var transform = GameObject.transform;
+            transform.DOScale(0f, 0.25f).SetEase(Ease.InBack, 2f);
         }
     }
     

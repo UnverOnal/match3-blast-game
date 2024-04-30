@@ -1,12 +1,17 @@
 using System;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using GameManagement;
 using GamePlay.Board;
+using GamePlay.Board.Steps.Fill;
 using GamePlay.CellManagement;
 using GamePlay.Mediator;
 using Level.LevelCounter;
 using Level.LevelCreation;
+using PowerUpManagement.PowerUpTypes;
+using Services.InputService;
 using Services.PoolingService;
+using UnityEngine;
 using VContainer;
 
 namespace PowerUpManagement
@@ -14,6 +19,8 @@ namespace PowerUpManagement
     public class PowerUpPresenter : Colleague, IInitializable, IDisposable
     {
         [Inject] private BoardModel _boardModel;
+        [Inject] private BoardFillPresenter _fillPresenter;
+        [Inject] private IInputService _inputService;
 
         private readonly PowerUpView _powerUpView;
 
@@ -45,6 +52,19 @@ namespace PowerUpManagement
             var bottomLocations = selectedGroup.bottomLocations;
             var location = bottomLocations[selectedBlockLocation.x];
             _powerUpView.CreatePowerUp(type, location);
+        }
+
+        public async UniTask Explode(GameObject gameObject)
+        {
+            var powerUp = (PowerUp)_boardModel.GetCell(gameObject);
+            powerUp.OnExplode += _boardModel.RemoveCell;
+            
+            _inputService.IgnoreInput(true);
+            await powerUp.Explode(_boardModel.Cells, _fillPresenter);
+            _inputService.IgnoreInput(false);
+            
+            powerUp.Reset();
+            _powerUpCreator.ReturnPowerUp(powerUp.type, powerUp);
         }
 
         private PowerUpType GetPowerUpType(int blastedBlockCount)

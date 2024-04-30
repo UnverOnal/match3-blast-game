@@ -1,27 +1,32 @@
+using System;
+using Cysharp.Threading.Tasks;
+using GamePlay.Board.Steps.Fill;
 using GamePlay.CellManagement;
 
 namespace PowerUpManagement.PowerUpTypes
 {
-    public class PowerUp : Cell
+    public abstract class PowerUp : Cell
     {
-        protected PowerUpType type;
-        protected int threshold;
-        protected ImpactArea impactArea;
+        public event Action<Cell> OnExplode;
+        public PowerUpType type;
 
         public override void SetData(CellCreationData cellCreationData)
         {
             base.SetData(cellCreationData);
             var creationData = (LevelPowerUpData)cellCreationData.levelCellData;
-            threshold = creationData.creationThreshold;
             type = creationData.type;
-            impactArea = creationData.impactArea;
         }
 
         public override void Reset()
         {
             Location = new BoardLocation();
-            threshold = int.MaxValue;
-            impactArea = default;
+        }
+
+        public abstract UniTask Explode(Cell[,] board, BoardFillPresenter fillPresenter);
+
+        protected void OnExplodeInvoker(Cell cell)
+        {
+            OnExplode?.Invoke(cell);
         }
     }
 }
