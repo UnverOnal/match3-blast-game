@@ -4,15 +4,6 @@ namespace GamePlay.CellManagement
 {
     public class Block : Cell
     {
-        public BlockType BlockType { get; private set; }
-        
-        public override void SetData(CellCreationData cellCreationData)
-        {
-            base.SetData(cellCreationData);
-            var cellData = (LevelBlockData)cellCreationData.levelCellData;
-            BlockType = cellData.type;
-        }
-
         public void GetNeighbours(CellGroup cellGroup, Cell[,] board, HashSet<Cell> visitedCells)
         {
             var (boardWidth, boardHeight) = (board.GetLength(0), board.GetLength(1));
@@ -43,7 +34,7 @@ namespace GamePlay.CellManagement
         private bool IsNeighbourValid(Cell neighbour, ICollection<Cell> visitedCells)
         {
             var isEmpty = neighbour == null;
-            var isSameType = neighbour?.GetType() == typeof(Block) && BlockType == ((Block)neighbour).BlockType;
+            var isSameType = neighbour?.GetType() == typeof(Block) && CellType == ((Block)neighbour).CellType;
             var isVisited = visitedCells.Contains(neighbour);
 
             return !isEmpty && isSameType && !isVisited;

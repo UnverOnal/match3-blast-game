@@ -8,14 +8,14 @@ namespace PowerUpManagement.PowerUpTypes
     public abstract class PowerUp : Cell
     {
         public event Action<Cell> OnExplode;
-        public PowerUpType type;
+        public CellType type;
 
         public override void SetData(CellCreationData cellCreationData)
         {
             base.SetData(cellCreationData);
             GameObject.SetActive(true);
             var creationData = (LevelPowerUpData)cellCreationData.levelCellData;
-            type = creationData.type;
+            type = creationData.cellType;
         }
 
         public override void Reset()

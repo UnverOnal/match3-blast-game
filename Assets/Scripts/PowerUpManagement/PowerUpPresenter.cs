@@ -35,7 +35,7 @@ namespace PowerUpManagement
         {
             _boardCreationData = boardCreationData;
             _levelPresenter = levelPresenter;
-            _powerUpCreator = new PowerUpCreator(poolService, boardCreationData.powerUps);
+            _powerUpCreator = new PowerUpCreator(poolService, boardCreationData);
             _powerUpView = new PowerUpView(_powerUpCreator, levelPresenter, boardCreationData);
         }
 
@@ -47,7 +47,7 @@ namespace PowerUpManagement
         public void CreatePowerUp(CellGroup selectedGroup, BoardLocation selectedBlockLocation)
         {
             var type = GetPowerUpType(selectedGroup.blocks.Count);
-            if(type == PowerUpType.None)
+            if(type == CellType.None)
                 return;
             
             var bottomLocations = selectedGroup.bottomLocations;
@@ -68,7 +68,7 @@ namespace PowerUpManagement
             _powerUpCreator.ReturnPowerUp(powerUp.type, powerUp);
         }
 
-        private PowerUpType GetPowerUpType(int blastedBlockCount)
+        private CellType GetPowerUpType(int blastedBlockCount)
         {
             var datas = _levelPresenter.GetCurrentLevelData().powerUpData;
             var orderedDatas = datas.OrderByDescending(data => data.creationThreshold);
@@ -76,10 +76,10 @@ namespace PowerUpManagement
             foreach (var data in orderedDatas)
             {
                 if (blastedBlockCount > data.creationThreshold)
-                    return data.type;
+                    return data.cellType;
             }
 
-            return PowerUpType.None;
+            return CellType.None;
         }
 
         public void Dispose()

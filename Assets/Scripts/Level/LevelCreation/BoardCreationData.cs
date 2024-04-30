@@ -8,23 +8,14 @@ namespace Level.LevelCreation
     [CreateAssetMenu(fileName = "BoardCreationData", menuName = "ScriptableObjects/BoardCreationData")]
     public class BoardCreationData : ScriptableObject
     {
-        public BlockCreationData[] blockCreationData;
-        public ObstacleCreationData[] obstacleCreationData;
+        public CellAssetData[] blockCreationData;
 
         public Sprite background;
-
-        public PowerUpCreationData[] powerUps;
     }
     
-    [Serializable]public struct BlockCreationData
+    [Serializable]public struct CellAssetData
     {
-        public BlockType type;
-        public GameObject prefab;
-    }
-    
-    [Serializable]public struct ObstacleCreationData
-    {
-        public ObstacleType type;
+        public CellType type;
         public GameObject prefab;
     }
 }

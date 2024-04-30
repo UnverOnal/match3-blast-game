@@ -1,10 +1,11 @@
+using System;
 using System.Collections.Generic;
 using GamePlay.CellManagement;
-using GamePlay.PrefabCreation.Factory;
 using Level.LevelCreation;
 using Services.PoolingService;
 using UnityEngine;
 using VContainer;
+using Object = UnityEngine.Object;
 
 namespace GamePlay.PrefabCreation
 {
@@ -14,7 +15,9 @@ namespace GamePlay.PrefabCreation
 
         private readonly BoardCreationData _creationData;
 
-        private readonly Dictionary<CellType, PrefabFactory> _factories;
+        private readonly Dictionary<CellType, ObjectPool<GameObject>> _pools;
+
+        private GameObject _prefabParent;
 
         [Inject]
         public CellPrefabCreator(IPoolService poolService, BoardCreationData data)
@@ -22,39 +25,46 @@ namespace GamePlay.PrefabCreation
             _poolService = poolService;
             _creationData = data;
 
-            _factories = new Dictionary<CellType, PrefabFactory>();
+            _pools = new Dictionary<CellType, ObjectPool<GameObject>>();
+
+            _prefabParent = new GameObject("Cells");
         }
 
         public GameObject Get(LevelCellData levelCellData)
         {
             var cellType = levelCellData.cellType;
-            _factories.TryGetValue(cellType, out var factory);
-            factory = GetFactory(levelCellData.cellType);
-            return factory.Get(levelCellData);
+            var poolExist = _pools.TryGetValue(cellType, out var pool);
+            if (!poolExist)
+            {
+                pool = _poolService.GetPoolFactory().CreatePool(CreateCell(cellType));
+                _pools.Add(cellType, pool);
+            }
+
+            return pool.Get();
         }
 
         public void Return(Cell cell, GameObject cellGameObject)
         {
             var cellType = cell.CellType;
-            _factories.TryGetValue(cellType, out var factory);
-            factory?.Return(cell, cellGameObject);
+            var pool = _pools[cellType];
+            pool.Return(cellGameObject);
         }
 
-        private PrefabFactory GetFactory(CellType cellType)
+        private Func<GameObject> CreateCell(CellType cellType)
         {
-            var exist = _factories.TryGetValue(cellType, out var factory);
-            if (exist)
-                return factory;
-
-            factory = cellType switch
+            GameObject prefab = null;
+            var cellAssetDatas = _creationData.blockCreationData;
+            for (int i = 0; i < cellAssetDatas.Length; i++)
             {
-                CellType.Block => new BlockPrefabFactory(_poolService, _creationData),
-                CellType.Obstacle => new ObstaclePrefabFactory(_poolService, _creationData),
-                _ => null
-            };
+                var data = cellAssetDatas[i];
+                if (data.type == cellType)
+                {
+                    prefab = data.prefab;
+                    break;
+                }
+            }
 
-            _factories.Add(cellType, factory);
-            return factory;
+            return () => Object.Instantiate(prefab, parent:_prefabParent.transform);
         }
     }
 }

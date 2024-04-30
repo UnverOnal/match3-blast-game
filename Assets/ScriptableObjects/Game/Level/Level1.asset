@@ -19,39 +19,29 @@ MonoBehaviour:
   - description: adsad
     cellType: 2
     target: 1
-  - description: adsad
-    cellType: 0
-    target: 3
   width: 6
   height: 6
   blockData:
-  - cellType: 0
+  - cellType: 1
     amount: 15
-    type: 0
-  - cellType: 0
+  - cellType: 2
     amount: 10
-    type: 1
-  - cellType: 0
+  - cellType: 3
     amount: 9
-    type: 2
   obstacleData:
-  - cellType: 1
+  - cellType: 0
     amount: 1
-    type: 0
     health: 2
-  - cellType: 1
+  - cellType: 0
     amount: 1
-    type: 0
     health: 2
   powerUpData:
-  - cellType: 2
+  - cellType: 8
     amount: 0
-    type: 0
-    creationThreshold: 4
-  - cellType: 2
-    amount: 0
-    type: 1
     creationThreshold: 3
+  - cellType: 7
+    amount: 0
+    creationThreshold: 4
   moveData:
     duration: 60
     moveAmount: 30

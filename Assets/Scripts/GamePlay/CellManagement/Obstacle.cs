@@ -5,8 +5,6 @@ namespace GamePlay.CellManagement
 {
     public class Obstacle : Cell, IDamageable
     {
-        public ObstacleType ObstacleType { get; private set; }
-
         private int _health;
 
         public bool CanExplode() => _health <= 0;
@@ -30,7 +28,6 @@ namespace GamePlay.CellManagement
         {
             base.SetData(cellCreationData);
             var cellData = (LevelObstacleData)cellCreationData.levelCellData;
-            ObstacleType = cellData.type;
             _health = cellData.health;
         }
     }

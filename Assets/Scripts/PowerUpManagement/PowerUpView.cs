@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using GamePlay.CellManagement;
 using Level.LevelCounter;
@@ -18,6 +20,7 @@ namespace PowerUpManagement
         private readonly BoardCreationData _boardCreationData;
 
         private readonly GameObject _powerUpParent;
+        private IEnumerable<CellAssetData> _powerUpData;
 
         public PowerUpView(PowerUpCreator powerUpCreator, LevelPresenter levelPresenter,
             BoardCreationData boardCreationData)
@@ -27,9 +30,12 @@ namespace PowerUpManagement
             _boardCreationData = boardCreationData;
 
             _powerUpParent = new GameObject("PowerUps");
+            
+            _powerUpData =
+                _boardCreationData.blockCreationData.Where(data => data.type is CellType.Bomb or CellType.Rocket);
         }
 
-        public void CreatePowerUp(PowerUpType tempType, BoardLocation location)
+        public void CreatePowerUp(CellType tempType, BoardLocation location)
         {
             var powerUp = _powerUpCreator.GetPowerUp(tempType);
 
@@ -40,12 +46,10 @@ namespace PowerUpManagement
             OnPowerUpCreated?.Invoke(powerUp);
         }
 
-        private GameObject GetPrefab(PowerUpType type)
+        private GameObject GetPrefab(CellType type)
         {
-            var powerUpData = _boardCreationData.powerUps;
-            for (var i = 0; i < powerUpData.Length; i++)
+            foreach (var data in _powerUpData)
             {
-                var data = powerUpData[i];
                 if (data.type == type)
                     return data.prefab;
             }
@@ -53,20 +57,20 @@ namespace PowerUpManagement
             return null;
         }
 
-        private LevelPowerUpData GetLevelPowerUpData(PowerUpType type)
+        private LevelPowerUpData GetLevelPowerUpData(CellType type)
         {
             var levelPowerUpDatas = _levelPresenter.GetCurrentLevelData().powerUpData;
             for (var i = 0; i < levelPowerUpDatas.Length; i++)
             {
                 var data = levelPowerUpDatas[i];
-                if (data.type == type)
+                if (data.cellType == type)
                     return data;
             }
 
             return null;
         }
 
-        private GameObject SpawnPowerUp(PowerUp powerUp, Vector3 position, PowerUpType type)
+        private GameObject SpawnPowerUp(PowerUp powerUp, Vector3 position, CellType type)
         {
             var prefab = powerUp.GameObject == null
                 ? Object.Instantiate(GetPrefab(type), parent : _powerUpParent.transform)

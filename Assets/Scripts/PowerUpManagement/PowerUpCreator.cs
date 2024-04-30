@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using GamePlay.CellManagement;
+using Level.LevelCreation;
 using PowerUpManagement.PowerUpTypes;
 using Services.PoolingService;
 
@@ -8,17 +10,17 @@ namespace PowerUpManagement
     public class PowerUpCreator
     {
         private readonly IPoolService _poolService;
-        private readonly Dictionary<PowerUpType, ObjectPool<PowerUp>> _pools;
-        private PowerUpCreationData[] _powerUpCreationDatas;
+        private readonly BoardCreationData _boardCreationData;
+        private readonly Dictionary<CellType, ObjectPool<PowerUp>> _pools;
 
-        public PowerUpCreator(IPoolService poolService, PowerUpCreationData[] powerUpCreationDatas)
+        public PowerUpCreator(IPoolService poolService, BoardCreationData boardCreationData)
         {
             _poolService = poolService;
-            _powerUpCreationDatas = powerUpCreationDatas;
-            _pools = new Dictionary<PowerUpType, ObjectPool<PowerUp>>();
+            _boardCreationData = boardCreationData;
+            _pools = new Dictionary<CellType, ObjectPool<PowerUp>>();
         }
 
-        public PowerUp GetPowerUp(PowerUpType type)
+        public PowerUp GetPowerUp(CellType type)
         {
             var exist = _pools.TryGetValue(type, out var pool);
             if (!exist)
@@ -30,18 +32,18 @@ namespace PowerUpManagement
             return pool.Get();
         }
 
-        public void ReturnPowerUp(PowerUpType type, PowerUp powerUp)
+        public void ReturnPowerUp(CellType type, PowerUp powerUp)
         {
             var pool = _pools[type];
             pool.Return(powerUp);
         }
 
-        private void CreatePool(PowerUpType type, out ObjectPool<PowerUp> pool)
+        private void CreatePool(CellType type, out ObjectPool<PowerUp> pool)
         {
             Func<PowerUp> powerUp = type switch
             {
-                PowerUpType.Bomb => () => new Bomb(),
-                PowerUpType.Rocket => () => new Rocket(),
+                CellType.Bomb => () => new Bomb(),
+                CellType.Rocket => () => new Rocket(),
                 _ => null
             };
             

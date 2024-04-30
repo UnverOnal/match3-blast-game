@@ -13,7 +13,7 @@ namespace Level.LevelCounter
         [Header("BoardSize")] public int width;
         public int height;
 
-        [Header("BlockData")] public LevelBlockData[] blockData;
+        [Header("BlockData")] public LevelCellData[] blockData;
 
         [Header("ObstacleData")] public LevelObstacleData[] obstacleData;
 
