@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 
@@ -46,12 +47,14 @@ namespace GamePlay.CellManagement
             GameObject = null;
             Location = new BoardLocation();
             _sprite = null;
+            spriteRenderer = null;
         }
 
-        public void Explode()
+        public UniTask Explode()
         {
             var transform = GameObject.transform;
-            transform.DOScale(0f, 0.25f).SetEase(Ease.InBack, 2f);
+            var tween = transform.DOScale(0f, 0.25f).SetEase(Ease.InBack, 2f);
+            return tween.AsyncWaitForCompletion().AsUniTask();
         }
     }
     

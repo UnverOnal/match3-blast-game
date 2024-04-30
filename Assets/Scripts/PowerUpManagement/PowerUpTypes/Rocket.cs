@@ -29,7 +29,7 @@ namespace PowerUpManagement.PowerUpTypes
             transform.gameObject.SetActive(true);
 
             var cells = GetCells(direction, board);
-            var targetPosition = cells[^1].Position + direction * 1.5f;
+            var targetPosition = cells[^1].Position + direction * 1.25f;
             var duration = Vector3.Distance(transform.position, targetPosition) / Speed;
             var tween = transform.DOMove(targetPosition, duration).OnUpdate(() =>
             {
@@ -88,7 +88,6 @@ namespace PowerUpManagement.PowerUpTypes
         {
             base.Reset();
 
-            Debug.Log("reset");
             GameObject.SetActive(false);
             spriteRenderer.enabled = true;
             

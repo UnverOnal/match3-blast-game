@@ -13,6 +13,7 @@ namespace PowerUpManagement.PowerUpTypes
         public override void SetData(CellCreationData cellCreationData)
         {
             base.SetData(cellCreationData);
+            GameObject.SetActive(true);
             var creationData = (LevelPowerUpData)cellCreationData.levelCellData;
             type = creationData.type;
         }
