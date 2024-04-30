@@ -7,6 +7,8 @@ using GamePlay.PrefabCreation;
 using GameState;
 using Level.LevelCounter;
 using Level.LevelCreation;
+using MoveManagement;
+using MoveManagement.TimerSystem;
 using PowerUpManagement;
 using UI;
 using UI.Screens;
@@ -28,7 +30,9 @@ namespace Scopes
 
         [SerializeField] private LevelContainer levelContainer;
         [SerializeField] private BoardCreationData boardCreationData;
+        
         [SerializeField] private BoardResources boardResources;
+        [SerializeField] private MoveResources moveResources;
 
         protected override void Configure(IContainerBuilder builder)
         {

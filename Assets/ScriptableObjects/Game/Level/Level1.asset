@@ -42,5 +42,6 @@ MonoBehaviour:
     amount: 0
     type: 1
     creationThreshold: 3
-  moveCount: 15
-  duration: 60
+  moveData:
+    duration: 60
+    moveAmount: 30

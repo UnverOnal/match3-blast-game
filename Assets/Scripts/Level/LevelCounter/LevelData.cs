@@ -1,4 +1,5 @@
 using GamePlay.CellManagement;
+using MoveManagement;
 using UnityEngine;
 
 namespace Level.LevelCounter
@@ -8,20 +9,15 @@ namespace Level.LevelCounter
     {
         //GOAL var
 
-        [Header("BoardSize")]
-        public int width;
+        [Header("BoardSize")] public int width;
         public int height;
-        
-        [Header("BlockData")]
-        public LevelBlockData[] blockData;
 
-        [Header("ObstacleData")] 
-        public LevelObstacleData[] obstacleData;
+        [Header("BlockData")] public LevelBlockData[] blockData;
+
+        [Header("ObstacleData")] public LevelObstacleData[] obstacleData;
 
         [Header("PowerUpData")] public LevelPowerUpData[] powerUpData;
 
-        [Header("MoveData")]
-        public int moveCount;
-        public float duration = 60f;
+        [Header("MoveData")] public MoveData moveData;
     }
 }
