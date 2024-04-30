@@ -5,23 +5,25 @@ namespace MoveManagement.TimerSystem
 {
     public class TimerPresenter
     {
-        public event Action OnTimerComplete;
+        public event Action OnComplete;
 
         public bool IsRunning { get; private set; }
 
         private readonly TimerModel _timerModel;
         private readonly TimerView _timerView;
-
-        private readonly int _duration;
-
-        public TimerPresenter(MoveResources moveResources, int duration)
+        
+        public TimerPresenter(MoveResources moveResources)
         {
-            _duration = duration;
-            _timerModel = new TimerModel(_duration);
+            _timerModel = new TimerModel();
             _timerView = new TimerView(moveResources.timerText);
 
             _timerModel.OnTimerChange += UpdateView;
-            OnTimerComplete += ResetTimer;
+            OnComplete += Reset;
+        }
+
+        public void SetDuration(float duration)
+        {
+            _timerModel.SetDuration(duration);
         }
 
         public void StartTimer()
@@ -44,32 +46,15 @@ namespace MoveManagement.TimerSystem
             _timerModel.UpdateRemainingTime(Mathf.Max(0f, _timerModel.RemainingTime - Time.deltaTime));
 
             if (_timerModel.RemainingTime <= 0f)
-                OnTimerComplete?.Invoke();
+                OnComplete?.Invoke();
         }
-
-        // public void CalculateRemainingTime()
-        // {
-        //     if (Math.Abs(_timerModel.RemainingTime - _duration) < 0.1f)
-        //         return;
-        //
-        //     var elapsedTime = (float)(DateTime.Now - _timerModel.QuitTime).TotalSeconds;
-        //     if (elapsedTime < _timerModel.RemainingTime)
-        //     {
-        //         _timerModel.RemainingTime -= elapsedTime;
-        //         StartTimer();
-        //     }
-        //     else
-        //     {
-        //         OnTimerComplete?.Invoke();
-        //     }
-        // }
 
         private void UpdateView()
         {
             _timerView.UpdateTimerText(Mathf.CeilToInt(_timerModel.RemainingTime));
         }
 
-        private void ResetTimer()
+        private void Reset()
         {
             StopTimer();
             _timerModel.ResetTimer();

@@ -1,4 +1,5 @@
 using GameManagement;
+using GameManagement.LifeCycle;
 using GamePlay;
 using GamePlay.Board;
 using GamePlay.Board.Steps.Fill;
@@ -8,7 +9,6 @@ using GameState;
 using Level.LevelCounter;
 using Level.LevelCreation;
 using MoveManagement;
-using MoveManagement.TimerSystem;
 using PowerUpManagement;
 using UI;
 using UI.Screens;
@@ -18,7 +18,6 @@ using Ui.Screens.LevelEnd;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
-using IInitializable = GameManagement.IInitializable;
 
 namespace Scopes
 {
@@ -37,17 +36,18 @@ namespace Scopes
         protected override void Configure(IContainerBuilder builder)
         {
             builder.RegisterEntryPoint<GameSceneManager>();
-            builder.Register<IInitializable, UiManager>(Lifetime.Singleton).AsSelf();
+            builder.Register<IInitialize, UiManager>(Lifetime.Singleton).AsSelf();
             builder.Register<GameStatePresenter>(Lifetime.Singleton);
 
             RegisterScreens(builder);
             
             RegisterLevel(builder);
             RegisterBoard(builder);
-            builder.Register<IInitializable, GamePlayPresenter>(Lifetime.Singleton).AsSelf();
-            builder.Register<IInitializable, PowerUpPresenter>(Lifetime.Singleton).AsSelf();
+            RegisterMove(builder);
+            builder.Register<IInitialize, GamePlayPresenter>(Lifetime.Singleton).AsSelf();
+            builder.Register<IInitialize, PowerUpPresenter>(Lifetime.Singleton).AsSelf();
 
-            builder.Register<IInitializable, GamePlay.MoveMediator>(Lifetime.Singleton).AsSelf();
+            builder.Register<IInitialize, GamePlay.MoveMediator>(Lifetime.Singleton).AsSelf();
             
             builder.Register<CellPrefabCreator>(Lifetime.Singleton);
             builder.Register<CellCreator>(Lifetime.Singleton);
@@ -70,7 +70,7 @@ namespace Scopes
         {
             builder.Register<BoardModel>(Lifetime.Singleton);
             builder.Register<BoardPresenter>(Lifetime.Singleton).AsSelf();
-            builder.Register<IInitializable, BoardFillPresenter>(Lifetime.Singleton).AsSelf();
+            builder.Register<IInitialize, BoardFillPresenter>(Lifetime.Singleton).AsSelf();
             
             builder.RegisterInstance(boardCreationData);
             builder.RegisterInstance(boardResources);
@@ -78,9 +78,15 @@ namespace Scopes
 
         private void RegisterLevel(IContainerBuilder builder)
         {
-            builder.Register<IInitializable, LevelCreationPresenter>(Lifetime.Singleton).AsSelf();
+            builder.Register<IInitialize, LevelCreationPresenter>(Lifetime.Singleton).AsSelf();
             builder.Register<LevelPresenter>(Lifetime.Singleton);
             builder.RegisterInstance(levelContainer);
+        }
+
+        private void RegisterMove(IContainerBuilder builder)
+        {
+            builder.Register<MovePresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.RegisterInstance(moveResources);
         }
     }
 }

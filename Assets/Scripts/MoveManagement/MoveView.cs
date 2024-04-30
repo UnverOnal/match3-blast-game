@@ -1,18 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using Level.LevelCounter;
 
-public class MoveView : MonoBehaviour
+namespace MoveManagement
 {
-    // Start is called before the first frame update
-    void Start()
+    public class MoveView
     {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
+        public MoveView()
+        {
+        }
+        
         
     }
 }

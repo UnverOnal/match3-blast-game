@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using GameManagement;
+using GameManagement.LifeCycle;
 using GamePlay.CellManagement;
 using GamePlay.PrefabCreation;
 using Level.LevelCounter;
@@ -9,7 +10,7 @@ using VContainer;
 
 namespace GamePlay.Board.Steps.Fill
 {
-    public class BoardFillPresenter : IInitializable, IDisposable
+    public class BoardFillPresenter : IInitialize, IDisposable
     {
         [Inject] private BoardModel _boardModel;
         [Inject] private CellCreator _cellCreator;

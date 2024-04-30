@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using GameManagement;
+using GameManagement.LifeCycle;
 using GamePlay.Board;
 using GamePlay.Board.Steps.Fill;
 using GamePlay.CellManagement;
@@ -16,7 +17,7 @@ using VContainer;
 
 namespace PowerUpManagement
 {
-    public class PowerUpPresenter : Colleague, IInitializable, IDisposable
+    public class PowerUpPresenter : Colleague, IInitialize, IDisposable
     {
         [Inject] private BoardModel _boardModel;
         [Inject] private BoardFillPresenter _fillPresenter;

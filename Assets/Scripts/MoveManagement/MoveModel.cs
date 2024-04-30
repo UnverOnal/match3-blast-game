@@ -1,18 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class MoveModel : MonoBehaviour
+namespace MoveManagement
 {
-    // Start is called before the first frame update
-    void Start()
+    public class MoveModel
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+    
     }
 }

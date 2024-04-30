@@ -1,5 +1,6 @@
 using System;
 using GameManagement;
+using GameManagement.LifeCycle;
 using GamePlay.Board;
 using GamePlay.CellManagement;
 using GamePlay.PrefabCreation;
@@ -9,7 +10,7 @@ using VContainer;
 
 namespace Level.LevelCreation
 {
-    public class LevelCreationPresenter : IInitializable
+    public class LevelCreationPresenter : IInitialize
     {
         public event Action OnLevelCreated;
         

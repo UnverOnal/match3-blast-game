@@ -1,25 +1,30 @@
+using System;
 using GameManagement;
+using GameManagement.LifeCycle;
 using GamePlay.Board;
 using GamePlay.CellManagement;
 using GamePlay.Mediator;
+using MoveManagement;
 using PowerUpManagement;
 using UnityEngine;
 using VContainer;
 
 namespace GamePlay
 {
-    public class MoveMediator : IMediator, IInitializable
+    public class MoveMediator : IMediator, IInitialize, IDisposable
     {
         private readonly BoardPresenter _boardPresenter;
         private readonly PowerUpPresenter _powerUpPresenter;
         private readonly GamePlayPresenter _gamePlayPresenter;
+        private readonly MovePresenter _movePresenter;
 
         [Inject]
-        public MoveMediator(BoardPresenter boardPresenter, PowerUpPresenter powerUpPresenter, GamePlayPresenter gamePlayPresenter)
+        public MoveMediator(BoardPresenter boardPresenter, PowerUpPresenter powerUpPresenter, GamePlayPresenter gamePlayPresenter, MovePresenter movePresenter)
         {
             _boardPresenter = boardPresenter;
             _powerUpPresenter = powerUpPresenter;
             _gamePlayPresenter = gamePlayPresenter;
+            _movePresenter = movePresenter;
         }
         
         public void Initialize()
@@ -27,6 +32,9 @@ namespace GamePlay
             SetMediator(_boardPresenter);
             SetMediator(_powerUpPresenter);
             SetMediator(_gamePlayPresenter);
+            SetMediator(_movePresenter);
+
+            _movePresenter.OnTimerComplete += _gamePlayPresenter.OnLevelEnd;
         }
 
         private void SetMediator(Colleague colleague) => colleague.SetMediator(this);
@@ -47,6 +55,11 @@ namespace GamePlay
                 await _powerUpPresenter.Explode(selectedGameObject);
                 _boardPresenter.GroupCells();
             }
+        }
+
+        public void Dispose()
+        {
+            _movePresenter.OnTimerComplete -= _gamePlayPresenter.OnLevelEnd;
         }
     }
 }

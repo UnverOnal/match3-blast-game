@@ -19,12 +19,12 @@ namespace MoveManagement.TimerSystem
         
         public void StartTimer()
         {
-            _timerText.transform.parent.gameObject.SetActive(true);
+            _timerText.transform.gameObject.SetActive(true);
         }
 
         public void StopTimer()
         {
-            _timerText.transform.parent.gameObject.SetActive(false);
+            _timerText.transform.gameObject.SetActive(false);
         }
     }
 }

@@ -8,19 +8,13 @@ namespace MoveManagement.TimerSystem
     {
         public event Action OnTimerChange;
 
-        private const string RemainingKey = "RemaningTime";
-        private const string QuitTimeKey = "QuitTime";
-
         public float RemainingTime { get; set; }
-        private readonly float _totalTime;
+        private float _totalTime;
         
-        public DateTime QuitTime { get; private set; }
-        
-        public TimerModel(float totalTime)
+        public void SetDuration(float duration)
         {
-            _totalTime = totalTime;
-            
-            GetData();
+            _totalTime = duration;
+            RemainingTime = duration;
         }
 
         public void UpdateRemainingTime(float time)
@@ -32,15 +26,6 @@ namespace MoveManagement.TimerSystem
         public void ResetTimer()
         {
             RemainingTime = _totalTime;
-        }
-
-        private void GetData()
-        {
-            RemainingTime = PlayerPrefs.GetFloat(RemainingKey, _totalTime);
-            
-            var convertedQuitTime =
-                PlayerPrefs.GetString(QuitTimeKey, DateTime.MinValue.ToString(CultureInfo.InvariantCulture));
-            QuitTime = DateTime.Parse(convertedQuitTime);
         }
     }
 }

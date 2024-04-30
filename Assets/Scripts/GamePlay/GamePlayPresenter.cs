@@ -1,4 +1,4 @@
-using GameManagement;
+using GameManagement.LifeCycle;
 using GamePlay.Board;
 using GamePlay.Mediator;
 using Level.LevelCreation;
@@ -8,7 +8,7 @@ using VContainer;
 
 namespace GamePlay
 {
-    public class GamePlayPresenter : Colleague, IInitializable
+    public class GamePlayPresenter : Colleague, IInitialize
     {
         [Inject] private IInputService _inputService;
         [Inject] private BoardPresenter _boardPresenter;
@@ -27,7 +27,7 @@ namespace GamePlay
             moveMediator.NotifyOnInput(cellGameObject);
         }
 
-        private void OnLevelEnd()
+        public void OnLevelEnd()
         {
             _inputService.OnItemPicked -= OnBlockSelected;
             _levelCreationPresenter.OnLevelCreated -= _boardPresenter.GroupCells;
