@@ -1,5 +1,4 @@
 using System;
-using GameManagement;
 using GameManagement.LifeCycle;
 using GamePlay.Board;
 using GamePlay.CellManagement;
@@ -34,7 +33,7 @@ namespace GamePlay
             SetMediator(_gamePlayPresenter);
             SetMediator(_movePresenter);
 
-            _movePresenter.OnTimerComplete += _gamePlayPresenter.OnLevelEnd;
+            _movePresenter.OnMovesDone += _gamePlayPresenter.OnLevelEnd;
         }
 
         private void SetMediator(Colleague colleague) => colleague.SetMediator(this);
@@ -55,11 +54,13 @@ namespace GamePlay
                 await _powerUpPresenter.Explode(selectedGameObject);
                 _boardPresenter.GroupCells();
             }
+            
+            _movePresenter.UpdateMoveCount();
         }
 
         public void Dispose()
         {
-            _movePresenter.OnTimerComplete -= _gamePlayPresenter.OnLevelEnd;
+            _movePresenter.OnMovesDone -= _gamePlayPresenter.OnLevelEnd;
         }
     }
 }

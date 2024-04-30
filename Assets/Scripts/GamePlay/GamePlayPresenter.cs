@@ -29,6 +29,7 @@ namespace GamePlay
 
         public void OnLevelEnd()
         {
+            Debug.Log("level end");
             _inputService.OnItemPicked -= OnBlockSelected;
             _levelCreationPresenter.OnLevelCreated -= _boardPresenter.GroupCells;
         }

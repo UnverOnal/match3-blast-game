@@ -18,7 +18,6 @@ namespace MoveManagement.TimerSystem
             _timerView = new TimerView(moveResources.timerText);
 
             _timerModel.OnTimerChange += UpdateView;
-            OnComplete += Reset;
         }
 
         public void SetDuration(float duration)
@@ -48,16 +47,16 @@ namespace MoveManagement.TimerSystem
             if (_timerModel.RemainingTime <= 0f)
                 OnComplete?.Invoke();
         }
+        
+        public void Reset()
+        {
+            StopTimer();
+            _timerModel.ResetTimer();
+        }
 
         private void UpdateView()
         {
             _timerView.UpdateTimerText(Mathf.CeilToInt(_timerModel.RemainingTime));
-        }
-
-        private void Reset()
-        {
-            StopTimer();
-            _timerModel.ResetTimer();
         }
     }
 }
