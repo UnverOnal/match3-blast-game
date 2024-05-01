@@ -71,10 +71,7 @@ namespace GamePlay.Board
             ResetGroup(selectedGroup);
         }
 
-        public void GroupCells()
-        {
-            _boardGrouper.GroupCells(_boardModel);
-        }
+        public void GroupCells() => _boardGrouper.GroupCells(_boardModel);
 
         private async UniTask Blast(CellGroup selectedGroup, GameObject selectedBlock)
         {
