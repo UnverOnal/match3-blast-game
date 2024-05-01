@@ -21,15 +21,9 @@ namespace GamePlay.Board
             _board = new Board();
         }
 
-        public void SetBoardSize(int width, int height)
-        {
-            _board.SetBoardSize(width, height);
-        }
+        public void SetBoardSize(int width, int height) => _board.SetBoardSize(width, height);
 
-        public void AddCell(Cell cell)
-        {
-            _board.AddCell(cell);
-        }
+        public void AddCell(Cell cell) => _board.AddCell(cell);
 
         public void RemoveCell(Cell cell)
         {
@@ -45,15 +39,9 @@ namespace GamePlay.Board
             cell.SetLocation(targetLocation);
         }
 
-        public void AddCellGroup(CellGroup group)
-        {
-            cellGroups.Add(group);
-        }
+        public void AddCellGroup(CellGroup group) => cellGroups.Add(group);
 
-        public void RemoveCellGroup(CellGroup group)
-        {
-            cellGroups.Remove(group);
-        }
+        public void RemoveCellGroup(CellGroup group) => cellGroups.Remove(group);
 
         public CellGroup GetGroup(GameObject cellGameObject)
         {
@@ -72,9 +60,6 @@ namespace GamePlay.Board
             return null;
         }
 
-        public Cell GetCell(GameObject cellGameObject)
-        {
-            return _board.GetCell(cellGameObject);
-        }
+        public Cell GetCell(GameObject cellGameObject) => _board.GetCell(cellGameObject);
     }
 }

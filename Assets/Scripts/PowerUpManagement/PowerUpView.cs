@@ -13,37 +13,34 @@ namespace PowerUpManagement
 {
     public class PowerUpView
     {
-        public event Action<Cell> OnPowerUpCreated;
+        public event Action<CellCreationData> OnPowerUpCreated;
 
-        private readonly PowerUpCreator _powerUpCreator;
+        private readonly CellCreator _cellCreator;
         private readonly LevelPresenter _levelPresenter;
-        private readonly BoardCreationData _boardCreationData;
 
         private readonly GameObject _powerUpParent;
         private IEnumerable<CellAssetData> _powerUpData;
 
-        public PowerUpView(PowerUpCreator powerUpCreator, LevelPresenter levelPresenter,
+        public PowerUpView(CellCreator cellCreator, LevelPresenter levelPresenter,
             BoardCreationData boardCreationData)
         {
-            _powerUpCreator = powerUpCreator;
+            _cellCreator = cellCreator;
             _levelPresenter = levelPresenter;
-            _boardCreationData = boardCreationData;
 
             _powerUpParent = new GameObject("PowerUps");
             
             _powerUpData =
-                _boardCreationData.blockCreationData.Where(data => data.type is CellType.Bomb or CellType.Rocket);
+                boardCreationData.blockCreationData.Where(data => data.type is CellType.Bomb or CellType.Rocket);
         }
 
-        public void CreatePowerUp(CellType tempType, BoardLocation location)
+        public void CreatePowerUp(CellType cellType, BoardLocation location)
         {
-            var powerUp = _powerUpCreator.GetPowerUp(tempType);
+            var powerUp = (PowerUp)_cellCreator.GetCell(cellType);
 
-            var prefab = SpawnPowerUp(powerUp, new Vector3(location.x, location.y), tempType);
-            var creationData = new CellCreationData(location, prefab, GetLevelPowerUpData(tempType));
-            powerUp.SetData(creationData);
+            var prefab = SpawnPowerUp(powerUp, new Vector3(location.x, location.y), cellType);
+            var creationData = new CellCreationData(location, prefab, GetLevelPowerUpData(cellType));
 
-            OnPowerUpCreated?.Invoke(powerUp);
+            OnPowerUpCreated?.Invoke(creationData);
         }
 
         private GameObject GetPrefab(CellType type)

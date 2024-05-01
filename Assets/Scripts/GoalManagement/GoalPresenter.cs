@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using GamePlay.CellManagement;
 using GoalManagement.Observe;
@@ -11,6 +12,8 @@ namespace GoalManagement
 {
     public class GoalPresenter : ISubject
     {
+        public event Action OnGoalsDone;
+        
         private readonly GoalView _goalView;
 
         private readonly ObjectPool<Goal> _goalPool;
@@ -45,10 +48,7 @@ namespace GoalManagement
             }
         }
 
-        public void Attach(Goal goal)
-        {
-            _goals.Add(goal);
-        }
+        public void Attach(Goal goal) => _goals.Add(goal);
 
         public void Detach(Goal goal)
         {
@@ -76,7 +76,7 @@ namespace GoalManagement
             if (_goals.Count > 0) return;
             
             _goalView.Reset();
-            Debug.Log("Complete");
+            OnGoalsDone?.Invoke();
         }
     }
 }

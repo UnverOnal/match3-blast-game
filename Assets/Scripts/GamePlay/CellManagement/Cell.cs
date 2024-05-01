@@ -8,7 +8,7 @@ namespace GamePlay.CellManagement
     {
         public Vector3 Position => GameObject.transform.position;
         public Vector2 Extents => _sprite.bounds.extents * (Vector2)GameObject.transform.localScale;
-        
+
         public GameObject GameObject { get; private set; }
         public CellType CellType { get; private set; }
 
@@ -16,13 +16,16 @@ namespace GamePlay.CellManagement
 
         protected SpriteRenderer spriteRenderer;
         private Sprite _sprite;
+        
+        private Vector3 _originalScale;
 
         public virtual void SetData(CellCreationData cellCreationData)
         {
             SetLocation(cellCreationData.location);
             SetType(cellCreationData.levelCellData.cellType);
-            
+
             SetGameObject(cellCreationData.gameObject);
+            _originalScale = GameObject.transform.localScale;
         }
 
         private void SetGameObject(GameObject gameObject)
@@ -41,23 +44,22 @@ namespace GamePlay.CellManagement
         {
             Location = boardLocation;
         }
-        
+
         public virtual void Reset()
         {
-            GameObject = null;
+            GameObject.SetActive(false);
             Location = new BoardLocation();
-            _sprite = null;
-            spriteRenderer = null;
+            GameObject.transform.localScale = _originalScale;
         }
 
-        public UniTask Explode()
+        public Tween Destroy()
         {
             var transform = GameObject.transform;
             var tween = transform.DOScale(0f, 0.25f).SetEase(Ease.InBack, 2f);
-            return tween.AsyncWaitForCompletion().AsUniTask();
+            return tween;
         }
     }
-    
+
     public struct CellCreationData
     {
         public CellCreationData(BoardLocation location, GameObject gameObject, LevelCellData levelCellData)

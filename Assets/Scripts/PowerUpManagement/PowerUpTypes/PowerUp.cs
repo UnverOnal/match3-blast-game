@@ -2,6 +2,7 @@ using System;
 using Cysharp.Threading.Tasks;
 using GamePlay.Board.Steps.Fill;
 using GamePlay.CellManagement;
+using UnityEngine;
 
 namespace PowerUpManagement.PowerUpTypes
 {
@@ -16,11 +17,6 @@ namespace PowerUpManagement.PowerUpTypes
             GameObject.SetActive(true);
             var creationData = (LevelPowerUpData)cellCreationData.levelCellData;
             type = creationData.cellType;
-        }
-
-        public override void Reset()
-        {
-            Location = new BoardLocation();
         }
 
         public abstract UniTask Explode(Cell[,] board, BoardFillPresenter fillPresenter);

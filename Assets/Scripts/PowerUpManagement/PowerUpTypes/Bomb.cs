@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using GamePlay.Board.Steps.Fill;
 using GamePlay.CellManagement;
 using UnityEngine;
@@ -8,14 +9,10 @@ namespace PowerUpManagement.PowerUpTypes
 {
     public class Bomb : PowerUp
     {
-        private Vector3 _originalScale;
-
         private readonly Dictionary<int, BoardLocation> _bottomLocations = new();
 
         public override async UniTask Explode(Cell[,] board, BoardFillPresenter fillPresenter)
         {
-            _originalScale = GameObject.transform.localScale;
-
             var tasks = new List<UniTask>();
             var cellsToExplode = GetCells(board);
 
@@ -24,8 +21,9 @@ namespace PowerUpManagement.PowerUpTypes
                 var cell = cellsToExplode[i];
                 if(cell == null)
                     continue;
-                var task = cell.Explode();
-                tasks.Add(task);
+                var task = cell.Destroy();
+                task.OnComplete(() => cell.Reset());
+                tasks.Add(task.AsyncWaitForCompletion().AsUniTask());
                 OnExplodeInvoker(cell);
             }
 
@@ -92,14 +90,6 @@ namespace PowerUpManagement.PowerUpTypes
                     _bottomLocations.Add(neighbourLocation.x, neighbourLocation);
                     break;
             }
-        }
-
-        public override void Reset()
-        {
-            base.Reset();
-
-            GameObject.SetActive(false);
-            GameObject.transform.localScale = _originalScale;
         }
     }
 }

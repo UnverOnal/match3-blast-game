@@ -7,7 +7,7 @@ using UnityEngine;
 using VContainer;
 using Object = UnityEngine.Object;
 
-namespace GamePlay.PrefabCreation
+namespace GamePlay
 {
     public class CellPrefabCreator
     {
@@ -17,7 +17,7 @@ namespace GamePlay.PrefabCreation
 
         private readonly Dictionary<CellType, ObjectPool<GameObject>> _pools;
 
-        private GameObject _prefabParent;
+        private readonly GameObject _prefabParent;
 
         [Inject]
         public CellPrefabCreator(IPoolService poolService, BoardCreationData data)
@@ -43,11 +43,11 @@ namespace GamePlay.PrefabCreation
             return pool.Get();
         }
 
-        public void Return(Cell cell, GameObject cellGameObject)
+        public void Return(Cell cell)
         {
             var cellType = cell.CellType;
             var pool = _pools[cellType];
-            pool.Return(cellGameObject);
+            pool.Return(cell.GameObject);
         }
 
         private Func<GameObject> CreateCell(CellType cellType)

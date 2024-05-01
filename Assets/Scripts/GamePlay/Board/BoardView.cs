@@ -3,7 +3,6 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using GameManagement;
 using GamePlay.CellManagement;
-using GamePlay.PrefabCreation;
 using UnityEngine;
 
 namespace GamePlay.Board
@@ -94,7 +93,7 @@ namespace GamePlay.Board
 
             gameObject.SetActive(false);
             gameObject.transform.localScale = originalScale;
-            _cellPrefabCreator.Return(cell, gameObject);
+            _cellPrefabCreator.Return(cell);
         }
     }
 }

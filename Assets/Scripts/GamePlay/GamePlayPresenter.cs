@@ -1,6 +1,8 @@
+using System;
 using GameManagement.LifeCycle;
 using GamePlay.Board;
 using GamePlay.Mediator;
+using GameState;
 using GoalManagement;
 using Level.LevelCreation;
 using Services.InputService;
@@ -9,18 +11,19 @@ using VContainer;
 
 namespace GamePlay
 {
-    public class GamePlayPresenter : Colleague, IInitialize
+    public class GamePlayPresenter : Colleague, IInitialize, IDisposable
     {
         [Inject] private IInputService _inputService;
         [Inject] private BoardPresenter _boardPresenter;
         [Inject] private LevelCreationPresenter _levelCreationPresenter;
         [Inject] private GoalPresenter _goalPresenter;
+        [Inject] private GameStatePresenter _gameStatePresenter;
         
         public void Initialize()
         {
             _inputService.OnItemPicked += OnBlockSelected;
-            _levelCreationPresenter.OnLevelCreated += _boardPresenter.GroupCells;
-            _levelCreationPresenter.OnLevelCreated += _goalPresenter.CreateGoals;
+            _levelCreationPresenter.OnLevelCreated += OnLevelStart;
+            _goalPresenter.OnGoalsDone += OnLevelEnd;
         }
 
         private void OnBlockSelected(GameObject cellGameObject)
@@ -30,12 +33,25 @@ namespace GamePlay
             moveMediator.NotifyOnInput(cellGameObject);
         }
 
+        private void OnLevelStart()
+        {
+            _inputService.IgnoreInput(false);
+            _boardPresenter.GroupCells();
+            _goalPresenter.CreateGoals();
+        }
+
         public void OnLevelEnd()
         {
-            Debug.Log("level end");
+            _gameStatePresenter.UpdateGameState(GameManagement.GameState.GameState.Home);
+            _inputService.IgnoreInput(true);
+        }
+
+        public void Dispose()
+        {
             _inputService.OnItemPicked -= OnBlockSelected;
             _levelCreationPresenter.OnLevelCreated -= _boardPresenter.GroupCells;
             _levelCreationPresenter.OnLevelCreated -= _goalPresenter.CreateGoals;
+            _goalPresenter.OnGoalsDone -= OnLevelEnd;
         }
     }
 }

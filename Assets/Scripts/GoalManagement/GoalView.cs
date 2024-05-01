@@ -36,11 +36,16 @@ namespace GoalManagement
             if(!_goalRootParent.activeSelf)
                 _goalRootParent.SetActive(true);
             
-            var goalGameObject = _goalGameObjectPool.Get();
-            var text = goalGameObject.GetComponentInChildren<TextMeshProUGUI>();
-            var image = goalGameObject.GetComponentInChildren<Image>();
-            SetGoal(goal, image, text);
-            _counts.Add(goal, text);
+            if (_counts.TryGetValue(goal, out var text))
+                SetCount(text, goal);
+            else
+            {
+                var goalGameObject = _goalGameObjectPool.Get();
+                text = goalGameObject.GetComponentInChildren<TextMeshProUGUI>();
+                var image = goalGameObject.GetComponentInChildren<Image>();
+                SetGoal(goal, image, text);
+                _counts.Add(goal, text);
+            }
         }
 
         public void UpdateMove(Goal goal)
@@ -52,7 +57,6 @@ namespace GoalManagement
         public void Reset()
         {
             _goalRootParent.SetActive(false);
-            _counts.Clear();
         }
 
         private void SetGoal(Goal goal, Image image, TextMeshProUGUI text)

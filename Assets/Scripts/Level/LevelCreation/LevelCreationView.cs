@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using GamePlay;
 using GamePlay.Board;
 using GamePlay.CellManagement;
-using GamePlay.PrefabCreation;
 using Level.LevelCounter;
+using PowerUpManagement.PowerUpTypes;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -59,6 +60,14 @@ namespace Level.LevelCreation
 
                 OnPlaceBlock?.Invoke(new CellCreationData(new BoardLocation(i, j), blockGameObject, cellData));
             }
+        }
+
+        public void ResetCell(Cell cell)
+        {
+            if(cell.CellType is CellType.Rocket or CellType.Bomb) return;
+
+            cell.GameObject.SetActive(false);
+            _cellPrefabCreator.Return(cell);
         }
 
         private List<LevelCellData> GetCellDatas(LevelData levelData)

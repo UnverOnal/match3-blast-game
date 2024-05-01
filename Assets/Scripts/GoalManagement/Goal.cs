@@ -23,6 +23,8 @@ namespace GoalManagement
         {
             description = string.Empty;
             cellType = CellType.None;
+            CurrentCount = 0;
+            Target = 0;
         }
 
         public bool IsCompleted()

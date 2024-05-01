@@ -52,7 +52,7 @@ namespace PowerUpManagement.PowerUpTypes
             var cell = board[cellLocation.x, cellLocation.y];
 
             if (cell != this)
-                cell.Explode();
+                cell.Destroy().OnComplete(()=> cell.Reset());
 
             OnExplodeInvoker(cell);
 
@@ -88,7 +88,6 @@ namespace PowerUpManagement.PowerUpTypes
         {
             base.Reset();
 
-            GameObject.SetActive(false);
             spriteRenderer.enabled = true;
             
             var transform = GameObject.transform;
