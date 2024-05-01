@@ -41,7 +41,7 @@ namespace Level.LevelCreation
 
             var levelData = _levelPresenter.GetNextLevelData();
             _boardModel.SetBoardSize(levelData.width, levelData.height);
-            _levelCreationView.PlaceBlocks(levelData);
+            _levelCreationView.CreateBoard(levelData);
             _levelFitter.AlignCamera(_boardModel.Cells);
             _levelCreationView.SetBoardBackground(_levelFitter.Bounds);
             

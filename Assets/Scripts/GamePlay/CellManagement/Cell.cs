@@ -1,3 +1,4 @@
+using System;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
@@ -74,6 +75,7 @@ namespace GamePlay.CellManagement
         public LevelCellData levelCellData;
     }
 
+    [Serializable]
     public struct BoardLocation
     {
         public int x;

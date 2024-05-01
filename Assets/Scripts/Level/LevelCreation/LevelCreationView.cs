@@ -4,7 +4,6 @@ using GamePlay;
 using GamePlay.Board;
 using GamePlay.CellManagement;
 using Level.LevelCounter;
-using PowerUpManagement.PowerUpTypes;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -46,45 +45,66 @@ namespace Level.LevelCreation
             background.GetComponentInParent<Canvas>().worldCamera = mainCamera;
         }
 
-        public void PlaceBlocks(LevelData levelData)
+        public void CreateBoard(LevelData levelData)
         {
-            var cellDatas = GetCellDatas(levelData);
+            PlaceObstacles(levelData, out var occupiedLocations);
+            PlaceBlocks(levelData, occupiedLocations);
+        }
+
+        private void PlaceObstacles(LevelData levelData, out HashSet<BoardLocation> occupiedLocations)
+        {
+            occupiedLocations = new HashSet<BoardLocation>();
+
+            var obstacleData = levelData.obstacleData;
+
+            for (var i = 0; i < obstacleData.Length; i++)
+            {
+                var data = obstacleData[i];
+                var location = data.location;
+                var position = new Vector3(location.x, location.y, 0);
+
+                var obstacleGameObject = _cellPrefabCreator.Get(data);
+                obstacleGameObject.transform.position = position;
+
+                occupiedLocations.Add(location);
+
+                OnPlaceBlock?.Invoke(new CellCreationData(location, obstacleGameObject, data));
+            }
+        }
+
+        private void PlaceBlocks(LevelData levelData, HashSet<BoardLocation> occupiedLocations)
+        {
+            var blockDatas = new List<LevelBlockData>(levelData.blockData);
 
             for (var i = 0; i < levelData.width; i++)
             for (var j = 0; j < levelData.height; j++)
             {
-                var cellPosition = new Vector3(i, j, 0);
+                var location = new BoardLocation(i, j);
 
-                var blockGameObject = GetBlock(cellDatas, out var cellData);
+                if (occupiedLocations.Contains(location)) continue;
+
+                var cellPosition = new Vector3(location.x, location.y, 0);
+
+                var blockGameObject = GetBlock(blockDatas, out var blockData);
                 blockGameObject.transform.position = cellPosition;
 
-                OnPlaceBlock?.Invoke(new CellCreationData(new BoardLocation(i, j), blockGameObject, cellData));
+                OnPlaceBlock?.Invoke(new CellCreationData(new BoardLocation(i, j), blockGameObject, blockData));
             }
         }
 
         public void ResetCell(Cell cell)
         {
-            if(cell.CellType is CellType.Rocket or CellType.Bomb) return;
+            if (cell.CellType is CellType.Rocket or CellType.Bomb) return;
 
             cell.GameObject.SetActive(false);
             _cellPrefabCreator.Return(cell);
         }
 
-        private List<LevelCellData> GetCellDatas(LevelData levelData)
-        {
-            var cellDatas = new List<LevelCellData>();
-            
-            cellDatas.AddRange(levelData.blockData);
-            cellDatas.AddRange(levelData.obstacleData);
-
-            return cellDatas;
-        }
-
         //Also updates block counts list
-        private GameObject GetBlock(IList<LevelCellData> cellDatas, out LevelCellData levelCellData)
+        private GameObject GetBlock(IList<LevelBlockData> cellDatas, out LevelBlockData levelCellData)
         {
             var randomIndex = Random.Range(0, cellDatas.Count);
-            levelCellData = (LevelCellData)cellDatas[randomIndex].Clone() ;
+            levelCellData = (LevelBlockData)cellDatas[randomIndex].Clone();
             levelCellData.amount--;
 
             cellDatas[randomIndex] = levelCellData;

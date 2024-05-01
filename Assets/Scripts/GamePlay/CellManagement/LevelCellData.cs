@@ -1,4 +1,5 @@
 using System;
+using Level.LevelCounter;
 
 namespace GamePlay.CellManagement
 {
@@ -20,17 +21,20 @@ namespace GamePlay.CellManagement
     public class LevelCellData
     {
         public CellType cellType;
-        public int amount;
 
-        public object Clone()
-        {
-            return MemberwiseClone();
-        }
+        public object Clone() => MemberwiseClone();
+    }
+    
+    [Serializable]
+    public class LevelBlockData : LevelCellData
+    {
+        public int amount;
     }
 
     [Serializable]
     public class LevelObstacleData : LevelCellData
     {
+        public BoardLocation location;
         public int health;
     }
 

@@ -23,25 +23,34 @@ MonoBehaviour:
   height: 6
   blockData:
   - cellType: 1
-    amount: 15
+    amount: 16
   - cellType: 2
     amount: 10
   - cellType: 3
-    amount: 9
+    amount: 10
   obstacleData:
   - cellType: 0
-    amount: 1
+    location:
+      x: 1
+      y: 1
     health: 2
   - cellType: 0
-    amount: 1
+    location:
+      x: 2
+      y: 2
+    health: 2
+  - cellType: 0
+    location:
+      x: 3
+      y: 4
     health: 2
   powerUpData:
   - cellType: 8
-    amount: 0
     creationThreshold: 3
   - cellType: 7
-    amount: 0
     creationThreshold: 4
   moveData:
     duration: 60
     moveAmount: 30
+  test:
+    cellType: 0

@@ -5,6 +5,7 @@ using GameManagement;
 using GamePlay.CellManagement;
 using Level.LevelCounter;
 using UnityEngine;
+using LevelCellData = GamePlay.CellManagement.LevelCellData;
 using Random = UnityEngine.Random;
 
 namespace GamePlay.Board.Steps.Fill
