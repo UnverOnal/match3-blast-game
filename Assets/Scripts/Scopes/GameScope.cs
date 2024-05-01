@@ -33,6 +33,7 @@ namespace Scopes
         
         [SerializeField] private BoardResources boardResources;
         [SerializeField] private MoveResources moveResources;
+        [SerializeField] private GoalResources goalResources;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -47,7 +48,7 @@ namespace Scopes
             RegisterMove(builder);
             builder.Register<IInitialize, GamePlayPresenter>(Lifetime.Singleton).AsSelf();
             builder.Register<IInitialize, PowerUpPresenter>(Lifetime.Singleton).AsSelf();
-            builder.Register<GoalPresenter>(Lifetime.Singleton);
+            RegisterGoal(builder);
 
             builder.Register<IInitialize, GamePlay.MoveMediator>(Lifetime.Singleton).AsSelf();
             
@@ -76,6 +77,12 @@ namespace Scopes
             
             builder.RegisterInstance(boardCreationData);
             builder.RegisterInstance(boardResources);
+        }        
+        
+        private void RegisterGoal(IContainerBuilder builder)
+        {
+            builder.Register<GoalPresenter>(Lifetime.Singleton);
+            builder.RegisterInstance(goalResources);
         }
 
         private void RegisterLevel(IContainerBuilder builder)

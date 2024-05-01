@@ -1,5 +1,4 @@
 using GamePlay.CellManagement;
-using GoalManagement.Goals;
 
 namespace GoalManagement.Observe
 {

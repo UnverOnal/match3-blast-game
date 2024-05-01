@@ -10,12 +10,23 @@ namespace Level.LevelCreation
     {
         public CellAssetData[] blockCreationData;
 
+        public GoalAssetData[] goalAssetData;
+        public GameObject goalPrefab;
+
         public Sprite background;
+        
     }
     
     [Serializable]public struct CellAssetData
     {
         public CellType type;
         public GameObject prefab;
+    }
+
+    [Serializable]
+    public struct GoalAssetData
+    {
+        public CellType cellType;
+        public Sprite sprite;
     }
 }

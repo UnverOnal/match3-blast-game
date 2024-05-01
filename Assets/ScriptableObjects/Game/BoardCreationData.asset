@@ -31,4 +31,24 @@ MonoBehaviour:
     prefab: {fileID: 2152559425444218267, guid: 8f4f641d53ee6b84c96ab41585c7b5c9, type: 3}
   - type: 0
     prefab: {fileID: 2152559425444218267, guid: a30990b5006ed174284dd3512ebb49cc, type: 3}
+  goalAssetData:
+  - cellType: 7
+    sprite: {fileID: 21300000, guid: 7812b860ea8842443adc283b5ef7ab19, type: 3}
+  - cellType: 8
+    sprite: {fileID: 21300000, guid: 367ceb005f42723439f51ad37428e2a3, type: 3}
+  - cellType: 0
+    sprite: {fileID: 21300000, guid: 80141dcd2f0e02b4e99f658dac13e990, type: 3}
+  - cellType: 1
+    sprite: {fileID: 21300000, guid: 9929d294d39ccc4438481083adacd27d, type: 3}
+  - cellType: 2
+    sprite: {fileID: 21300000, guid: 15f7abe83feb1a2468ad20cda4dd403d, type: 3}
+  - cellType: 3
+    sprite: {fileID: 21300000, guid: a4e90ff504d6511498002e68162d3b37, type: 3}
+  - cellType: 4
+    sprite: {fileID: 21300000, guid: 42dc0fec9794c4a4085ef40ee69c00a5, type: 3}
+  - cellType: 5
+    sprite: {fileID: 21300000, guid: 9f6bce192f7add443a9069d48efb1916, type: 3}
+  - cellType: 6
+    sprite: {fileID: 21300000, guid: f25fbf9ca3b23ca40ae417af8cc75c12, type: 3}
+  goalPrefab: {fileID: 1792737224616734180, guid: b0b1290baeb80da4eb1b50e40867f456, type: 3}
   background: {fileID: 21300000, guid: d47f4ed052a2bcc4cac4400e2b33a1f5, type: 3}

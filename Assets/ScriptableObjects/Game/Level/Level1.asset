@@ -15,9 +15,12 @@ MonoBehaviour:
   counterGoalDatas:
   - description: adsad
     cellType: 1
-    target: 1
+    target: 30
   - description: adsad
     cellType: 2
+    target: 20
+  - description: adsad
+    cellType: 0
     target: 1
   width: 6
   height: 6

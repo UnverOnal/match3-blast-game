@@ -1,18 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class GoalResources : MonoBehaviour
+namespace GoalManagement
 {
-    // Start is called before the first frame update
-    void Start()
+    public class GoalResources : MonoBehaviour
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public GameObject goalRootParent;
+        public Transform contentParent;
     }
 }

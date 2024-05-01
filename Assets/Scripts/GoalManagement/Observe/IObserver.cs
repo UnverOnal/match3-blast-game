@@ -4,6 +4,6 @@ namespace GoalManagement.Observe
 {
     public interface IObserver
     {
-        void Update(CellType cellType);
+        void Update(CellType type);
     }
 }
