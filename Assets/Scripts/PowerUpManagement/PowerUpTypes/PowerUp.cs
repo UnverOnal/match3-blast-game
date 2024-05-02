@@ -2,7 +2,6 @@ using System;
 using Cysharp.Threading.Tasks;
 using GamePlay.Board.Steps.Fill;
 using GamePlay.CellManagement;
-using UnityEngine;
 
 namespace PowerUpManagement.PowerUpTypes
 {

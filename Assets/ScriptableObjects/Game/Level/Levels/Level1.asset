@@ -15,10 +15,10 @@ MonoBehaviour:
   counterGoalDatas:
   - description: adsad
     cellType: 1
-    target: 5
+    target: 20
   - description: adsad
     cellType: 2
-    target: 5
+    target: 20
   width: 6
   height: 6
   blockData:
@@ -31,18 +31,8 @@ MonoBehaviour:
   obstacleData:
   - cellType: 0
     location:
-      x: 1
-      y: 1
-    health: 2
-  - cellType: 0
-    location:
-      x: 2
-      y: 2
-    health: 2
-  - cellType: 0
-    location:
-      x: 3
-      y: 4
+      x: 0
+      y: 3
     health: 2
   powerUpData:
   - cellType: 8

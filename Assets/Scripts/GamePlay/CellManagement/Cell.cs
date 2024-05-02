@@ -1,5 +1,4 @@
 using System;
-using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 
@@ -18,7 +17,7 @@ namespace GamePlay.CellManagement
         protected SpriteRenderer spriteRenderer;
         private Sprite _sprite;
         
-        private Vector3 _originalScale;
+        protected Vector3 originalScale;
 
         public virtual void SetData(CellCreationData cellCreationData)
         {
@@ -26,7 +25,22 @@ namespace GamePlay.CellManagement
             SetType(cellCreationData.levelCellData.cellType);
 
             SetGameObject(cellCreationData.gameObject);
-            _originalScale = GameObject.transform.localScale;
+            originalScale = GameObject.transform.localScale;
+        }
+        public void SetLocation(BoardLocation boardLocation) => Location = boardLocation;
+
+        public virtual void Reset()
+        {
+            GameObject.SetActive(false);
+            Location = new BoardLocation();
+            GameObject.transform.localScale = originalScale;
+        }
+
+        public Tween Destroy()
+        {
+            var transform = GameObject.transform;
+            var tween = transform.DOScale(0f, 0.25f).SetEase(Ease.InBack, 2f);
+            return tween;
         }
 
         private void SetGameObject(GameObject gameObject)
@@ -36,29 +50,7 @@ namespace GamePlay.CellManagement
             _sprite = spriteRenderer.sprite;
         }
 
-        private void SetType(CellType type)
-        {
-            CellType = type;
-        }
-
-        public void SetLocation(BoardLocation boardLocation)
-        {
-            Location = boardLocation;
-        }
-
-        public virtual void Reset()
-        {
-            GameObject.SetActive(false);
-            Location = new BoardLocation();
-            GameObject.transform.localScale = _originalScale;
-        }
-
-        public Tween Destroy()
-        {
-            var transform = GameObject.transform;
-            var tween = transform.DOScale(0f, 0.25f).SetEase(Ease.InBack, 2f);
-            return tween;
-        }
+        private void SetType(CellType type) => CellType = type;
     }
 
     public struct CellCreationData

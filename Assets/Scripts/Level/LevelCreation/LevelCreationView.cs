@@ -64,6 +64,7 @@ namespace Level.LevelCreation
                 var position = new Vector3(location.x, location.y, 0);
 
                 var obstacleGameObject = _cellPrefabCreator.Get(data);
+                obstacleGameObject.SetActive(true);
                 obstacleGameObject.transform.position = position;
 
                 occupiedLocations.Add(location);

@@ -37,10 +37,11 @@ namespace PowerUpManagement
         {
             var powerUp = (PowerUp)_cellCreator.GetCell(cellType);
 
-            var prefab = SpawnPowerUp(powerUp, new Vector3(location.x, location.y), cellType);
+            var prefab = GetPrefab(powerUp, cellType);
             var creationData = new CellCreationData(location, prefab, GetLevelPowerUpData(cellType));
-
             OnPowerUpCreated?.Invoke(creationData);
+
+            SpawnPowerUp(prefab, new Vector3(location.x, location.y));
         }
 
         private GameObject GetPrefab(CellType type)
@@ -67,18 +68,22 @@ namespace PowerUpManagement
             return null;
         }
 
-        private GameObject SpawnPowerUp(PowerUp powerUp, Vector3 position, CellType type)
+        private void SpawnPowerUp(GameObject prefab, Vector3 position)
         {
-            var prefab = powerUp.GameObject == null
-                ? Object.Instantiate(GetPrefab(type), parent : _powerUpParent.transform)
-                : powerUp.GameObject;
-            
             var transform = prefab.transform;
             transform.position = position;
             
             var originalScale = transform.localScale;
             transform.localScale = Vector3.zero;
             transform.DOScale(originalScale, 0.25f).SetEase(Ease.OutBack, 2f);
+        }
+
+        private GameObject GetPrefab(PowerUp powerUp, CellType type)
+        {
+            var prefab = powerUp.GameObject == null
+                ? Object.Instantiate(GetPrefab(type), parent : _powerUpParent.transform)
+                : powerUp.GameObject;
+
             return prefab;
         }
     }

@@ -28,7 +28,7 @@ namespace PowerUpManagement.PowerUpTypes
             }
 
             await UniTask.WhenAll(tasks);
-
+            
             Fill(_bottomLocations, board, fillPresenter);
         }
 

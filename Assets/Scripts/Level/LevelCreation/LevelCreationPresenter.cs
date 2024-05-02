@@ -6,6 +6,7 @@ using GamePlay.Board;
 using GamePlay.CellManagement;
 using Level.LevelCounter;
 using Services.PoolingService;
+using UnityEngine;
 using VContainer;
 
 namespace Level.LevelCreation
@@ -62,7 +63,7 @@ namespace Level.LevelCreation
                 var cell = board[i, j];
                 
                 if(cell == null) continue;
-
+                
                 _levelCreationView.ResetCell(cell);
                 _cellCreator.RemoveCell(cell);
                 cell.Reset();

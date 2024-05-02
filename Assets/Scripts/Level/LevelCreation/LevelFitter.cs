@@ -48,7 +48,6 @@ namespace Level.LevelCreation
                 maxPosition.y = Mathf.Max(maxPosition.y, cell.Position.y + extents.y);
             }
 
-            new GameObject().transform.position = minPosition;
             var bounds = new Bounds
             {
                 min = minPosition,
