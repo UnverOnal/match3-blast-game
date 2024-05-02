@@ -34,6 +34,11 @@ MonoBehaviour:
       x: 0
       y: 3
     health: 2
+  - cellType: 0
+    location:
+      x: 2
+      y: 2
+    health: 2
   powerUpData:
   - cellType: 8
     creationThreshold: 3
