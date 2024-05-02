@@ -49,7 +49,7 @@ namespace Scopes
             builder.Register<IInitialize, PowerUpPresenter>(Lifetime.Singleton).AsSelf();
             RegisterGoal(builder);
 
-            builder.Register<IInitialize, GamePlay.MoveMediator>(Lifetime.Singleton).AsSelf();
+            builder.Register<IInitialize, MatchMediator>(Lifetime.Singleton).AsSelf();
             
             builder.Register<CellPrefabCreator>(Lifetime.Singleton);
             builder.Register<CellCreator>(Lifetime.Singleton);

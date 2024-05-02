@@ -1,5 +1,6 @@
 using System;
 using Cysharp.Threading.Tasks;
+using GamePlay;
 using GamePlay.Board.Steps.Fill;
 using GamePlay.CellManagement;
 
@@ -18,7 +19,8 @@ namespace PowerUpManagement.PowerUpTypes
             type = creationData.cellType;
         }
 
-        public abstract UniTask Explode(Cell[,] board, BoardFillPresenter fillPresenter);
+        public abstract UniTask Explode(Cell[,] board, BoardFillPresenter fillPresenter,
+            CellPrefabCreator cellPrefabCreator);
 
         protected void OnExplodeInvoker(Cell cell) => OnExplode?.Invoke(cell);
     }

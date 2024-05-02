@@ -62,7 +62,7 @@ namespace GamePlay.Board
             }
 
             await Blast(selectedGroup, selectedBlock);
-            moveMediator.NotifyBlast(selectedGroup, selectedBlockLocation);
+            matchMediator.NotifyBlast(selectedGroup, selectedBlockLocation);
 
             //Gets bottom ones for being able to start checking from them to top.
             var bottomBlastedLocations = selectedGroup.bottomLocations.Select(pair => pair.Value).ToList();
@@ -148,7 +148,6 @@ namespace GamePlay.Board
         {
             _previousGroupBounds[0] = start;
             _previousGroupBounds[1] = end;
-            Debug.Log((start +","+ end));
         }
 
         public void Dispose() => _boardModel.OnCellRemove -= _goalPresenter.Notify;

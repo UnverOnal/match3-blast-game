@@ -2,8 +2,8 @@ namespace GamePlay.Mediator
 {
     public class Colleague
     {
-        protected MoveMediator moveMediator;
+        protected MatchMediator matchMediator;
         
-        public void SetMediator(MoveMediator mediator) => moveMediator = mediator;
+        public void SetMediator(MatchMediator mediator) => matchMediator = mediator;
     }
 }

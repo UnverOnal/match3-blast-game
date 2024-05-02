@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using GameManagement.LifeCycle;
+using GamePlay;
 using GamePlay.Board;
 using GamePlay.Board.Steps.Fill;
 using GamePlay.CellManagement;
@@ -20,6 +21,7 @@ namespace PowerUpManagement
         [Inject] private BoardModel _boardModel;
         [Inject] private BoardFillPresenter _fillPresenter;
         [Inject] private IInputService _inputService;
+        [Inject] private CellPrefabCreator _cellPrefabCreator;
 
         private readonly PowerUpView _powerUpView;
 
@@ -57,7 +59,7 @@ namespace PowerUpManagement
             powerUp.OnExplode += _cellCreator.RemoveCell;
 
             _inputService.IgnoreInput(true);
-            await powerUp.Explode(_boardModel.Cells, _fillPresenter);
+            await powerUp.Explode(_boardModel.Cells, _fillPresenter, _cellPrefabCreator);
             _inputService.IgnoreInput(false);
             
             powerUp.Reset();

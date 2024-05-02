@@ -10,7 +10,7 @@ using VContainer;
 
 namespace GamePlay
 {
-    public class MoveMediator : IMediator, IInitialize, IDisposable
+    public class MatchMediator : IMediator, IInitialize, IDisposable
     {
         [Inject]private readonly BoardPresenter _boardPresenter;
         [Inject]private readonly PowerUpPresenter _powerUpPresenter;

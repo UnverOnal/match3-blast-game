@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using GamePlay;
 using GamePlay.Board.Steps.Fill;
 using GamePlay.CellManagement;
 using UnityEngine;
@@ -19,22 +20,24 @@ namespace PowerUpManagement.PowerUpTypes
     {
         private const float Speed = 10f;
 
-        public override async UniTask Explode(Cell[,] board, BoardFillPresenter fillPresenter)
+        private bool canDo;
+
+        public override async UniTask Explode(Cell[,] board, BoardFillPresenter fillPresenter,
+            CellPrefabCreator cellPrefabCreator)
         {
             var tasks = new List<UniTask>();
 
             spriteRenderer.enabled = false;
             var transform = GameObject.transform;
 
-            // var direction = GetDirection();
-            tasks.Add(Fire(transform.GetChild(0), Vector3.right * -1f, fillPresenter, board));
-            tasks.Add(Fire(transform.GetChild(1), Vector3.right, fillPresenter, board));
+            tasks.Add(Fire(transform.GetChild(0), Vector3.right * -1f, fillPresenter, board, cellPrefabCreator));
+            tasks.Add(Fire(transform.GetChild(1), Vector3.right, fillPresenter, board, cellPrefabCreator));
 
             await UniTask.WhenAll(tasks);
         }
 
         private async UniTask Fire(Transform transform, Vector3 direction, BoardFillPresenter fillPresenter,
-            Cell[,] board)
+            Cell[,] board, CellPrefabCreator cellPrefabCreator)
         {
             transform.gameObject.SetActive(true);
 
@@ -43,11 +46,13 @@ namespace PowerUpManagement.PowerUpTypes
             var duration = Vector3.Distance(transform.position, targetPosition) / Speed;
             var tween = transform.DOMove(targetPosition, duration).OnUpdate(() =>
             {
+                if(cells.Count == 0) return;
                 var nextCell = cells[0];
                 var nextCellPosition = nextCell.GameObject.transform.position;
                 if (!(Vector3.Distance(nextCellPosition, transform.position) <
                       0.3f)) return;
-                ExplodeCell(board, fillPresenter, nextCell);
+                
+                ExplodeCell(board, fillPresenter, nextCell, cellPrefabCreator);
                 cells.RemoveAt(0);
             });
 
@@ -78,15 +83,8 @@ namespace PowerUpManagement.PowerUpTypes
             return targetPosition;
         }
 
-        private Vector3 GetDirection()
-        {
-            var axes = new [] { Axis.Horizontal, Axis.Vertical };
-            var randomDirection = axes[Random.Range(0, 2)];
-            
-            return randomDirection == Axis.Horizontal ? Vector3.right : Vector3.up;
-        }
-
-        private void ExplodeCell(Cell[,] board, BoardFillPresenter fillPresenter, Cell nextCell)
+        private async void ExplodeCell(Cell[,] board, BoardFillPresenter fillPresenter, Cell nextCell,
+            CellPrefabCreator cellPrefabCreator)
         {
             if (nextCell == null) return;
 
@@ -94,12 +92,12 @@ namespace PowerUpManagement.PowerUpTypes
             var cell = board[cellLocation.x, cellLocation.y];
 
             if (cell != this)
-                cell.Destroy().OnComplete(() => cell.Reset());
+                cell.Destroy();
 
             OnExplodeInvoker(cell);
 
             fillPresenter.CollapseColumn(cellLocation, board);
-            fillPresenter.FillColumn(cellLocation, board);
+            await fillPresenter.FillColumn(cellLocation, board);
         }
 
         private List<Cell> GetCells(Vector3 direction, Cell[,] board)

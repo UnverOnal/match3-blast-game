@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using GamePlay;
 using GamePlay.Board.Steps.Fill;
 using GamePlay.CellManagement;
-using UnityEngine;
 
 namespace PowerUpManagement.PowerUpTypes
 {
@@ -11,7 +11,8 @@ namespace PowerUpManagement.PowerUpTypes
     {
         private readonly Dictionary<int, BoardLocation> _bottomLocations = new();
 
-        public override async UniTask Explode(Cell[,] board, BoardFillPresenter fillPresenter)
+        public override async UniTask Explode(Cell[,] board, BoardFillPresenter fillPresenter,
+            CellPrefabCreator cellPrefabCreator)
         {
             var tasks = new List<UniTask>();
             var cellsToExplode = GetCells(board);
@@ -19,16 +20,20 @@ namespace PowerUpManagement.PowerUpTypes
             for (var i = 0; i < cellsToExplode.Count; i++)
             {
                 var cell = cellsToExplode[i];
-                if(cell == null)
+                if (cell == null)
                     continue;
                 var task = cell.Destroy();
-                task.OnComplete(() => cell.Reset());
+                task.OnComplete(() =>
+                {
+                    cell.Reset();
+                    cellPrefabCreator.Return(cell);
+                });
                 tasks.Add(task.AsyncWaitForCompletion().AsUniTask());
                 OnExplodeInvoker(cell);
             }
 
             await UniTask.WhenAll(tasks);
-            
+
             Fill(_bottomLocations, board, fillPresenter);
         }
 
@@ -78,7 +83,7 @@ namespace PowerUpManagement.PowerUpTypes
         private void SetBottomLocation(Cell neighbour)
         {
             if (neighbour == null) return;
-            
+
             var neighbourLocation = neighbour.Location;
             var locationExist = _bottomLocations.TryGetValue(neighbourLocation.x, out var location);
             switch (locationExist)

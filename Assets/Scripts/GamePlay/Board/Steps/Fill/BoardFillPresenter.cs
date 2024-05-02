@@ -45,7 +45,7 @@ namespace GamePlay.Board.Steps.Fill
             await _boardFillView.FillColumn(columnEmptyLocations, boardHeight);
         }
         
-        public void CollapseColumn(BoardLocation bottomLocation, Cell[,] cells)
+        public async void CollapseColumn(BoardLocation bottomLocation, Cell[,] cells)
         {
             var cellsToCollapse = new List<Cell>();
             var yLocation = bottomLocation.y;

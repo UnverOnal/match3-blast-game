@@ -5,7 +5,6 @@ using GoalManagement.Observe;
 using Level.LevelCounter;
 using Level.LevelCreation;
 using Services.PoolingService;
-using UnityEngine;
 using VContainer;
 
 namespace GoalManagement
@@ -13,7 +12,7 @@ namespace GoalManagement
     public class GoalPresenter : ISubject
     {
         public event Action OnGoalsDone;
-        
+
         private readonly GoalView _goalView;
 
         private readonly ObjectPool<Goal> _goalPool;
@@ -48,7 +47,10 @@ namespace GoalManagement
             }
         }
 
-        public void Attach(Goal goal) => _goals.Add(goal);
+        public void Attach(Goal goal)
+        {
+            _goals.Add(goal);
+        }
 
         public void Detach(Goal goal)
         {
@@ -59,14 +61,14 @@ namespace GoalManagement
 
         public void Notify(CellType cellType)
         {
-            if(_goals.Count < 1)
+            if (_goals.Count < 1)
                 return;
-            
+
             for (var i = 0; i < _goals.Count; i++)
             {
                 var goal = _goals[i];
-                if(cellType != goal.cellType) continue;
-                
+                if (cellType != goal.cellType) continue;
+
                 goal.Update(cellType);
                 _goalView.UpdateMove(goal);
                 if (goal.IsCompleted())
@@ -74,7 +76,7 @@ namespace GoalManagement
             }
 
             if (_goals.Count > 0) return;
-            
+
             _goalView.Reset();
             OnGoalsDone?.Invoke();
         }

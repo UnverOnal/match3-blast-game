@@ -30,13 +30,13 @@ namespace GamePlay
         {
             if(cellGameObject.layer == LayerMask.NameToLayer("Default")) return;
             
-            moveMediator.NotifyOnInput(cellGameObject);
+            matchMediator.NotifyOnInput(cellGameObject);
         }
 
         private void OnLevelStart()
         {
             _inputService.IgnoreInput(false);
-            moveMediator.NotifyLevelStart();
+            matchMediator.NotifyLevelStart();
             _goalPresenter.CreateGoals();
         }
 
