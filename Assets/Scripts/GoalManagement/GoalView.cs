@@ -14,7 +14,7 @@ namespace GoalManagement
 
         private readonly ObjectPool<GameObject> _goalGameObjectPool;
 
-        private readonly Dictionary<Goal, TextMeshProUGUI> _counts;
+        private readonly Dictionary<Goal, GoalPrefabResources> _counts;
 
         private readonly GameObject _goalRootParent;
 
@@ -26,32 +26,34 @@ namespace GoalManagement
 
             var goalPrefab = creationData.goalPrefab;
             _goalGameObjectPool = poolService.GetPoolFactory()
-                .CreatePool(() => Object.Instantiate(goalPrefab, parent: contentParent));
+                .CreatePool(() => Object.Instantiate(goalPrefab, contentParent));
 
-            _counts = new Dictionary<Goal, TextMeshProUGUI>();
+            _counts = new Dictionary<Goal, GoalPrefabResources>();
         }
 
         public void CreateMove(Goal goal)
         {
-            if(!_goalRootParent.activeSelf)
+            if (!_goalRootParent.activeSelf)
                 _goalRootParent.SetActive(true);
-            
-            if (_counts.TryGetValue(goal, out var text))
-                SetCount(text, goal);
-            else
+
+            var exist = _counts.TryGetValue(goal, out var resources);
+            if (!exist)
             {
                 var goalGameObject = _goalGameObjectPool.Get();
-                text = goalGameObject.GetComponentInChildren<TextMeshProUGUI>();
+                var text = goalGameObject.GetComponentInChildren<TextMeshProUGUI>();
                 var image = goalGameObject.GetComponentInChildren<Image>();
-                SetGoal(goal, image, text);
-                _counts.Add(goal, text);
+                
+                resources = new GoalPrefabResources(image, text);
+                _counts.Add(goal, resources);
             }
+            
+            SetGoal(goal, resources);
         }
 
         public void UpdateMove(Goal goal)
         {
-            if (_counts.TryGetValue(goal, out var text))
-                SetCount(text, goal);
+            if (_counts.TryGetValue(goal, out var resources))
+                SetCount(resources.text, goal);
         }
 
         public void Reset()
@@ -59,13 +61,13 @@ namespace GoalManagement
             _goalRootParent.SetActive(false);
         }
 
-        private void SetGoal(Goal goal, Image image, TextMeshProUGUI text)
+        private void SetGoal(Goal goal, GoalPrefabResources resources)
         {
-            image.sprite = GetSprite(goal.cellType);
-            SetCount(text, goal);
+            resources.image.sprite = GetSprite(goal.cellType);
+            SetCount(resources.text, goal);
         }
 
-        private void SetCount(TextMeshProUGUI text,  Goal goal)
+        private void SetCount(TextMeshProUGUI text, Goal goal)
         {
             var count = goal.Target - goal.CurrentCount;
             text.text = count.ToString();
@@ -74,7 +76,7 @@ namespace GoalManagement
         private Sprite GetSprite(CellType cellType)
         {
             var goalAssetData = _creationData.goalAssetData;
-            for (int i = 0; i < goalAssetData.Length; i++)
+            for (var i = 0; i < goalAssetData.Length; i++)
             {
                 var goalAsset = goalAssetData[i];
                 if (cellType == goalAsset.cellType)
@@ -82,6 +84,18 @@ namespace GoalManagement
             }
 
             return null;
+        }
+    }
+
+    public struct GoalPrefabResources
+    {
+        public Image image;
+        public TextMeshProUGUI text;
+
+        public GoalPrefabResources(Image image, TextMeshProUGUI text)
+        {
+            this.image = image;
+            this.text = text;
         }
     }
 }

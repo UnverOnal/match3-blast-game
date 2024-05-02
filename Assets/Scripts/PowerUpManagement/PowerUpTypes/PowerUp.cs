@@ -20,9 +20,6 @@ namespace PowerUpManagement.PowerUpTypes
 
         public abstract UniTask Explode(Cell[,] board, BoardFillPresenter fillPresenter);
 
-        protected void OnExplodeInvoker(Cell cell)
-        {
-            OnExplode?.Invoke(cell);
-        }
+        protected void OnExplodeInvoker(Cell cell) => OnExplode?.Invoke(cell);
     }
 }
