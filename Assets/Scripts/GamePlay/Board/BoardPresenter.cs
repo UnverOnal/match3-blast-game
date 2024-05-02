@@ -62,7 +62,6 @@ namespace GamePlay.Board
             }
 
             await Blast(selectedGroup, selectedBlock);
-
             moveMediator.NotifyBlast(selectedGroup, selectedBlockLocation);
 
             //Gets bottom ones for being able to start checking from them to top.

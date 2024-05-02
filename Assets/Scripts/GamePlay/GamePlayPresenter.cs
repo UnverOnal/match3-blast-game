@@ -1,6 +1,5 @@
 using System;
 using GameManagement.LifeCycle;
-using GamePlay.Board;
 using GamePlay.Mediator;
 using GameState;
 using GoalManagement;
@@ -15,7 +14,6 @@ namespace GamePlay
     public class GamePlayPresenter : Colleague, IInitialize, IDisposable
     {
         [Inject] private IInputService _inputService;
-        [Inject] private BoardPresenter _boardPresenter;
         [Inject] private LevelCreationPresenter _levelCreationPresenter;
         [Inject] private GoalPresenter _goalPresenter;
         [Inject] private GameStatePresenter _gameStatePresenter;
@@ -38,7 +36,7 @@ namespace GamePlay
         private void OnLevelStart()
         {
             _inputService.IgnoreInput(false);
-            _boardPresenter.GroupCells();
+            moveMediator.NotifyLevelStart();
             _goalPresenter.CreateGoals();
         }
 
@@ -52,7 +50,6 @@ namespace GamePlay
         public void Dispose()
         {
             _inputService.OnItemPicked -= OnBlockSelected;
-            _levelCreationPresenter.OnLevelCreated -= _boardPresenter.GroupCells;
             _levelCreationPresenter.OnLevelCreated -= _goalPresenter.CreateGoals;
             _goalPresenter.OnGoalsDone -= OnLevelEnd;
         }

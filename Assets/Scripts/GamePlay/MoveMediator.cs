@@ -29,6 +29,11 @@ namespace GamePlay
 
         private void SetMediator(Colleague colleague) => colleague.SetMediator(this);
 
+        public void NotifyLevelStart()
+        {
+            _boardPresenter.GroupCells();
+        }
+
         public void NotifyBlast(CellGroup selectedGroup, BoardLocation selectedBlockLocation)
         {
             _powerUpPresenter.CreatePowerUp(selectedGroup, selectedBlockLocation);
