@@ -31,6 +31,8 @@ namespace GamePlay.Board
 
         private readonly ObjectPool<CellGroup> _groupPool;
 
+        private readonly int[] _previousGroupBounds;
+
         [Inject]
         public BoardPresenter(CellPrefabCreator cellPrefabCreator, IPoolService poolService, GameSettings gameSettings)
         {
@@ -38,6 +40,7 @@ namespace GamePlay.Board
             _groupPool = poolService.GetPoolFactory().CreatePool(() => new CellGroup());
             _boardGrouper = new BoardGrouper(_groupPool);
             _boardShuffler = new BoardShuffler();
+            _previousGroupBounds = new[]{int.MinValue, int.MinValue };
         }
 
         public void Initialize()
@@ -48,8 +51,10 @@ namespace GamePlay.Board
         public async void OnBlockSelected(GameObject selectedBlock)
         {
             var selectedBlockLocation = _boardModel.GetCell(selectedBlock).Location;
-
             var selectedGroup = _boardModel.GetGroup(selectedBlock);
+            
+            if (IgnoreMove(selectedGroup)) return;
+
             if (selectedGroup == null)
             {
                 _boardView.Shake(selectedBlock.transform, 0.1f, 30f);
@@ -98,6 +103,7 @@ namespace GamePlay.Board
             _boardModel.RemoveCellGroup(group);
             group.Reset();
             _groupPool.Return(group);
+            SetPreviousBounds(int.MaxValue, int.MinValue);
         }
 
         private async UniTask Fill(IEnumerable<BoardLocation> bottomBlastedLocations, Cell[,] cells)
@@ -126,9 +132,26 @@ namespace GamePlay.Board
             _inputService.IgnoreInput(false);
         }
 
-        public void Dispose()
+        private bool IgnoreMove(CellGroup selectedGroup)
         {
-            _boardModel.OnCellRemove -= _goalPresenter.Notify;
+            if (selectedGroup == null)
+                return false;
+            
+            var ignore = selectedGroup.HasIntersectionWith(_previousGroupBounds);
+
+            var xBounds = selectedGroup.xBounds;
+            SetPreviousBounds(xBounds[0], xBounds[1]);
+            
+            return ignore;
         }
+
+        private void SetPreviousBounds(int start, int end)
+        {
+            _previousGroupBounds[0] = start;
+            _previousGroupBounds[1] = end;
+            Debug.Log((start +","+ end));
+        }
+
+        public void Dispose() => _boardModel.OnCellRemove -= _goalPresenter.Notify;
     }
 }

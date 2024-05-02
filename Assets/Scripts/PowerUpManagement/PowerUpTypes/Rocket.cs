@@ -40,7 +40,7 @@ namespace PowerUpManagement.PowerUpTypes
 
             var cells = GetCells(direction, board);
             var targetPosition = GetTargetPosition(direction, transform);
-            var duration = Vector3.Distance(transform.position, targetPosition) / 1;
+            var duration = Vector3.Distance(transform.position, targetPosition) / Speed;
             var tween = transform.DOMove(targetPosition, duration).OnUpdate(() =>
             {
                 var nextCell = cells[0];

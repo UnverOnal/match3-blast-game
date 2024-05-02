@@ -5,13 +5,7 @@ using Random = System.Random;
 
 public class Test : MonoBehaviour
 {
-    public GameObject cube;
-    public Ease ease;
-    public float duration;
-    
-    private void Start()
-    {
-
-    }
+    public int[] range1;
+    public int[] range2;
 
 }

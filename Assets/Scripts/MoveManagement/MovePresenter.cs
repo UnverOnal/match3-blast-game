@@ -78,11 +78,11 @@ namespace MoveManagement
             Reset();
         }
 
-        private void Reset()
+        public void Reset()
         {
             _moveModel.Reset();
             _moveView.Stop();
-
+    
             _timerPresenter.Reset();
         }
     }

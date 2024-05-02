@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace GamePlay.CellManagement
 {
@@ -14,12 +16,15 @@ namespace GamePlay.CellManagement
         //Damageable neighbours of the group
         private readonly HashSet<IDamageable> _obstacles;
 
+        public int[] xBounds;
+
         public CellGroup()
         {
             _obstacles = new HashSet<IDamageable>();
             bottomLocations = new Dictionary<int, BoardLocation>();
             blocks = new HashSet<Cell>();
             explodeableObstacles = new List<IDamageable>();
+            xBounds = new []{int.MaxValue, int.MinValue};
         }
 
         public void AddCell(Cell cell)
@@ -27,6 +32,7 @@ namespace GamePlay.CellManagement
             blocks.Add(cell);
             var location = cell.Location;
             SetBottomLocation(location);
+            UpdateXBounds(cell);
         }
 
         public bool HasCell(Cell cell) => blocks.Contains(cell);
@@ -58,6 +64,13 @@ namespace GamePlay.CellManagement
                 SetBottomLocation(location);
             }
         }
+
+        //Checks on x axis.
+        public bool HasIntersectionWith(int[] targetBounds)
+        {
+            var hasIntersection = xBounds[1] >= targetBounds[0] && targetBounds[1] >= xBounds[0];
+            return hasIntersection;
+        }
         
         public void Reset()
         {
@@ -65,9 +78,22 @@ namespace GamePlay.CellManagement
             _obstacles.Clear();
             explodeableObstacles.Clear();
             bottomLocations.Clear();
+            xBounds = new []{int.MaxValue, int.MinValue};
         }
+        
+        private void UpdateXBounds(Cell cell)
+        {
+            var start = xBounds[0];
+            var end = xBounds[1];
 
-        public BoardLocation GetBottomLocation(int column) => bottomLocations[column];
+            var location = cell.Location;
+            var newX = location.x; 
+            
+            if (newX < start)
+                xBounds[0] = newX;
+            if (newX > end)
+                xBounds[1] = newX;
+        }
 
         private void SetBottomLocation(BoardLocation location)
         {

@@ -5,6 +5,7 @@ using GamePlay.Mediator;
 using GameState;
 using GoalManagement;
 using Level.LevelCreation;
+using MoveManagement;
 using Services.InputService;
 using UnityEngine;
 using VContainer;
@@ -18,7 +19,8 @@ namespace GamePlay
         [Inject] private LevelCreationPresenter _levelCreationPresenter;
         [Inject] private GoalPresenter _goalPresenter;
         [Inject] private GameStatePresenter _gameStatePresenter;
-        
+        [Inject] private MovePresenter _movePresenter;
+
         public void Initialize()
         {
             _inputService.OnItemPicked += OnBlockSelected;
@@ -42,6 +44,7 @@ namespace GamePlay
 
         public void OnLevelEnd()
         {
+            _movePresenter.Reset();
             _gameStatePresenter.UpdateGameState(GameManagement.GameState.GameState.Home);
             _inputService.IgnoreInput(true);
         }
