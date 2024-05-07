@@ -111,7 +111,7 @@ namespace PowerUpManagement.PowerUpTypes
             if (direction == Vector3.left)
                 while (currentX >= 0)
                 {
-                    if (currentX < width && currentY >= 0 && currentY < height) cells.Add(board[currentX, currentY]);
+                    if (currentX < width && currentY >= 0 && currentY < height && board[currentX, currentY] != null) cells.Add(board[currentX, currentY]);
                     currentX--;
                 }
             else if (direction == Vector3.right)
@@ -119,7 +119,7 @@ namespace PowerUpManagement.PowerUpTypes
                 currentX++;
                 while (currentX < width)
                 {
-                    if (currentX >= 0 && currentY >= 0 && currentY < height) cells.Add(board[currentX, currentY]);
+                    if (currentX >= 0 && currentY >= 0 && currentY < height && board[currentX, currentY] != null) cells.Add(board[currentX, currentY]);
                     currentX++;
                 }
             }
