@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
@@ -6,7 +5,6 @@ using GamePlay;
 using GamePlay.Board.Steps.Fill;
 using GamePlay.CellManagement;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace PowerUpManagement.PowerUpTypes
 {
@@ -19,9 +17,7 @@ namespace PowerUpManagement.PowerUpTypes
     public class Rocket : PowerUp
     {
         private const float Speed = 10f;
-
-        private bool canDo;
-
+        
         public override async UniTask Explode(Cell[,] board, BoardFillPresenter fillPresenter,
             CellPrefabCreator cellPrefabCreator)
         {
@@ -46,12 +42,12 @@ namespace PowerUpManagement.PowerUpTypes
             var duration = Vector3.Distance(transform.position, targetPosition) / Speed;
             var tween = transform.DOMove(targetPosition, duration).OnUpdate(() =>
             {
-                if(cells.Count == 0) return;
+                if (cells.Count == 0) return;
                 var nextCell = cells[0];
                 var nextCellPosition = nextCell.GameObject.transform.position;
                 if (!(Vector3.Distance(nextCellPosition, transform.position) <
                       0.3f)) return;
-                
+
                 ExplodeCell(board, fillPresenter, nextCell, cellPrefabCreator);
                 cells.RemoveAt(0);
             });
@@ -62,10 +58,10 @@ namespace PowerUpManagement.PowerUpTypes
         private Vector3 GetTargetPosition(Vector3 direction, Transform transform)
         {
             var camera = Camera.main;
-            
+
             var screenWidth = Screen.width;
             var screenHeight = Screen.height;
-            
+
             var targetPosition = camera.WorldToScreenPoint(transform.position);
             targetPosition.z = 10f;
 
@@ -75,7 +71,7 @@ namespace PowerUpManagement.PowerUpTypes
                 targetPosition.x = 0f;
             if (direction == Vector3.up)
                 targetPosition.y = screenHeight;
-            if(direction == Vector3.down)
+            if (direction == Vector3.down)
                 targetPosition.y = 0f;
 
             targetPosition = camera.ScreenToWorldPoint(targetPosition + direction * 100f);
@@ -92,7 +88,11 @@ namespace PowerUpManagement.PowerUpTypes
             var cell = board[cellLocation.x, cellLocation.y];
 
             if (cell != this)
-                cell.Destroy();
+                cell.Destroy().OnComplete(() =>
+                {
+                    cell.Reset();
+                    cellPrefabCreator.Return(cell);
+                });
 
             OnExplodeInvoker(cell);
 
@@ -109,17 +109,21 @@ namespace PowerUpManagement.PowerUpTypes
             var height = board.GetLength(1);
 
             if (direction == Vector3.left)
+            {
                 while (currentX >= 0)
                 {
-                    if (currentX < width && currentY >= 0 && currentY < height && board[currentX, currentY] != null) cells.Add(board[currentX, currentY]);
+                    if (currentX < width && currentY >= 0 && currentY < height && board[currentX, currentY] != null)
+                        cells.Add(board[currentX, currentY]);
                     currentX--;
                 }
+            }
             else if (direction == Vector3.right)
             {
                 currentX++;
                 while (currentX < width)
                 {
-                    if (currentX >= 0 && currentY >= 0 && currentY < height && board[currentX, currentY] != null) cells.Add(board[currentX, currentY]);
+                    if (currentX >= 0 && currentY >= 0 && currentY < height && board[currentX, currentY] != null)
+                        cells.Add(board[currentX, currentY]);
                     currentX++;
                 }
             }

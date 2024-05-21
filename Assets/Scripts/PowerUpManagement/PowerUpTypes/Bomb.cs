@@ -27,9 +27,9 @@ namespace PowerUpManagement.PowerUpTypes
                 {
                     cell.Reset();
                     cellPrefabCreator.Return(cell);
+                    OnExplodeInvoker(cell);
                 });
                 tasks.Add(task.AsyncWaitForCompletion().AsUniTask());
-                OnExplodeInvoker(cell);
             }
 
             await UniTask.WhenAll(tasks);
