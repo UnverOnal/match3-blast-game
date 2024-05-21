@@ -93,7 +93,7 @@ namespace GamePlay.Board
                 _boardModel.RemoveCell(cell);
                 _cellCreator.ReturnCell(cell);
             }
-
+            
             foreach (var explodable in group.explodeableObstacles)
             {
                 var cell = (Cell)explodable;

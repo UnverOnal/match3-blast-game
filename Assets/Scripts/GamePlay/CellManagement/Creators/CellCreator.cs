@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using GamePlay.Board;
 using PowerUpManagement.PowerUpTypes;
 using Services.PoolingService;
 using VContainer;
@@ -15,7 +14,7 @@ namespace GamePlay.CellManagement.Creators
         private readonly Dictionary<CellType, ObjectPool<Cell>> _pools;
 
         [Inject]
-        public CellCreator(IPoolService poolService, BoardModel boardModel)
+        public CellCreator(IPoolService poolService)
         {
             _poolService = poolService;
             _pools = new Dictionary<CellType, ObjectPool<Cell>>();
@@ -28,12 +27,6 @@ namespace GamePlay.CellManagement.Creators
             var cell = GetCell(cellType);
             cell.SetData(cellCreationData);
             return cell;
-        }
-
-        public void ReturnCell(IEnumerable<Cell> cells)
-        {
-            foreach (var cell in cells)
-                ReturnCell(cell);
         }
 
         public void ReturnCell(Cell cell)
