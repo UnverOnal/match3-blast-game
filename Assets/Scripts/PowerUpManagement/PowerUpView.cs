@@ -19,7 +19,7 @@ namespace PowerUpManagement
         private readonly LevelPresenter _levelPresenter;
 
         private readonly GameObject _powerUpParent;
-        private IEnumerable<CellAssetData> _powerUpData;
+        private readonly IEnumerable<CellAssetData> _powerUpData;
 
         public PowerUpView(CellCreator cellCreator, LevelPresenter levelPresenter,
             BoardCreationData boardCreationData)

@@ -89,9 +89,9 @@ namespace GamePlay.Board
         {
             _cellCreator.RemoveCell(group.blocks);
 
-            foreach (var explodeable in group.explodeableObstacles)
+            foreach (var explodable in group.explodeableObstacles)
             {
-                var cell = (Cell)explodeable;
+                var cell = (Cell)explodable;
                 _cellCreator.RemoveCell(cell);
                 cell.Reset();
             }
