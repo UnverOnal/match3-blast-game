@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using GamePlay;
 using GamePlay.Board.Steps.Fill;
 using GamePlay.CellManagement;
 using GamePlay.CellManagement.Creators;
@@ -12,8 +11,11 @@ namespace PowerUpManagement.PowerUpTypes
     {
         private readonly Dictionary<int, BoardLocation> _bottomLocations = new();
 
-        public override async UniTask Explode(Cell[,] board, BoardFillPresenter fillPresenter,
-            CellPrefabCreator cellPrefabCreator, CellCreator cellCreator)
+        public Bomb(CellCreator cellCreator, CellPrefabCreator cellPrefabCreator) : base(cellCreator, cellPrefabCreator)
+        {
+        }
+
+        public override async UniTask Explode(Cell[,] board, BoardFillPresenter fillPresenter)
         {
             var tasks = new List<UniTask>();
             var cellsToExplode = GetCells(board);
@@ -23,14 +25,10 @@ namespace PowerUpManagement.PowerUpTypes
                 var cell = cellsToExplode[i];
                 if (cell == null)
                     continue;
+
                 var task = cell.Destroy();
-                task.OnComplete(() =>
-                {
-                    cell.Reset();
-                    cellPrefabCreator.Return(cell);
-                    cellCreator.ReturnCell(cell);
-                    OnExplodeInvoker(cell);
-                });
+                task.OnComplete(() => Return(cell));
+                OnExplodeInvoker(cell);
                 tasks.Add(task.AsyncWaitForCompletion().AsUniTask());
             }
 

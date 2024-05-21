@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using GameManagement.LifeCycle;
-using GamePlay;
 using GamePlay.Board;
 using GamePlay.Board.Steps.Fill;
 using GamePlay.CellManagement;
@@ -12,7 +11,6 @@ using Level.LevelCounter;
 using Level.LevelCreation;
 using PowerUpManagement.PowerUpTypes;
 using Services.InputService;
-using Services.PoolingService;
 using UnityEngine;
 using VContainer;
 
@@ -28,7 +26,6 @@ namespace PowerUpManagement
 
         private readonly LevelPresenter _levelPresenter;
         private readonly CellCreator _cellCreator;
-        private readonly CellPrefabCreator _cellPrefabCreator;
 
         [Inject]
         public PowerUpPresenter(BoardCreationData boardCreationData,
@@ -36,7 +33,6 @@ namespace PowerUpManagement
         {
             _levelPresenter = levelPresenter;
             _cellCreator = cellCreator;
-            _cellPrefabCreator = cellPrefabCreator;
             _powerUpView = new PowerUpView(cellCreator, cellPrefabCreator, levelPresenter, boardCreationData);
         }
 
@@ -68,10 +64,9 @@ namespace PowerUpManagement
             powerUp.OnExplode += _boardModel.RemoveCell;
 
             _inputService.IgnoreInput(true);
-            await powerUp.Explode(_boardModel.Cells, _fillPresenter, _cellPrefabCreator, _cellCreator);
+            await powerUp.Explode(_boardModel.Cells, _fillPresenter);
             _inputService.IgnoreInput(false);
             
-            powerUp.Reset();
             powerUp.OnExplode -= _boardModel.RemoveCell;
         }
 

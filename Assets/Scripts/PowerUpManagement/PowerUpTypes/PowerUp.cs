@@ -9,11 +9,25 @@ namespace PowerUpManagement.PowerUpTypes
 {
     public abstract class PowerUp : Cell
     {
+        private readonly CellCreator _cellCreator;
+        private readonly CellPrefabCreator _cellPrefabCreator;
         public event Action<Cell> OnExplode;
+        
+        protected PowerUp(CellCreator cellCreator, CellPrefabCreator cellPrefabCreator)
+        {
+            _cellCreator = cellCreator;
+            _cellPrefabCreator = cellPrefabCreator;
+        }
 
-        public abstract UniTask Explode(Cell[,] board, BoardFillPresenter fillPresenter,
-            CellPrefabCreator cellPrefabCreator, CellCreator cellCreator);
+        public abstract UniTask Explode(Cell[,] board, BoardFillPresenter fillPresenter);
 
         protected void OnExplodeInvoker(Cell cell) => OnExplode?.Invoke(cell);
+
+        protected void Return(Cell cell)
+        {
+            cell.Reset();
+            _cellCreator.ReturnCell(cell);
+            _cellPrefabCreator.Return(cell);
+        }
     }
 }

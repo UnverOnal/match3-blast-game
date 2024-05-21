@@ -3,22 +3,21 @@ using System.Collections.Generic;
 using GamePlay.Board;
 using PowerUpManagement.PowerUpTypes;
 using Services.PoolingService;
-using UnityEngine;
 using VContainer;
 
-namespace GamePlay.CellManagement
+namespace GamePlay.CellManagement.Creators
 {
     public class CellCreator
     {
+        [Inject] private readonly CellPrefabCreator _cellPrefabCreator;
+        
         private readonly IPoolService _poolService;
-        private readonly BoardModel _boardModel;
         private readonly Dictionary<CellType, ObjectPool<Cell>> _pools;
 
         [Inject]
         public CellCreator(IPoolService poolService, BoardModel boardModel)
         {
             _poolService = poolService;
-            _boardModel = boardModel;
             _pools = new Dictionary<CellType, ObjectPool<Cell>>();
         }
 
@@ -47,8 +46,8 @@ namespace GamePlay.CellManagement
         {
             Func<Cell> creator = type switch
             {
-                CellType.Bomb => () => new Bomb(),
-                CellType.Rocket => () => new Rocket(),
+                CellType.Bomb => () => new Bomb(this, _cellPrefabCreator),
+                CellType.Rocket => () => new Rocket(this, _cellPrefabCreator),
                 CellType.Obstacle => () => new Obstacle(),
                 _ => () => new Block()
             };
