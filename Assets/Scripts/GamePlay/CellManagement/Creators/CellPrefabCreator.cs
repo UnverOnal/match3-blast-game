@@ -30,9 +30,8 @@ namespace GamePlay
             _prefabParent = new GameObject("Cells");
         }
 
-        public GameObject Get(LevelCellData levelCellData)
+        public GameObject Get(CellType cellType)
         {
-            var cellType = levelCellData.cellType;
             var poolExist = _pools.TryGetValue(cellType, out var pool);
             if (!poolExist)
             {
@@ -40,7 +39,9 @@ namespace GamePlay
                 _pools.Add(cellType, pool);
             }
 
-            return pool.Get();
+            var prefab = pool.Get();
+            prefab.SetActive(true);
+            return prefab;
         }
 
         public void Return(Cell cell)

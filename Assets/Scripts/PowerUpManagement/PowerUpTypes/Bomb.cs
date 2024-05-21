@@ -26,9 +26,7 @@ namespace PowerUpManagement.PowerUpTypes
                 task.OnComplete(() =>
                 {
                     cell.Reset();
-                    
-                    if(cell is not PowerUp)
-                        cellPrefabCreator.Return(cell);
+                    cellPrefabCreator.Return(cell);
                 });
                 tasks.Add(task.AsyncWaitForCompletion().AsUniTask());
                 OnExplodeInvoker(cell);

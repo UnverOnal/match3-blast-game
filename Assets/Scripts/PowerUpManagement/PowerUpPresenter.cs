@@ -22,20 +22,21 @@ namespace PowerUpManagement
         [Inject] private BoardModel _boardModel;
         [Inject] private BoardFillPresenter _fillPresenter;
         [Inject] private IInputService _inputService;
-        [Inject] private CellPrefabCreator _cellPrefabCreator;
-
+        
         private readonly PowerUpView _powerUpView;
 
         private readonly LevelPresenter _levelPresenter;
         private readonly CellCreator _cellCreator;
+        private readonly CellPrefabCreator _cellPrefabCreator;
 
         [Inject]
         public PowerUpPresenter(BoardCreationData boardCreationData,
-            LevelPresenter levelPresenter, CellCreator cellCreator)
+            LevelPresenter levelPresenter, CellCreator cellCreator, CellPrefabCreator cellPrefabCreator)
         {
             _levelPresenter = levelPresenter;
             _cellCreator = cellCreator;
-            _powerUpView = new PowerUpView(cellCreator, levelPresenter, boardCreationData);
+            _cellPrefabCreator = cellPrefabCreator;
+            _powerUpView = new PowerUpView(cellCreator, cellPrefabCreator, levelPresenter, boardCreationData);
         }
 
         public void Initialize()

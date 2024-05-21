@@ -12,12 +12,12 @@ namespace GamePlay.CellManagement
         public GameObject GameObject { get; private set; }
         public CellType CellType { get; private set; }
 
-        public BoardLocation Location { get; protected set; }
+        public BoardLocation Location { get; private set; }
 
         protected SpriteRenderer spriteRenderer;
         private Sprite _sprite;
-        
-        protected Vector3 originalScale;
+
+        private Vector3 _originalScale;
 
         public virtual void SetData(CellCreationData cellCreationData)
         {
@@ -25,15 +25,14 @@ namespace GamePlay.CellManagement
             SetType(cellCreationData.levelCellData.cellType);
 
             SetGameObject(cellCreationData.gameObject);
-            originalScale = GameObject.transform.localScale;
+            _originalScale = GameObject.transform.localScale;
         }
         public void SetLocation(BoardLocation boardLocation) => Location = boardLocation;
 
         public virtual void Reset()
         {
             GameObject.SetActive(false);
-            Location = new BoardLocation();
-            GameObject.transform.localScale = originalScale;
+            GameObject.transform.localScale = _originalScale;
         }
 
         public Tween Destroy()

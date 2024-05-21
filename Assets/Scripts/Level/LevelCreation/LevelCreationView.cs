@@ -63,8 +63,7 @@ namespace Level.LevelCreation
                 var location = data.location;
                 var position = new Vector3(location.x, location.y, 0);
 
-                var obstacleGameObject = _cellPrefabCreator.Get(data);
-                obstacleGameObject.SetActive(true);
+                var obstacleGameObject = _cellPrefabCreator.Get(data.cellType);
                 obstacleGameObject.transform.position = position;
 
                 occupiedLocations.Add(location);
@@ -112,8 +111,7 @@ namespace Level.LevelCreation
             if (levelCellData.amount <= 0)
                 cellDatas.RemoveAt(randomIndex);
 
-            var blockGameObject = _cellPrefabCreator.Get(levelCellData);
-            blockGameObject.SetActive(true);
+            var blockGameObject = _cellPrefabCreator.Get(levelCellData.cellType);
             return blockGameObject;
         }
     }

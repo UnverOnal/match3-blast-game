@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
+using GamePlay;
 using GamePlay.CellManagement;
 using Level.LevelCounter;
 using Level.LevelCreation;
@@ -16,15 +17,17 @@ namespace PowerUpManagement
         public event Action<CellCreationData> OnPowerUpCreated;
 
         private readonly CellCreator _cellCreator;
+        private readonly CellPrefabCreator _cellPrefabCreator;
         private readonly LevelPresenter _levelPresenter;
 
         private readonly GameObject _powerUpParent;
         private readonly IEnumerable<CellAssetData> _powerUpData;
 
-        public PowerUpView(CellCreator cellCreator, LevelPresenter levelPresenter,
+        public PowerUpView(CellCreator cellCreator, CellPrefabCreator cellPrefabCreator, LevelPresenter levelPresenter,
             BoardCreationData boardCreationData)
         {
             _cellCreator = cellCreator;
+            _cellPrefabCreator = cellPrefabCreator;
             _levelPresenter = levelPresenter;
 
             _powerUpParent = new GameObject("PowerUps");
@@ -35,24 +38,11 @@ namespace PowerUpManagement
 
         public void CreatePowerUp(CellType cellType, BoardLocation location)
         {
-            var powerUp = (PowerUp)_cellCreator.GetCell(cellType);
-
-            var prefab = GetPrefab(powerUp, cellType);
+            var prefab = _cellPrefabCreator.Get(cellType);
             var creationData = new CellCreationData(location, prefab, GetLevelPowerUpData(cellType));
             OnPowerUpCreated?.Invoke(creationData);
 
             SpawnPowerUp(prefab, new Vector3(location.x, location.y));
-        }
-
-        private GameObject GetPrefab(CellType type)
-        {
-            foreach (var data in _powerUpData)
-            {
-                if (data.type == type)
-                    return data.prefab;
-            }
-
-            return null;
         }
 
         private LevelPowerUpData GetLevelPowerUpData(CellType type)
@@ -76,15 +66,6 @@ namespace PowerUpManagement
             var originalScale = transform.localScale;
             transform.localScale = Vector3.zero;
             transform.DOScale(originalScale, 0.25f).SetEase(Ease.OutBack, 2f);
-        }
-
-        private GameObject GetPrefab(PowerUp powerUp, CellType type)
-        {
-            var prefab = powerUp.GameObject == null
-                ? Object.Instantiate(GetPrefab(type), parent : _powerUpParent.transform)
-                : powerUp.GameObject;
-
-            return prefab;
         }
     }
 }
