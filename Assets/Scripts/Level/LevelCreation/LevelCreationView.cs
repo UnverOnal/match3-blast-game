@@ -94,8 +94,6 @@ namespace Level.LevelCreation
 
         public void ResetCell(Cell cell)
         {
-            if (cell.CellType is CellType.Rocket or CellType.Bomb) return;
-
             cell.GameObject.SetActive(false);
             _cellPrefabCreator.Return(cell);
         }
