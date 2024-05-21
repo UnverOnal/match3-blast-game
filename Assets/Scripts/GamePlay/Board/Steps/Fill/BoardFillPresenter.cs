@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using GameManagement;
 using GameManagement.LifeCycle;
 using GamePlay.CellManagement;
+using GamePlay.CellManagement.Creators;
 using Level.LevelCounter;
 using VContainer;
 
@@ -24,7 +25,13 @@ namespace GamePlay.Board.Steps.Fill
         
         public void Initialize()
         {
-            _boardFillView.OnFillBlock += _cellCreator.AddCell;
+            _boardFillView.OnFillBlock += CreateCell;
+        }
+        
+        private void CreateCell(CellCreationData data)
+        {
+            var cell = _cellCreator.CreateCell(data);
+            _boardModel.AddCell(cell);
         }
 
         public async UniTask FillColumn(BoardLocation bottomLocation, Cell[,] cells)
@@ -68,7 +75,7 @@ namespace GamePlay.Board.Steps.Fill
 
         public void Dispose()
         {
-            _boardFillView.OnFillBlock -= _cellCreator.AddCell;
+            _boardFillView.OnFillBlock -= CreateCell;
         }
     }
 }

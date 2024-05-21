@@ -7,6 +7,7 @@ using GameManagement.LifeCycle;
 using GamePlay.Board.Steps;
 using GamePlay.Board.Steps.Fill;
 using GamePlay.CellManagement;
+using GamePlay.CellManagement.Creators;
 using GamePlay.Mediator;
 using GoalManagement;
 using Services.InputService;
@@ -87,12 +88,17 @@ namespace GamePlay.Board
 
         private void RemoveGroupCells(CellGroup group)
         {
-            _cellCreator.RemoveCell(group.blocks);
+            foreach (var cell in group.blocks)
+            {
+                _boardModel.RemoveCell(cell);
+                _cellCreator.ReturnCell(cell);
+            }
 
             foreach (var explodable in group.explodeableObstacles)
             {
                 var cell = (Cell)explodable;
-                _cellCreator.RemoveCell(cell);
+                _boardModel.RemoveCell(cell);
+                _cellCreator.ReturnCell(cell);
                 cell.Reset();
             }
         }

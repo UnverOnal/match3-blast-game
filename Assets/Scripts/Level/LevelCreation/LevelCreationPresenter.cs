@@ -4,6 +4,7 @@ using GameManagement.LifeCycle;
 using GamePlay;
 using GamePlay.Board;
 using GamePlay.CellManagement;
+using GamePlay.CellManagement.Creators;
 using Level.LevelCounter;
 using Services.PoolingService;
 using UnityEngine;
@@ -33,7 +34,13 @@ namespace Level.LevelCreation
         
         public void Initialize()
         {
-            _levelCreationView.OnPlaceBlock += _cellCreator.AddCell;
+            _levelCreationView.OnPlaceBlock += CreateCell;
+        }
+
+        private void CreateCell(CellCreationData data)
+        {
+            var cell = _cellCreator.CreateCell(data);
+            _boardModel.AddCell(cell);
         }
 
         public void Create()
@@ -65,7 +72,8 @@ namespace Level.LevelCreation
                 if(cell == null) continue;
                 
                 _levelCreationView.ResetCell(cell);
-                _cellCreator.RemoveCell(cell);
+                _boardModel.RemoveCell(cell);
+                _cellCreator.ReturnCell(cell);
                 cell.Reset();
             }
         }

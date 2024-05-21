@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GamePlay.Board;
 using PowerUpManagement.PowerUpTypes;
 using Services.PoolingService;
+using UnityEngine;
 using VContainer;
 
 namespace GamePlay.CellManagement
@@ -20,41 +21,23 @@ namespace GamePlay.CellManagement
             _boardModel = boardModel;
             _pools = new Dictionary<CellType, ObjectPool<Cell>>();
         }
-        
-        public Cell GetCell(CellType cellType)
-        {
-            var exist = _pools.TryGetValue(cellType, out var pool);
-            if (!exist)
-            {
-                CreatePool(cellType, out var newPool);
-                pool = newPool;
-            }
 
-            return pool.Get();
-        }
-
-        public void AddCell(CellCreationData cellCreationData)
+        public Cell CreateCell(CellCreationData cellCreationData)
         {
             var cellType = cellCreationData.levelCellData.cellType;
 
             var cell = GetCell(cellType);
             cell.SetData(cellCreationData);
-            _boardModel.AddCell(cell);
+            return cell;
         }
 
-        public void RemoveCell(IEnumerable<Cell> cells)
+        public void ReturnCell(IEnumerable<Cell> cells)
         {
             foreach (var cell in cells)
-                RemoveCell(cell);
+                ReturnCell(cell);
         }
 
-        public void RemoveCell(Cell cell)
-        {
-            _boardModel.RemoveCell(cell);
-            ReturnCell(cell);
-        }
-
-        private void ReturnCell(Cell cell)
+        public void ReturnCell(Cell cell)
         {
             var pool = _pools[cell.CellType];
             pool.Return(cell);
@@ -74,6 +57,18 @@ namespace GamePlay.CellManagement
                 .CreatePool(() => creator?.Invoke());
 
             _pools.Add(type, pool);
+        }
+        
+        private Cell GetCell(CellType cellType)
+        {
+            var exist = _pools.TryGetValue(cellType, out var pool);
+            if (!exist)
+            {
+                CreatePool(cellType, out var newPool);
+                pool = newPool;
+            }
+
+            return pool.Get();
         }
     }
 }

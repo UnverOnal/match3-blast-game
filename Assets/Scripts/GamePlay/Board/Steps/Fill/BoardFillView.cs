@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using GameManagement;
 using GamePlay.CellManagement;
+using GamePlay.CellManagement.Creators;
 using Level.LevelCounter;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -66,7 +67,6 @@ namespace GamePlay.Board.Steps.Fill
             var blocks = _levelPresenter.GetCurrentLevelData().blockData;
             levelCellData = blocks[Random.Range(0, blocks.Length)];
             var blockGameObject = _cellPrefabCreator.Get(levelCellData.cellType);
-            Debug.Log(blockGameObject.activeSelf);
             return blockGameObject;
         }
     }

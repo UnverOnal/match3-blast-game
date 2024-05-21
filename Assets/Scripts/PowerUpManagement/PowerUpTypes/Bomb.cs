@@ -4,6 +4,7 @@ using DG.Tweening;
 using GamePlay;
 using GamePlay.Board.Steps.Fill;
 using GamePlay.CellManagement;
+using GamePlay.CellManagement.Creators;
 
 namespace PowerUpManagement.PowerUpTypes
 {
@@ -12,7 +13,7 @@ namespace PowerUpManagement.PowerUpTypes
         private readonly Dictionary<int, BoardLocation> _bottomLocations = new();
 
         public override async UniTask Explode(Cell[,] board, BoardFillPresenter fillPresenter,
-            CellPrefabCreator cellPrefabCreator)
+            CellPrefabCreator cellPrefabCreator, CellCreator cellCreator)
         {
             var tasks = new List<UniTask>();
             var cellsToExplode = GetCells(board);
@@ -27,6 +28,7 @@ namespace PowerUpManagement.PowerUpTypes
                 {
                     cell.Reset();
                     cellPrefabCreator.Return(cell);
+                    cellCreator.ReturnCell(cell);
                     OnExplodeInvoker(cell);
                 });
                 tasks.Add(task.AsyncWaitForCompletion().AsUniTask());

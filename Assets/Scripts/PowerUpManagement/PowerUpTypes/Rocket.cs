@@ -4,6 +4,7 @@ using DG.Tweening;
 using GamePlay;
 using GamePlay.Board.Steps.Fill;
 using GamePlay.CellManagement;
+using GamePlay.CellManagement.Creators;
 using UnityEngine;
 
 namespace PowerUpManagement.PowerUpTypes
@@ -19,21 +20,21 @@ namespace PowerUpManagement.PowerUpTypes
         private const float Speed = 10f;
         
         public override async UniTask Explode(Cell[,] board, BoardFillPresenter fillPresenter,
-            CellPrefabCreator cellPrefabCreator)
+            CellPrefabCreator cellPrefabCreator, CellCreator cellCreator)
         {
             var tasks = new List<UniTask>();
 
             spriteRenderer.enabled = false;
             var transform = GameObject.transform;
 
-            tasks.Add(Fire(transform.GetChild(0), Vector3.right * -1f, fillPresenter, board, cellPrefabCreator));
-            tasks.Add(Fire(transform.GetChild(1), Vector3.right, fillPresenter, board, cellPrefabCreator));
+            tasks.Add(Fire(transform.GetChild(0), Vector3.right * -1f, fillPresenter, board, cellPrefabCreator, cellCreator));
+            tasks.Add(Fire(transform.GetChild(1), Vector3.right, fillPresenter, board, cellPrefabCreator, cellCreator));
 
             await UniTask.WhenAll(tasks);
         }
 
         private async UniTask Fire(Transform transform, Vector3 direction, BoardFillPresenter fillPresenter,
-            Cell[,] board, CellPrefabCreator cellPrefabCreator)
+            Cell[,] board, CellPrefabCreator cellPrefabCreator, CellCreator cellCreator)
         {
             transform.gameObject.SetActive(true);
 
@@ -48,7 +49,7 @@ namespace PowerUpManagement.PowerUpTypes
                 if (!(Vector3.Distance(nextCellPosition, transform.position) <
                       0.3f)) return;
 
-                ExplodeCell(board, fillPresenter, nextCell, cellPrefabCreator);
+                ExplodeCell(board, fillPresenter, nextCell, cellPrefabCreator, cellCreator);
                 cells.RemoveAt(0);
             });
 
@@ -80,18 +81,19 @@ namespace PowerUpManagement.PowerUpTypes
         }
 
         private async void ExplodeCell(Cell[,] board, BoardFillPresenter fillPresenter, Cell nextCell,
-            CellPrefabCreator cellPrefabCreator)
+            CellPrefabCreator cellPrefabCreator,  CellCreator cellCreator)
         {
             if (nextCell == null) return;
 
             var cellLocation = nextCell.Location;
             var cell = board[cellLocation.x, cellLocation.y];
-
+            
             if (cell != this)
                 cell.Destroy().OnComplete(() =>
                 {
                     cell.Reset();
                     cellPrefabCreator.Return(cell);
+                    cellCreator.ReturnCell(cell);
                 });
 
             OnExplodeInvoker(cell);

@@ -6,6 +6,7 @@ using GamePlay;
 using GamePlay.Board;
 using GamePlay.Board.Steps.Fill;
 using GamePlay.CellManagement;
+using GamePlay.CellManagement.Creators;
 using GamePlay.Mediator;
 using Level.LevelCounter;
 using Level.LevelCreation;
@@ -41,7 +42,13 @@ namespace PowerUpManagement
 
         public void Initialize()
         {
-            _powerUpView.OnPowerUpCreated += _cellCreator.AddCell;
+            _powerUpView.OnPowerUpCreated += CreateCell;
+        }
+        
+        private void CreateCell(CellCreationData data)
+        {
+            var cell = _cellCreator.CreateCell(data);
+            _boardModel.AddCell(cell);
         }
 
         public void CreatePowerUp(CellGroup selectedGroup, BoardLocation selectedBlockLocation)
@@ -58,14 +65,14 @@ namespace PowerUpManagement
         public async UniTask Explode(GameObject gameObject)
         {
             var powerUp = (PowerUp)_boardModel.GetCell(gameObject);
-            powerUp.OnExplode += _cellCreator.RemoveCell;
+            powerUp.OnExplode += _boardModel.RemoveCell;
 
             _inputService.IgnoreInput(true);
-            await powerUp.Explode(_boardModel.Cells, _fillPresenter, _cellPrefabCreator);
+            await powerUp.Explode(_boardModel.Cells, _fillPresenter, _cellPrefabCreator, _cellCreator);
             _inputService.IgnoreInput(false);
             
             powerUp.Reset();
-            powerUp.OnExplode -= _cellCreator.RemoveCell;
+            powerUp.OnExplode -= _boardModel.RemoveCell;
         }
 
         private CellType GetPowerUpType(int blastedBlockCount)
@@ -82,7 +89,7 @@ namespace PowerUpManagement
 
         public void Dispose()
         {
-            _powerUpView.OnPowerUpCreated -= _cellCreator.AddCell;
+            _powerUpView.OnPowerUpCreated -= CreateCell;
         }
     }
 }

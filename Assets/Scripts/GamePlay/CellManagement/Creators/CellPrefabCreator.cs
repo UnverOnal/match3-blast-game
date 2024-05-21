@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
-using GamePlay.CellManagement;
 using Level.LevelCreation;
 using Services.PoolingService;
 using UnityEngine;
 using VContainer;
 using Object = UnityEngine.Object;
 
-namespace GamePlay
+namespace GamePlay.CellManagement.Creators
 {
     public class CellPrefabCreator
     {

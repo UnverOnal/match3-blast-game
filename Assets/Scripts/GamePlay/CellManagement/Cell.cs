@@ -9,7 +9,7 @@ namespace GamePlay.CellManagement
         public Vector3 Position => GameObject.transform.position;
         public Vector2 Extents => _sprite.bounds.extents * (Vector2)GameObject.transform.localScale;
 
-        public GameObject GameObject { get; private set; }
+        public GameObject GameObject { get; set; }
         public CellType CellType { get; private set; }
 
         public BoardLocation Location { get; private set; }

@@ -4,6 +4,7 @@ using System.Linq;
 using DG.Tweening;
 using GamePlay;
 using GamePlay.CellManagement;
+using GamePlay.CellManagement.Creators;
 using Level.LevelCounter;
 using Level.LevelCreation;
 using PowerUpManagement.PowerUpTypes;
