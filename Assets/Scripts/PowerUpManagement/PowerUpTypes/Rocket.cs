@@ -95,6 +95,9 @@ namespace PowerUpManagement.PowerUpTypes
             if (cell != this)
                 cell.Destroy().OnComplete(() => Return(cell));
 
+            if (cell is IDamageable)
+                cellLocation = GetObstacleLocation(board, cellLocation);
+
             OnExplodeInvoker(cell);
 
             fillPresenter.CollapseColumn(cellLocation, board);

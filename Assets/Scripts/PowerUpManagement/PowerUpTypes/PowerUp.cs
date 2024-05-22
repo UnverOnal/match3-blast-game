@@ -29,5 +29,19 @@ namespace PowerUpManagement.PowerUpTypes
             _cellCreator.ReturnCell(cell);
             _cellPrefabCreator.Return(cell);
         }
+
+        protected BoardLocation GetObstacleLocation(Cell[,] board, BoardLocation currentLocation)
+        {
+            var location = currentLocation;
+            for (int i = currentLocation.y - 1; i >= 0; i--)
+            {
+                if(board[currentLocation.x, i] != null)
+                    break;
+
+                location.y = i;
+            }
+
+            return location;
+        }
     }
 }

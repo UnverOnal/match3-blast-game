@@ -12,15 +12,6 @@ namespace GamePlay.CellManagement
         public void Damage() => _health--;
 
         public void Explode() => Destroy();
-        // {
-        //     var transform = GameObject.transform;
-        //     var originalScale = transform.localScale;
-        //     transform.DOScale(0f, 0.35f).SetEase(Ease.InBack).OnComplete(() =>
-        //     {
-        //         GameObject.SetActive(false);
-        //         transform.localScale = originalScale;
-        //     });
-        // }
 
         public BoardLocation GetLocation() => Location;
 

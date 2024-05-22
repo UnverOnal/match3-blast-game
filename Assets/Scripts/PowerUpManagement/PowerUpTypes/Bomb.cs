@@ -67,11 +67,11 @@ namespace PowerUpManagement.PowerUpTypes
                 if (!IsValidCell(neighbourX, neighbourY, width, height)) continue;
                 var neighbour = board[neighbourX, neighbourY];
                 neighbours.Add(neighbour);
-                SetBottomLocation(neighbour);
+                SetBottomLocation(neighbour, board);
             }
 
             neighbours.Add(this);
-            SetBottomLocation(this);
+            SetBottomLocation(this, board);
             return neighbours;
         }
 
@@ -80,11 +80,13 @@ namespace PowerUpManagement.PowerUpTypes
             return x >= 0 && x < width && y >= 0 && y < height;
         }
 
-        private void SetBottomLocation(Cell neighbour)
+        private void SetBottomLocation(Cell neighbour, Cell[,] board)
         {
             if (neighbour == null) return;
 
-            var neighbourLocation = neighbour.Location;
+            var neighbourLocation = neighbour is not IDamageable
+                ? neighbour.Location
+                : GetObstacleLocation(board, neighbour.Location);
             var locationExist = _bottomLocations.TryGetValue(neighbourLocation.x, out var location);
             switch (locationExist)
             {
