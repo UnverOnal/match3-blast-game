@@ -32,6 +32,13 @@ namespace GamePlay
         public void NotifyLevelStart()
         {
             _boardPresenter.GroupCells();
+            _powerUpPresenter.SetCanIgnoreInput(true);
+        }        
+        
+        public void NotifyLevelEnd()
+        {
+            _movePresenter.Reset();
+            _powerUpPresenter.SetCanIgnoreInput(false);
         }
 
         public void NotifyBlast(CellGroup selectedGroup, BoardLocation selectedBlockLocation)

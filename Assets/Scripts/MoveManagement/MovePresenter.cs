@@ -4,6 +4,7 @@ using GamePlay.Mediator;
 using Level.LevelCounter;
 using Level.LevelCreation;
 using MoveManagement.TimerSystem;
+using UnityEngine;
 using VContainer;
 
 namespace MoveManagement
@@ -15,9 +16,11 @@ namespace MoveManagement
         private readonly LevelCreationPresenter _levelCreationPresenter;
         [Inject] private LevelPresenter _levelPresenter;
 
-        private MoveModel _moveModel;
-        private MoveView _moveView;
+        private readonly MoveModel _moveModel;
+        private readonly MoveView _moveView;
         private readonly TimerPresenter _timerPresenter;
+
+        private bool _canUpdate;
 
         [Inject]
         public MovePresenter(MoveResources moveResources, LevelCreationPresenter levelCreationPresenter)
@@ -30,13 +33,15 @@ namespace MoveManagement
 
         public void Initialize()
         {
-            _levelCreationPresenter.OnLevelCreated += SetTimer;
-            _levelCreationPresenter.OnLevelCreated += SetMoveCount;
+            _levelCreationPresenter.OnLevelCreated += SetMove;
             _timerPresenter.OnComplete += OnDone;
         }
 
         public void UpdateMoveCount()
         {
+            if(!_canUpdate)
+                return;
+
             _moveModel.UpdateMoveCount();
             _moveView.SetMoveCount(_moveModel.MoveCount);
 
@@ -51,9 +56,15 @@ namespace MoveManagement
 
         public void Dispose()
         {
-            _levelCreationPresenter.OnLevelCreated -= SetTimer;
-            _levelCreationPresenter.OnLevelCreated -= SetMoveCount;
+            _levelCreationPresenter.OnLevelCreated -= SetMove;
             _timerPresenter.OnComplete += OnDone;
+        }
+
+        private void SetMove()
+        {
+            SetTimer();
+            SetMoveCount();
+            _canUpdate = true;
         }
         
         private void SetTimer()
@@ -82,8 +93,10 @@ namespace MoveManagement
         {
             _moveModel.Reset();
             _moveView.Stop();
-    
+            
             _timerPresenter.Reset();
+
+            _canUpdate = false;
         }
     }
 }

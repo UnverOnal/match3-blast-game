@@ -26,6 +26,7 @@ namespace PowerUpManagement
 
         private readonly LevelPresenter _levelPresenter;
         private readonly CellCreator _cellCreator;
+        private bool _canUpdateInput;
 
         [Inject]
         public PowerUpPresenter(BoardCreationData boardCreationData,
@@ -65,9 +66,15 @@ namespace PowerUpManagement
 
             _inputService.IgnoreInput(true);
             await powerUp.Explode(_boardModel.Cells, _fillPresenter);
-            _inputService.IgnoreInput(false);
+            if(_canUpdateInput)
+                _inputService.IgnoreInput(false);
             
             powerUp.OnExplode -= _boardModel.RemoveCell;
+        }
+
+        public void SetCanIgnoreInput(bool canIgnore)
+        {
+            _canUpdateInput = canIgnore;
         }
 
         private CellType GetPowerUpType(int blastedBlockCount)

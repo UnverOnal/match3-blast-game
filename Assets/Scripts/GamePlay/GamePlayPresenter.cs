@@ -17,7 +17,6 @@ namespace GamePlay
         [Inject] private LevelCreationPresenter _levelCreationPresenter;
         [Inject] private GoalPresenter _goalPresenter;
         [Inject] private GameStatePresenter _gameStatePresenter;
-        [Inject] private MovePresenter _movePresenter;
 
         public void Initialize()
         {
@@ -42,7 +41,7 @@ namespace GamePlay
 
         public void OnLevelEnd()
         {
-            _movePresenter.Reset();
+            matchMediator.NotifyLevelEnd();
             _gameStatePresenter.UpdateGameState(GameManagement.GameState.GameState.Home);
             _inputService.IgnoreInput(true);
         }
