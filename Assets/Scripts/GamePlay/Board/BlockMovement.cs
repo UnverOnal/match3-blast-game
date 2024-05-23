@@ -48,5 +48,11 @@ namespace GamePlay.Board
 
             return tween;
         }
+
+        public Tween Blast(Transform transform)
+        {
+            var tween = transform.DOScale(0f, 0.25f).SetEase(Ease.InBack, 2f);
+            return tween;
+        }
     }
 }

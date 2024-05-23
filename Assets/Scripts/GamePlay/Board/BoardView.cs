@@ -43,6 +43,7 @@ namespace GamePlay.Board
         {
             var center = selectedBlockGameObject.transform.position;
             var cells = cellGroup.blocks;
+            var merge = cells.Count > 3;
 
             var tasks = new List<UniTask>();
             foreach (var cell in cells)
@@ -50,7 +51,7 @@ namespace GamePlay.Board
                 var transform = cell.GameObject.transform;
                 var originalScale = transform.localScale;
 
-                var tween = _blockMovement.Blast(transform, center);
+                var tween = merge ? _blockMovement.Blast(transform, center) : _blockMovement.Blast(transform);
                 tween.OnComplete(() => ReturnToPool(cell, originalScale));
                 tasks.Add(tween.AsyncWaitForCompletion().AsUniTask());
             }
