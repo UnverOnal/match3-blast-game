@@ -1,12 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using GamePlay;
 using GamePlay.CellManagement;
 using GamePlay.CellManagement.Creators;
+using GamePlay.ParticleManagement;
 using Level.LevelCounter;
-using Level.LevelCreation;
 using PowerUpManagement.PowerUpTypes;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -17,24 +16,15 @@ namespace PowerUpManagement
     {
         public event Action<CellCreationData> OnPowerUpCreated;
 
-        private readonly CellCreator _cellCreator;
         private readonly CellPrefabCreator _cellPrefabCreator;
         private readonly LevelPresenter _levelPresenter;
+        private readonly ParticleManager _particleManager;
 
-        private readonly GameObject _powerUpParent;
-        private readonly IEnumerable<CellAssetData> _powerUpData;
-
-        public PowerUpView(CellCreator cellCreator, CellPrefabCreator cellPrefabCreator, LevelPresenter levelPresenter,
-            BoardCreationData boardCreationData)
+        public PowerUpView(CellPrefabCreator cellPrefabCreator, LevelPresenter levelPresenter, ParticleManager particleManager)
         {
-            _cellCreator = cellCreator;
             _cellPrefabCreator = cellPrefabCreator;
             _levelPresenter = levelPresenter;
-
-            _powerUpParent = new GameObject("PowerUps");
-            
-            _powerUpData =
-                boardCreationData.blockCreationData.Where(data => data.type is CellType.Bomb or CellType.Rocket);
+            _particleManager = particleManager;
         }
 
         public void CreatePowerUp(CellType cellType, BoardLocation location)
@@ -43,7 +33,7 @@ namespace PowerUpManagement
             var creationData = new CellCreationData(location, prefab, GetLevelPowerUpData(cellType));
             OnPowerUpCreated?.Invoke(creationData);
 
-            SpawnPowerUp(prefab, new Vector3(location.x, location.y));
+            SpawnPowerUp(cellType ,prefab, new Vector3(location.x, location.y));
         }
 
         private LevelPowerUpData GetLevelPowerUpData(CellType type)
@@ -59,7 +49,7 @@ namespace PowerUpManagement
             return null;
         }
 
-        private void SpawnPowerUp(GameObject prefab, Vector3 position)
+        private void SpawnPowerUp(CellType type, GameObject prefab, Vector3 position)
         {
             var transform = prefab.transform;
             transform.position = position;
@@ -67,6 +57,9 @@ namespace PowerUpManagement
             var originalScale = transform.localScale;
             transform.localScale = Vector3.zero;
             transform.DOScale(originalScale, 0.25f).SetEase(Ease.OutBack, 2f);
+
+            var particleType = type == CellType.Bomb ? ParticleType.BombSpawn : ParticleType.RocketSpawn;
+            _particleManager.Play(particleType, position + Vector3.back);
         }
     }
 }

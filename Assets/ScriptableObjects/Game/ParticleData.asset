@@ -31,3 +31,7 @@ MonoBehaviour:
     particle: {fileID: 7969293939145869873, guid: 0b0d50020e762044a9fd881dabeb44cf, type: 3}
   - type: 8
     particle: {fileID: 4892801634972024806, guid: d70ee145d76547342bc67619898fa318, type: 3}
+  - type: 9
+    particle: {fileID: 7135517832864161843, guid: bb27723f499bb5d4aa39752ee65ba765, type: 3}
+  - type: 10
+    particle: {fileID: 6513071670798305553, guid: e9b8830274fa65e46b175b01f01e87e8, type: 3}

@@ -7,8 +7,8 @@ using GamePlay.Board.Steps.Fill;
 using GamePlay.CellManagement;
 using GamePlay.CellManagement.Creators;
 using GamePlay.Mediator;
+using GamePlay.ParticleManagement;
 using Level.LevelCounter;
-using Level.LevelCreation;
 using PowerUpManagement.PowerUpTypes;
 using Services.InputService;
 using UnityEngine;
@@ -21,20 +21,18 @@ namespace PowerUpManagement
         [Inject] private BoardModel _boardModel;
         [Inject] private BoardFillPresenter _fillPresenter;
         [Inject] private IInputService _inputService;
+        [Inject] private readonly CellCreator _cellCreator;
         
         private readonly PowerUpView _powerUpView;
 
         private readonly LevelPresenter _levelPresenter;
-        private readonly CellCreator _cellCreator;
         private bool _canUpdateInput;
 
         [Inject]
-        public PowerUpPresenter(BoardCreationData boardCreationData,
-            LevelPresenter levelPresenter, CellCreator cellCreator, CellPrefabCreator cellPrefabCreator)
+        public PowerUpPresenter(LevelPresenter levelPresenter, CellPrefabCreator cellPrefabCreator, ParticleManager particleManager)
         {
             _levelPresenter = levelPresenter;
-            _cellCreator = cellCreator;
-            _powerUpView = new PowerUpView(cellCreator, cellPrefabCreator, levelPresenter, boardCreationData);
+            _powerUpView = new PowerUpView(cellPrefabCreator, levelPresenter, particleManager);
         }
 
         public void Initialize()
