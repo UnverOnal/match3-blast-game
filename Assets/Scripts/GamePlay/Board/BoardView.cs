@@ -4,6 +4,7 @@ using DG.Tweening;
 using GameManagement;
 using GamePlay.CellManagement;
 using GamePlay.CellManagement.Creators;
+using GamePlay.ParticleManagement;
 using UnityEngine;
 
 namespace GamePlay.Board
@@ -13,11 +14,11 @@ namespace GamePlay.Board
         private readonly CellPrefabCreator _cellPrefabCreator;
         private readonly BlockMovement _blockMovement;
 
-        public BoardView(CellPrefabCreator cellPrefabCreator, BlockMovementData movementData)
+        public BoardView(CellPrefabCreator cellPrefabCreator, BlockMovement blockMovement)
         {
             _cellPrefabCreator = cellPrefabCreator;
 
-            _blockMovement = new BlockMovement(movementData);
+            _blockMovement = blockMovement;
         }
 
         public async UniTask Shake(Transform transform, float duration, float strength)
@@ -48,10 +49,9 @@ namespace GamePlay.Board
             var tasks = new List<UniTask>();
             foreach (var cell in cells)
             {
-                var transform = cell.GameObject.transform;
-                var originalScale = transform.localScale;
+                var originalScale = cell.GameObject.transform.localScale;
 
-                var tween = merge ? _blockMovement.Blast(transform, center) : _blockMovement.Blast(transform);
+                var tween = merge ? _blockMovement.Blast(cell, center) : _blockMovement.Blast(cell);
                 tween.OnComplete(() => ReturnToPool(cell, originalScale));
                 tasks.Add(tween.AsyncWaitForCompletion().AsUniTask());
             }
@@ -59,11 +59,11 @@ namespace GamePlay.Board
             await UniTask.WhenAll(tasks);
         }
 
-        public void ExplodeDamageables(CellGroup cellGroup)
+        public void ExplodeDamagables(CellGroup cellGroup)
         {
-            var explodeables = cellGroup.explodeableObstacles;
-            foreach (var explodeable in explodeables)
-                explodeable.Explode();
+            var explodables = cellGroup.explodeableObstacles;
+            foreach (var explodable in explodables)
+                explodable.Explode();
         }
 
         public async UniTask Shuffle(Cell[,] cells)

@@ -360,6 +360,7 @@ MonoBehaviour:
   levelEndScreenResources: {fileID: 581893295}
   levelContainer: {fileID: 11400000, guid: 629cf418cd7ada14aa1f6f747f1940d6, type: 2}
   boardCreationData: {fileID: 11400000, guid: af485b9c454432240be6d96a2652beac, type: 2}
+  particleData: {fileID: 11400000, guid: 328508d19d712a041a9a1afb6f8db898, type: 2}
   boardResources: {fileID: 1870825763}
   moveResources: {fileID: 2117421616}
   goalResources: {fileID: 840619252}
@@ -1046,9 +1047,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41ecd7dd95e93c04caf61b5fb0a90b7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cube: {fileID: 0}
-  ease: 0
-  duration: 0
 --- !u!4 &1325871576
 Transform:
   m_ObjectHideFlags: 0

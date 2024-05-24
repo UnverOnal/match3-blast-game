@@ -9,6 +9,7 @@ using GamePlay.Board.Steps.Fill;
 using GamePlay.CellManagement;
 using GamePlay.CellManagement.Creators;
 using GamePlay.Mediator;
+using GamePlay.ParticleManagement;
 using GoalManagement;
 using Services.InputService;
 using Services.PoolingService;
@@ -35,9 +36,9 @@ namespace GamePlay.Board
         private readonly int[] _previousGroupBounds;
 
         [Inject]
-        public BoardPresenter(CellPrefabCreator cellPrefabCreator, IPoolService poolService, GameSettings gameSettings)
+        public BoardPresenter(CellPrefabCreator cellPrefabCreator, IPoolService poolService, BlockMovement blockMovement)
         {
-            _boardView = new BoardView(cellPrefabCreator, gameSettings.blockMovementData);
+            _boardView = new BoardView(cellPrefabCreator, blockMovement);
             _groupPool = poolService.GetPoolFactory().CreatePool(() => new CellGroup());
             _boardGrouper = new BoardGrouper(_groupPool);
             _boardShuffler = new BoardShuffler();
@@ -81,7 +82,7 @@ namespace GamePlay.Board
         private async UniTask Blast(CellGroup selectedGroup, GameObject selectedBlock)
         {
             selectedGroup.DamageNeighbours(_boardModel.Cells);
-            _boardView.ExplodeDamageables(selectedGroup);
+            _boardView.ExplodeDamagables(selectedGroup);
             await _boardView.Blast(selectedGroup, selectedBlock);
             RemoveGroupCells(selectedGroup);
         }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using GamePlay.Board;
 using GamePlay.Board.Steps.Fill;
 using GamePlay.CellManagement;
 using GamePlay.CellManagement.Creators;
@@ -18,8 +19,8 @@ namespace PowerUpManagement.PowerUpTypes
     {
         private const float Speed = 10f;
 
-        public Rocket(CellCreator cellCreator, CellPrefabCreator cellPrefabCreator) : base(cellCreator,
-            cellPrefabCreator)
+        public Rocket(CellCreator cellCreator, CellPrefabCreator cellPrefabCreator, BlockMovement blockMovement) : base(cellCreator,
+            cellPrefabCreator, blockMovement)
         {
         }
 
@@ -93,7 +94,7 @@ namespace PowerUpManagement.PowerUpTypes
             var cell = board[cellLocation.x, cellLocation.y];
 
             if (cell != this)
-                cell.Destroy().OnComplete(() => Return(cell));
+                blockMovement.Blast(cell).OnComplete(() => Return(cell));
 
             if (cell is IDamageable)
                 cellLocation = GetObstacleLocation(board, cellLocation);

@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using GameManagement;
 using GamePlay.CellManagement;
 using GamePlay.CellManagement.Creators;
+using GamePlay.ParticleManagement;
 using Level.LevelCounter;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -18,12 +18,12 @@ namespace GamePlay.Board.Steps.Fill
         private readonly CellPrefabCreator _cellPrefabCreator;
         private readonly LevelPresenter _levelPresenter;
 
-        public BoardFillView(BlockMovementData movementData, CellPrefabCreator cellPrefabCreator,
+        public BoardFillView(BlockMovement blockMovement, CellPrefabCreator cellPrefabCreator,
             LevelPresenter levelPresenter)
         {
             _cellPrefabCreator = cellPrefabCreator;
             _levelPresenter = levelPresenter;
-            _blockMovement = new BlockMovement(movementData);
+            _blockMovement = blockMovement;
         }
 
         public void CollapseColumn(List<Cell> cells)

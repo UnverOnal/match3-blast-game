@@ -5,6 +5,7 @@ using GamePlay.Board;
 using GamePlay.Board.Steps.Fill;
 using GamePlay.CellManagement;
 using GamePlay.CellManagement.Creators;
+using GamePlay.ParticleManagement;
 using GameState;
 using GoalManagement;
 using Level.LevelCounter;
@@ -30,6 +31,7 @@ namespace Scopes
 
         [SerializeField] private LevelContainer levelContainer;
         [SerializeField] private BoardCreationData boardCreationData;
+        [SerializeField] private ParticleData particleData;
         
         [SerializeField] private BoardResources boardResources;
         [SerializeField] private MoveResources moveResources;
@@ -53,7 +55,9 @@ namespace Scopes
             builder.Register<IInitialize, MatchMediator>(Lifetime.Singleton).AsSelf();
             
             builder.Register<CellPrefabCreator>(Lifetime.Singleton);
+            builder.Register<BlockMovement>(Lifetime.Transient);
             builder.Register<CellCreator>(Lifetime.Singleton);
+            RegisterParticle(builder);
         }
 
         private void RegisterScreens(IContainerBuilder builder)
@@ -96,6 +100,12 @@ namespace Scopes
         {
             builder.Register<MovePresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterInstance(moveResources);
+        }
+
+        private void RegisterParticle(IContainerBuilder builder)
+        {
+            builder.Register<ParticleManager>(Lifetime.Singleton);
+            builder.RegisterInstance(particleData);
         }
     }
 }

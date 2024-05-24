@@ -1,17 +1,23 @@
-using DG.Tweening;
-using UnityEngine;
+
+using GamePlay.Board;
 
 namespace GamePlay.CellManagement
 {
     public class Obstacle : Cell, IDamageable
     {
+        private readonly BlockMovement _blockMovement;
         private int _health;
+        
+        public Obstacle(BlockMovement blockMovement)
+        {
+            _blockMovement = blockMovement;
+        }
 
         public bool CanExplode() => _health <= 0;
 
         public void Damage() => _health--;
 
-        public void Explode() => Destroy();
+        public void Explode() => _blockMovement.Blast(this);
 
         public BoardLocation GetLocation() => Location;
 

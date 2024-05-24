@@ -1,6 +1,7 @@
 using System;
 using Cysharp.Threading.Tasks;
 using GamePlay;
+using GamePlay.Board;
 using GamePlay.Board.Steps.Fill;
 using GamePlay.CellManagement;
 using GamePlay.CellManagement.Creators;
@@ -11,12 +12,14 @@ namespace PowerUpManagement.PowerUpTypes
     {
         private readonly CellCreator _cellCreator;
         private readonly CellPrefabCreator _cellPrefabCreator;
+        protected readonly BlockMovement blockMovement;
         public event Action<Cell> OnExplode;
         
-        protected PowerUp(CellCreator cellCreator, CellPrefabCreator cellPrefabCreator)
+        protected PowerUp(CellCreator cellCreator, CellPrefabCreator cellPrefabCreator, BlockMovement blockMovement)
         {
             _cellCreator = cellCreator;
             _cellPrefabCreator = cellPrefabCreator;
+            this.blockMovement = blockMovement;
         }
 
         public abstract UniTask Explode(Cell[,] board, BoardFillPresenter fillPresenter);

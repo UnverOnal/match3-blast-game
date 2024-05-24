@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using GameManagement;
 using GameManagement.LifeCycle;
 using GamePlay.CellManagement;
 using GamePlay.CellManagement.Creators;
@@ -18,16 +17,17 @@ namespace GamePlay.Board.Steps.Fill
         private readonly BoardFillView _boardFillView;
 
         [Inject]
-        public BoardFillPresenter(CellPrefabCreator cellPrefabCreator, GameSettings gameSettings, LevelPresenter levelPresenter)
+        public BoardFillPresenter(CellPrefabCreator cellPrefabCreator,
+            LevelPresenter levelPresenter, BlockMovement blockMovement)
         {
-            _boardFillView = new BoardFillView(gameSettings.blockMovementData, cellPrefabCreator, levelPresenter);
+            _boardFillView = new BoardFillView(blockMovement, cellPrefabCreator, levelPresenter);
         }
-        
+
         public void Initialize()
         {
             _boardFillView.OnFillBlock += CreateCell;
         }
-        
+
         private void CreateCell(CellCreationData data)
         {
             var cell = _cellCreator.CreateCell(data);
@@ -46,12 +46,15 @@ namespace GamePlay.Board.Steps.Fill
                     var emptyLocation = new BoardLocation(bottomLocation.x, i);
                     columnEmptyLocations.Add(emptyLocation);
                 }
-                else if(cell.GetType() == typeof(Obstacle))
+                else if (cell.GetType() == typeof(Obstacle))
+                {
                     columnEmptyLocations.Clear();
+                }
             }
+
             await _boardFillView.FillColumn(columnEmptyLocations, boardHeight);
         }
-        
+
         public async void CollapseColumn(BoardLocation bottomLocation, Cell[,] cells)
         {
             var cellsToCollapse = new List<Cell>();
@@ -70,6 +73,7 @@ namespace GamePlay.Board.Steps.Fill
                 _boardModel.UpdateCellLocation(cell, new BoardLocation(bottomLocation.x, yLocation++));
                 cellsToCollapse.Add(cell);
             }
+
             _boardFillView.CollapseColumn(cellsToCollapse);
         }
 

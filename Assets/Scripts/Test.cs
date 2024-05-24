@@ -5,7 +5,4 @@ using Random = System.Random;
 
 public class Test : MonoBehaviour
 {
-    public int[] range1;
-    public int[] range2;
-
 }
