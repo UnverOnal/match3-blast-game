@@ -100,7 +100,7 @@ namespace PowerUpManagement.PowerUpTypes
                 cellLocation = GetObstacleLocation(board, cellLocation);
 
             OnExplodeInvoker(cell);
-
+            
             fillPresenter.CollapseColumn(cellLocation, board);
             await fillPresenter.FillColumn(cellLocation, board);
         }
