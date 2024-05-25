@@ -28,7 +28,7 @@ MonoBehaviour:
   - type: 6
     particle: {fileID: 3327447427640379702, guid: 44e027e460a5c844282cb50fb0147cbb, type: 3}
   - type: 7
-    particle: {fileID: 7969293939145869873, guid: 0b0d50020e762044a9fd881dabeb44cf, type: 3}
+    particle: {fileID: 182802, guid: 57ac5680dabf21944b5c2d0366061eb9, type: 3}
   - type: 8
     particle: {fileID: 4892801634972024806, guid: d70ee145d76547342bc67619898fa318, type: 3}
   - type: 9
