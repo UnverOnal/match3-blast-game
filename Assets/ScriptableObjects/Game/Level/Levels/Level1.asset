@@ -13,12 +13,15 @@ MonoBehaviour:
   m_Name: Level1
   m_EditorClassIdentifier: 
   counterGoalDatas:
-  - description: adsad
+  - description: Blue
     cellType: 1
     target: 20
-  - description: adsad
+  - description: Green
     cellType: 2
     target: 20
+  - description: Obstacle
+    cellType: 0
+    target: 4
   width: 8
   height: 8
   blockData:
@@ -58,7 +61,7 @@ MonoBehaviour:
     health: 2
   - cellType: 0
     location:
-      x: 8
+      x: 7
       y: 6
     health: 2
   powerUpData:

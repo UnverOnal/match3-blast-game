@@ -16,7 +16,7 @@ namespace MoveManagement
             if (count < 0)
                 return;
 
-            _moveCountText.text = "Move : " + count;
+            _moveCountText.text = count.ToString();
         }
 
         public void Start() => _moveCountText.gameObject.SetActive(true);
