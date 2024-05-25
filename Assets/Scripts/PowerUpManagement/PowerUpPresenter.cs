@@ -51,10 +51,8 @@ namespace PowerUpManagement
             var type = GetPowerUpType(selectedGroup.blocks.Count);
             if (type == CellType.None)
                 return;
-
-            var bottomLocations = selectedGroup.bottomLocations;
-            var location = bottomLocations[selectedBlockLocation.x];
-            _powerUpView.CreatePowerUp(type, location);
+            
+            _powerUpView.CreatePowerUp(type, selectedBlockLocation);
         }
 
         public async UniTask Explode(GameObject gameObject)
